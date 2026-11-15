@@ -1,0 +1,51 @@
+SWIRSTREAM AI 0.9.7 — by Swir
+Windows 11 x64 • wersja przenośna
+
+URUCHOMIENIE
+1. Rozpakuj cały ZIP do nowego folderu. Zachowaj wszystkie podfoldery.
+2. Uruchom SwirStreamAI.exe. VLC ani osobny .NET nie są wymagane.
+3. Wybierz kraje i wyszukaj publiczne kanały albo dodaj własne źródło.
+4. Kanał uruchamiaj w programie. Sama obecność na liście nie potwierdza obrazu.
+
+NOWE W 0.9.7 — PORTALE MAC BEZ SESJI TOKENOWEJ
+MAC Player rozpoznaje zarówno katalogi portal.php, jak i portale wymagające
+pełnego logowania oraz profilu. Sprawdza najwyżej trzy znane ścieżki pod własnym
+adresem użytkownika. Jawny adres pliku PHP ma pierwszeństwo. Nie zmienia
+zapisanego adresu i nie tworzy numerów SN ani identyfikatorów urządzenia.
+Pełny portal nadal musi potwierdzić aktywny profil. Jawna odmowa zatrzymuje próbę.
+Wybranie kanału ponownie sprawdza połączenie i wybiera adres zgodnie z danymi
+operatora: jawnie oznaczony stały adres albo świeży link tymczasowy.
+Po aktualizacji odśwież starszą listę własnego portalu, aby pobrać te metadane.
+Duże katalogi są czytane strumieniowo do 64 MB odpowiedzi. Zapis obejmuje najwyżej
+30 000 unikalnych kanałów i 8 MB potrzebnych pól; ograniczenie jest jawnie opisane.
+
+DODAWANIE WŁASNYCH ŹRÓDEŁ
+Na górze wybierz Playlisty URL, Xtream, MAC Player albo DRM.
+Playlisty URL: własny adres M3U, plik lub bezpośrednia transmisja.
+Xtream: adres serwera oraz własny login i hasło; można wkleić pełny link get.php.
+MAC Player: adres portalu i MAC urządzenia otrzymany od operatora.
+DRM: obsługiwany DASH z jednym KID/kluczem ClearKey albo serwerem jego licencji.
+Zapisz i połącz pobiera katalog. Odśwież i pokaż kanały ponawia pobranie.
+Pokaż zapisane kanały korzysta z wcześniejszego katalogu, bez obietnicy dostępności.
+Wyszukiwanie filtruje kanały wybranego źródła. Publiczna lista ma osobne oznaczenie.
+Nieudane odświeżenie zachowuje wcześniejszy katalog i jego oryginalną datę.
+
+PRZENIESIENIE Z POPRZEDNIEJ WERSJI
+Zamknij obie aplikacje i wykonaj kopię starego folderu data. Skopiuj data obok
+nowego EXE, zachowując pliki nowej aplikacji. Prywatne źródła są chronione DPAPI:
+wymagają tego samego konta Windows i jego kluczy. Nie publikuj folderu data.
+Nowe wydanie nie dołącza żadnych kont, MAC, loginów ani playlist użytkownika.
+
+ZAKRES I WERYFIKACJA
+Lista kanałów, uzyskany adres oraz działający obraz i dźwięk są sprawdzane osobno.
+Wyniki konkretnej kompilacji znajdują się w RAPORT_WYDANIA.txt i verification.
+TESTUJ_WINDOWS.cmd uruchamia testy lokalne; nie sprawdza wszystkich kanałów
+w internecie. Informacje techniczne i historyczne ograniczenia: MAINTENANCE.md.
+
+AI uczy się lokalnych preferencji i pomaga sortować publiczne wyniki. Nie zastępuje
+abonamentu operatora i nie gwarantuje znalezienia wszystkich kanałów.
+Portal live nie obejmuje EPG portalu, SN, certyfikatów ani parowania urządzeń.
+Windows nie wysyła MAC/Bearer jako globalnych nagłówków mediów. Transmisje,
+które ich wymagają, mogą nie działać. DRM to ograniczone ClearKey CENC/H264;
+nie ma uniwersalnej obsługi Widevine/PlayReady. Xtream obejmuje live i XMLTV,
+nie pełny katalog VOD/seriali. Więcej: PRIVATE_SOURCES.md.

@@ -1,0 +1,47 @@
+package com.swir.stream;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.os.SystemClock;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ListView;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
+
+@androidx.media3.common.util.UnstableApi @RunWith(AndroidJUnit4.class)
+public final class SourceExplorerUiTest {
+    private Context context;private File index;private byte[] original;private boolean hadIndex;private String profile;private ProviderRepository providers;private final List<String> calls=Collections.synchronizedList(new ArrayList<>());
+    @Before public void setup()throws Exception{context=InstrumentationRegistry.getInstrumentation().getTargetContext();index=new File(context.getFilesDir(),"profiles/index.json");hadIndex=ProfileStore.hasSnapshot(index);original=hadIndex?ProfileStore.readJson(index,64000).toString().getBytes(StandardCharsets.UTF_8):null;UiTestData.seed(context);ProfileStore profiles=new ProfileStore(context);profiles.add("Explorer "+UUID.randomUUID().toString().substring(0,8));profile=profiles.currentId();providers=new ProviderRepository(new File(context.getNoBackupFilesDir(),"providers"),profile,(url,headers,cancel)->{calls.add(url);String body="#EXTM3U\n#EXTINF:-1,Żółw TV HD\nhttps://cdn.example/one.m3u8\n#EXTINF:-1,Publiczny Sport\nhttps://cdn.example/two.m3u8\n";return new ProviderHttp.Document(url,body.getBytes(StandardCharsets.UTF_8),System.currentTimeMillis(),0);},host->new InetAddress[]{InetAddress.getByAddress(new byte[]{93,(byte)184,(byte)216,34})});}
+    @After public void restore()throws Exception{UiTestData.restore(context);remove(new File(context.getNoBackupFilesDir(),"providers/"+profile));remove(new File(context.getFilesDir(),"profiles/"+profile));KeyStore keys=KeyStore.getInstance("AndroidKeyStore");keys.load(null);keys.deleteEntry("swir.providers.v1."+profile);if(hadIndex)try(FileOutputStream out=new FileOutputStream(index)){out.write(original);}else index.delete();new File(index+".bak").delete();}
+    private static void remove(File file){if(file.isDirectory()){File[] files=file.listFiles();if(files!=null)for(File child:files)remove(child);}file.delete();}
+    private static Object get(Object target,String name){try{Field f=target.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(target);}catch(Exception e){throw new AssertionError(e);}}
+    private static void set(Object target,String name,Object value){try{Field f=target.getClass().getDeclaredField(name);f.setAccessible(true);f.set(target,value);}catch(Exception e){throw new AssertionError(e);}}
+    private static void call(MainActivity activity,String name){try{Method m=MainActivity.class.getDeclaredMethod(name);m.setAccessible(true);m.invoke(activity);}catch(Exception e){throw new AssertionError(e);}}
+    private static void idle(){InstrumentationRegistry.getInstrumentation().waitForIdleSync();}
+    private static AlertDialog page(MainActivity activity){return (AlertDialog)get(get(activity,"explorerPage"),"page");}
+    private static AlertDialog provider(MainActivity activity){return (AlertDialog)get(get(activity,"providerPage"),"page");}
+    private static void drain(ActivityScenario<MainActivity> scene,String worker)throws Exception{CountDownLatch done=new CountDownLatch(1);scene.onActivity(a->((ExecutorService)get(a,worker)).execute(done::countDown));assertTrue(done.await(20,TimeUnit.SECONDS));idle();}
+    private ActivityScenario<MainActivity> launch()throws Exception{ActivityScenario<MainActivity> scene=ActivityScenario.launch(MainActivity.class);AtomicBoolean ready=new AtomicBoolean();long until=SystemClock.elapsedRealtime()+15000;while(!ready.get()&&SystemClock.elapsedRealtime()<until){scene.onActivity(a->ready.set(a.getWindow().getDecorView().findViewWithTag("channel_list")!=null));SystemClock.sleep(30);}assertTrue(ready.get());drain(scene,"work");drain(scene,"providerWork");scene.onActivity(a->{set(a,"providers",providers);set(a,"explorerEngine",new SourceExplorer((url,cancel)->{calls.add(url);String body=url.contains("list.m3u")?"#EXTM3U\n#EXTINF:-1,Żółw TV HD\nhttps://cdn.example/one.m3u8\n":"<html><title>Publiczny portal demonstracyjny</title><div>Ministra STB</div><script src='xpcom.common.js'></script></html>";return new PublicHttp.Document(url,body,"text/html",System.currentTimeMillis(),0);}));});return scene;}
+    private void analyze(ActivityScenario<MainActivity> scene,String url)throws Exception{scene.onActivity(a->a.getWindow().getDecorView().findViewWithTag("source_explorer_open").performClick());idle();scene.onActivity(a->{((EditText)page(a).getWindow().getDecorView().findViewWithTag("explorer_url")).setText(url);page(a).getWindow().getDecorView().findViewWithTag("explorer_analyze").performClick();});drain(scene,"explorerWork");}
+    private void openFirst(ActivityScenario<MainActivity> scene,String url){scene.onActivity(a->page(a).getWindow().getDecorView().findViewWithTag("explorer_result_"+Station.sha256(url)).performClick());idle();}
+    @Test public void analyzePortalOpensSecureEmptyMacFormWithoutAccountTraffic()throws Exception{String url="https://fixture.example/stalker_portal/c/index.html";try(ActivityScenario<MainActivity> scene=launch()){analyze(scene,url);assertEquals(1,calls.size());openFirst(scene,url);scene.onActivity(a->page(a).getWindow().getDecorView().findViewWithTag("explorer_add").performClick());idle();scene.onActivity(a->{assertNotNull(provider(a).getWindow().getDecorView().findViewWithTag("provider_form_portal"));assertEquals(url,((EditText)provider(a).getWindow().getDecorView().findViewWithTag("provider_url")).getText().toString());assertEquals("",((EditText)provider(a).getWindow().getDecorView().findViewWithTag("provider_mac")).getText().toString());assertTrue((provider(a).getWindow().getAttributes().flags&WindowManager.LayoutParams.FLAG_SECURE)!=0);});assertEquals("Opening form never authenticates",1,calls.size());assertTrue(providers.listSources().isEmpty());}}
+    @Test public void publicPlaylistHandoffImportsAndSearchesInsideMainActivity()throws Exception{String url="https://fixture.example/list.m3u";try(ActivityScenario<MainActivity> scene=launch()){analyze(scene,url);openFirst(scene,url);scene.onActivity(a->page(a).getWindow().getDecorView().findViewWithTag("explorer_add").performClick());idle();scene.onActivity(a->provider(a).getButton(AlertDialog.BUTTON_POSITIVE).performClick());drain(scene,"providerWork");drain(scene,"providerWork");assertEquals(1,providers.listSources().size());assertTrue(providers.editConfiguration(providers.listSources().get(0).id).getJSONObject("config").optBoolean("publicDiscovery"));scene.onActivity(a->{assertEquals(2,((ListView)a.getWindow().getDecorView().findViewWithTag("channel_list")).getAdapter().getCount());((EditText)a.getWindow().getDecorView().findViewWithTag("channel_search")).setText("zolw");call(a,"filter");assertEquals(1,((ListView)a.getWindow().getDecorView().findViewWithTag("channel_list")).getAdapter().getCount());});}}
+    @Test public void publicExplorerPortraitLandscapeAndDetailsRemainVisible()throws Exception{String url="https://fixture.example/stalker_portal/c/index.html";try(ActivityScenario<MainActivity> scene=launch()){scene.onActivity(a->a.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));idle();analyze(scene,url);shot("explorer-portrait.png");scene.onActivity(a->a.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));waitOrientation(scene,android.content.res.Configuration.ORIENTATION_LANDSCAPE);scene.onActivity(a->{assertNotNull(page(a).getWindow().getDecorView().findViewWithTag("explorer_search"));assertTrue(page(a).getWindow().getDecorView().findViewWithTag("explorer_analyze").isFocusable());});shot("explorer-landscape.png");openFirst(scene,url);shot("explorer-public-details.png");scene.onActivity(a->assertNotNull(page(a).getWindow().getDecorView().findViewWithTag("explorer_add")));}}
+    private static void waitOrientation(ActivityScenario<MainActivity> scene,int orientation){AtomicBoolean ready=new AtomicBoolean();long until=SystemClock.elapsedRealtime()+5000;while(!ready.get()&&SystemClock.elapsedRealtime()<until){scene.onActivity(a->ready.set(a.getResources().getConfiguration().orientation==orientation));SystemClock.sleep(30);}assertTrue(ready.get());idle();}
+    private void shot(String name)throws Exception{idle();InstrumentationRegistry.getInstrumentation().getUiAutomation().waitForIdle(500,5000);SystemClock.sleep(350);Bitmap image=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(image);File dir=new File(context.getExternalFilesDir(null),"evidence");assertTrue(dir.isDirectory()||dir.mkdirs());try(FileOutputStream out=new FileOutputStream(new File(dir,name))){assertTrue(image.compress(Bitmap.CompressFormat.PNG,100,out));}image.recycle();}
+}

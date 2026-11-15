@@ -1,0 +1,98 @@
+SwirStream AI 0.9.6 — component provenance
+
+APPLICATION AND ASSETS
+Original Swir application source: MIT, see LICENSE.txt. This permission does not
+replace the terms of the native decoder or other third-party components.
+Recovered original project archive SHA-256:
+CF65551B5F710104DCD0B454DF628227ADBD19682BFD960F4FA56DD62CAFE3E5
+The HLS fixture came from that archive. The MP4 fixture is a synthetic FFmpeg test
+pattern and quiet sine tone. The icon introduced in 0.7.0 is an original generated asset;
+prompt, image provenance, conversion method and hashes are recorded in
+assets/swirstream-v070-provenance.txt. ICO frames use that same image.
+
+SWIR PLAYER — LIBMPV / FFMPEG, WINDOWS X64
+Swir Player is the application's own embedded interface and wrapper. The native
+decoder is an unmodified third-party Windows build by shinchiro, linked from the
+mpv project's installation page: https://mpv.io/installation/
+Release: https://github.com/shinchiro/mpv-winbuild-cmake/releases/tag/20261107
+Archive: mpv-dev-x86_64-20261107-git-9028187538.7z
+Archive SHA-256: df7c433a2d481fdaf6163b201f26abbb0eff0c215c51368397088c6d8f7a001b
+player/libmpv-2.dll SHA-256:
+c91949577ae9cc2d500208da51f2c4a24cfa7a02d0ce6e130bf67ec738b450bb
+Observed runtime: mpv v0.42.0-3-g902818753 / FFmpeg N-128545-ge196e57ca.
+Baseline x86_64 build, not the x86_64-v3 variant. No VLC binary is included.
+Acquire-SwirPlayer.ps1 acquires and verifies the pinned binary. It does not compile
+mpv, FFmpeg or their native dependencies. Application compilation is separate.
+
+This selected build is GPL, not LGPL-only. mpv is GPL-2.0-or-later; the linked
+FFmpeg build enables GPL and version3. The combined native binary is subject to
+GPL-3.0-or-later and applicable component terms. The presence of an LGPL license
+text in the source notices does not make this particular binary LGPL-only.
+Available notices are retained in player/licenses. Selection, URLs, build recipe,
+checksums and source-coverage limitations are in player/PROVENANCE.json.
+
+NATIVE CORRESPONDING-SOURCE COVERAGE IS PARTIAL
+The build script includes these exact source archives in third-party-source:
+mpv: 902818753849d9ad8f0096fad6ca5aeaa37113b9
+  https://github.com/mpv-player/mpv/tree/902818753849d9ad8f0096fad6ca5aeaa37113b9
+FFmpeg: e196e57ca225a98654e482806fa714facd232b57
+  https://github.com/FFmpeg/FFmpeg/tree/e196e57ca225a98654e482806fa714facd232b57
+Build recipe: bda10a2816ce9908d419b3f4b564227330457e76
+  https://github.com/shinchiro/mpv-winbuild-cmake/tree/bda10a2816ce9908d419b3f4b564227330457e76
+Source archive URLs and hashes are in the copied PROVENANCE.json.
+These three archives do not include every statically linked dependency source,
+exact revision or full license inventory. Some recipe dependencies are floating;
+the upstream build-log artifact required authenticated GitHub access during review.
+This bundle is NOT verified complete corresponding source and is NOT evidence of
+a reproducible native build. This remains an unresolved release-maintenance gap;
+the MIT application license and this notice do not resolve native GPL obligations.
+
+.NET RUNTIME
+Self-contained Microsoft .NET 10 and Windows Desktop runtime packs are published
+for win-x64. Read SwirStreamAI.runtimeconfig.json and build-info.json for the exact
+versions selected by the build. Notices are copied from those exact pack versions
+to licenses/microsoft.netcore.app.runtime.win-x64/<version> and
+licenses/microsoft.windowsdesktop.app.runtime.win-x64/<version>.
+https://github.com/dotnet/runtime
+https://github.com/dotnet/winforms
+
+PUBLIC CATALOGS AND PLAYLISTS
+Catalog content is downloaded at runtime; no current channel database is promised
+by this package. Found M3U lists are stored locally with their source URL, fetched
+time, optional Last-Modified and SHA-256. Download success is not playback proof.
+Radio Browser: https://docs.radio-browser.info/
+  https://de1.api.radio-browser.info/json/stations/search
+  Mirrors: nl1.api.radio-browser.info and at1.api.radio-browser.info.
+iptv-org: https://github.com/iptv-org/iptv and https://github.com/iptv-org/api
+  https://iptv-org.github.io/iptv/index.m3u
+  https://iptv-org.github.io/iptv/countries/{code}.m3u
+  https://iptv-org.github.io/api/channels.json
+  https://iptv-org.github.io/api/streams.json
+  Mirrors use the same projects on raw.githubusercontent.com, not independent data.
+Free-TV/IPTV: https://github.com/Free-TV/IPTV
+  https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8
+Bing public RSS: https://www.bing.com/search?format=rss&q={query}
+Public broadcaster pages and supported media endpoints are requested at runtime.
+The extractor is original application logic; Streamlink and a browser engine are
+not bundled. Direct browser pages are excluded from the playable channel list.
+Search availability, catalog accuracy and broadcaster access are not guaranteed.
+Streams remain with their respective providers; the application does not host or
+redistribute the media. Source metadata does not establish broadcasting rights.
+
+EPG
+Runtime defaults: https://iptv-epg.org/files/epg-{country}.xml.gz and
+https://free-epg.de/api/epg/{country}.xml.gz
+Provider pages: https://iptv-epg.org/guides and https://free-epg.de/
+XMLTV is downloaded on demand; no programme database is bundled. Sources may
+share underlying data. Users may choose a playlist-provided XMLTV URL or their
+own source in EPG settings. Programme data does not provide stream access.
+
+COUNTRY METADATA AND LOCAL MODELS
+Country metadata: https://iptv-org.github.io/api/countries.json
+Polish country names: Unicode CLDR, unicode-org/cldr-json, main/pl/territories.json.
+Bundled metadata fetched 06.11.2026; Unicode license: assets/CLDR-LICENSE.txt.
+Swir TasteNet weights, authored training/evaluation data and the per-profile
+preference model are part of the MIT application source. See MODEL_CARD.md.
+The current interface loads the ten-topic model locally. The retired 19-intent
+model remains for regression tests, not an assistant. No remote AI SDK is bundled.
+

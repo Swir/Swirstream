@@ -1,0 +1,21 @@
+{
+ "search_radio": ["wyszukaj radio ambient", "pokaż mi radio jazz"],
+ "search_tv": ["znajdź kanały telewizyjne", "pokaż telewizję sport"],
+ "search_live": ["pokaż transmisje na żywo", "wyszukaj streamy nasa"],
+ "play": ["odtwórz wybraną stację", "uruchom zaznaczony wynik"],
+ "pause": ["zapauzuj odtwarzanie", "wstrzymaj muzykę na chwilę"],
+ "resume": ["kontynuuj transmisję", "proszę wznów"],
+ "stop": ["zakończ granie", "zatrzymaj to radio"],
+ "next": ["przełącz na następną stację", "proszę następny kanał"],
+ "previous": ["włącz poprzednią stację", "poprzednie radio proszę"],
+ "volume_up": ["podgłośnij trochę muzykę", "zrób głośniej proszę"],
+ "volume_down": ["ścisz trochę muzykę", "proszę zmniejsz głośność"],
+ "mute": ["wycisz muzykę", "wyłącz dźwięk proszę"],
+ "unmute": ["proszę przywróć dźwięk", "odcisz muzykę"],
+ "favorite_add": ["zapisz tę stację do ulubionych", "polub to radio"],
+ "favorite_remove": ["usuń ten kanał z ulubionych", "odlub tę stację"],
+ "show_favorites": ["wyświetl listę ulubionych", "pokaż mi ulubione radia"],
+ "show_history": ["otwórz historię odtwarzania", "pokaż ostatnio odtwarzane stacje"],
+ "open_url": ["proszę otwórz link", "odtwórz adres transmisji"],
+ "help": ["pokaż mi instrukcję", "jakie polecenia rozumiesz"]
+}

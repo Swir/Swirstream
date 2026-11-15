@@ -1,0 +1,143 @@
+MAC Player w 0.3.6
+Program rozpoznaje dwa rodzaje interfejsu: katalog MAC dostępny bez pełnej sesji oraz portal wymagający handshake i aktywnego profilu. Rozpoznaje maksymalnie trzy adresy API na tym samym serwerze, zachowując wpisany adres źródła. Każde odtwarzanie ponawia rozpoznanie sesji. Gdy operator jawnie wyłącza link tymczasowy i równoważenie serwerów, używany jest oryginalny publiczny adres kanału; w pozostałych przypadkach pobierany jest nowy create_link. Starszy zapis bez tych flag wymaga odświeżenia listy, aby skorzystać z tej obsługi.
+
+Sam katalog nie potwierdza aktywności konta ani odtwarzania. Jawna odmowa dostępu zatrzymuje połączenie; sprawdzanie pełnego profilu pozostaje ścisłe. Nie generujemy numeru seryjnego ani identyfikatorów urządzenia. Nagłówki MAC/token nie są przekazywane innym domenom. Duża lista portalu jest czytana strumieniowo: do 64 000 000 bajtów odpowiedzi, 8 000 000 bajtów wybranych pól i 30 000 unikalnych kanałów. Po ograniczeniu listy program pokazuje komunikat; pozostałe pozycje nie są zapisane. Cała odpowiedź jest sprawdzana do końca, a błąd zachowuje poprzedni katalog. Pozostałe dokumenty prywatnego źródła nadal mają limit 12 MiB.
+
+Android nie był testowany na rzeczywistym koncie operatora ani fizycznym F150/HY300. Test porównawczy Windows nie jest dowodem działania APK. Zakres testów tej konkretnej APK jest zapisany w dołączonym raporcie; wcześniejsze wyniki poniżej są historyczne.
+
+Potwierdzanie odtwarzania w 0.3.5
+Naturalne zakończenie krótkiego materiału nie staje się błędem timeoutu.
+Odtwarzacz sprawdza postęp faktycznie wybranych ścieżek obrazu i dźwięku.
+Historia i dodatnie uczenie źródła pojawiają się dopiero po potwierdzeniu.
+Wyciszenie, statyczny lub czarny obraz, radio i materiały bez ścieżki audio
+pozostają obsługiwane; pauza i zatrzymana ścieżka nie zwiększają czasu nauki.
+Dla DRM bramka potwierdzenia wymaga kluczy i co najmniej 12 sekund wspólnego
+postępu. Obraz może już być widoczny podczas sprawdzania. To ostrożna polityka,
+nie gwarancja wykrycia każdego błędnego klucza ani dowolnej długości clear lead.
+Test publicznej próbki ClearKey obejmuje również poprawny JSON licencji ze
+złym kluczem, brak pozytywnej historii/uczenia oraz powrót do poprawnej licencji.
+
+Poprawki MAC Player w 0.3.4
+Adresy portalu zachowują zakodowany prefiks, także spacje i znaki % w ścieżce.
+W trybie pełnej sesji odpowiedź dostawcy musi być poprawnym JSON-em i jednoznacznie potwierdzać aktywny profil.
+Odrzucone lub nieznane statusy nie wczytują kanałów; nieudane odświeżenie zachowuje poprzedni zapis.
+Końcowy adres odtwarzania nadal nie może wskazywać sieci lokalnej.
+Obsługę MAC sprawdzono na kontrolowanych odpowiedziach protokołu; w tym wydaniu
+nie wykonano logowania Androidem do rzeczywistego konta operatora.
+
+OD 0.3.3: Eksplorator źródeł WWW
+Na głównym pasku obok „Wklej link” wybierz „Eksplorator WWW”.
+Wpisz kanał/nadawcę/temat i kraje albo przeanalizuj publiczny adres.
+Wyniki mają cztery sekcje: playlisty, transmisje, portale i strony/informacje.
+Każdy wynik pokazuje pochodzenie, datę sprawdzenia i datę serwera, jeśli ją podał.
+„Dodaj portal” otwiera MAC Player z samym adresem; wpisujesz własny MAC.
+Eksplorator nie wyszukuje kont i nie loguje się do znalezionych portali.
+Playlista trafia do publicznego importu, a HLS/DASH/MP4 do Playlist URL.
+Odtwarzanie odbywa się w Swir Player. Manifest DRM wymaga własnej konfiguracji.
+Samo znalezienie adresu lub HTTP 200 nie potwierdza kanałów ani obrazu.
+Wyniki zapisują się oddzielnie dla profili; błędy i anulowanie zachowują poprzedni zapis.
+Limit: 4 zapytania z alternatywną wyszukiwarką, 12 stron, głębokość 2, 100 wyników.
+Publiczna analiza WWW obejmuje HTTP/HTTPS na portach 80/443. Własny adres
+dostawcy na innym publicznym porcie dodaj przez „Wklej link” lub właściwą sekcję.
+Kraje są częścią zapytania, nie gwarantowanym krajem każdego znalezionego źródła.
+Lokalne AI nadal porządkuje zaimportowane kanały. Eksplorator jest analizatorem WWW,
+nie nowym modelem AI i nie skanuje całego internetu.
+
+OD 0.3.2: Wklej link od dostawcy
+Na głównym pasku wybierz „Wklej link”. Wklej cały get.php / player_api.php
+z loginem i hasłem, rozpoznaj dane i wybierz „Pobierz i zapisz”.
+Nie trzeba samodzielnie dzielić adresu na serwer, login i hasło.
+Pełny link można też wkleić w pole serwera w sekcji Xtream.
+Podgląd jest chroniony; rozpoznanie nie łączy się z serwerem i niczego nie zapisuje.
+Nieznane parametry dostawcy nie są usuwane — można świadomie użyć całego
+linku jako własnej playlisty URL. To oddzielna opcja od publicznych list AI.
+Link wklejony do wyszukiwarki przechodzi do prywatnego importu, nie do wyszukiwarek WWW.
+Po udanym imporcie od razu widzisz kanały tego konta i możesz przeszukać je lokalnie.
+Ponowne dodanie tego samego serwera i loginu zachowuje konto oraz ulubione;
+nowe hasło zapisuje się dopiero po udanym pobraniu. Sama zmiana nazwy działa offline.
+Odświeżenie M3U zachowuje ulubione przy zmianie kolejności/tokenów tam, gdzie
+kanał można jednoznacznie rozpoznać. Niejednoznaczny stary wpis jest niedostępny,
+zamiast uruchamiać inny kanał.
+
+OD 0.3.1: osobne sekcje na głównym ekranie
+Playlisty URL | Xtream | MAC Player | DRM.
+Każda sekcja ma własną listę źródeł, dodawanie, edycję, odświeżanie
+oraz „Pokaż kanały”. Przycisk × nad listą kanałów usuwa filtr konta.
+Edycja zachowuje identyfikator źródła; błędne pobranie zachowuje poprzednią listę.
+
+Playlisty URL → AI: znajdź playlisty: wpisz kanał/temat i kraje.
+Wyniki pokazują pochodzenie, datę pobranej kopii i dopasowane kanały.
+Preferencje profilu wpływają na kolejność. Wybierz wynik → Dodaj do Playlist URL.
+Adres i dostępny EPG są wypełniane; listę zapisujesz dopiero po potwierdzeniu.
+Powtórne dodanie tego samego URL odświeża zapis zamiast tworzyć duplikat.
+AI szuka publicznych list i transmisji, nie loginów, haseł, MAC ani licencji.
+
+SwirStream AI Android 0.3.6 — by Swir
+
+1. Przenieś SwirStreamAI_Android_0.3.6.apk na telefon lub projektor.
+2. Otwórz APK w menedżerze plików Androida i wybierz Instaluj.
+   Jeśli system zapyta, zezwól temu menedżerowi na instalację aplikacji.
+3. Uruchom SwirStream AI i poczekaj na pierwsze wyszukiwanie.
+4. Wybierz kraje. Dotknięcie kanału lub OK na pilocie uruchamia go w programie.
+5. Wpisuj nazwę, aby od razu przeszukać pobrane kanały. Enter/Szukaj działa lokalnie.
+   Zakładka Wszystkie pokazuje całą pobraną bibliotekę bez filtrów kraju/typu.
+6. Jeśli brakuje źródła w bibliotece, wpisz nazwę i naciśnij Deep Search.
+   Program sprawdzi globalne playlisty, indeks transmisji, różne nazwy oraz strony nadawców.
+
+Aktualizacja z 0.1.0, 0.2.0, 0.2.1, 0.3.0, 0.3.1, 0.3.2, 0.3.3 lub 0.3.4: otwórz nową APK bez odinstalowywania starej aplikacji.
+Aktualizacja podpisana tym samym kluczem zachowuje dane; odinstalowanie je usuwa.
+Ta paczka aktualizuje tylko Androida, nie wersję Windows.
+
+Nie trzeba instalować VLC, Pythona ani Javy. Potrzebny jest internet.
+Telefon F150 z Androidem 15 spełnia wymaganie Android 6.0 lub nowszy.
+HY300 musi umożliwiać instalowanie APK; zgodność jego pilota i dekoderów wymaga próby na urządzeniu.
+Dla Androida 6 i 7 dodano zgodność z nowszymi serwerami HTTPS, zachowując sprawdzanie
+certyfikatów i nazw serwerów. Aktualizacja tej obsługi wymaga nowego APK, nie przycisku Odśwież.
+
+Strzałki pilota: wybór. OK: uruchomienie. Wstecz: wyjście z pełnego ekranu.
+Źródła: kilka adresów danego kanału. Stabilność: preferuje dostępne warianty do 720p.
+„Manifest live dostępny” w Źródłach oznacza udaną kontrolę listy transmisji,
+nie potwierdzenie obrazu. Status wygasa po 30 minutach; obraz sprawdza odtwarzacz.
+Menu → Playlisty M3U: import, eksport i pobieranie znalezionych playlist.
+Menu → Lokalne AI: włączanie, wyłączanie i reset nauki bieżącego profilu.
+
+Każdy profil ma własne ulubione, historię i lokalną naukę. Telefon i projektor
+uczą się oddzielnie; nie ma synchronizacji przez chmurę ani panelu asystenta.
+EPG pokazuje Teraz/Następnie dla pierwszych czterech wybranych krajów.
+
+Deep Search może potrwać kilka minut. Lista pozostaje dostępna; anulowanie zachowuje
+poprzedni katalog. Stan źródeł pokazuje etapy, daty danych i błędy dostawców.
+AI uczy się preferencji i skuteczności odtwarzania. Rozwijanie zapytań używa reguł
+i metadanych, bez modelu językowego. Sam manifest nie uczy AI, że kanał działa.
+
+Nie wszystkie kanały mają publiczną transmisję. Abonament, blokada regionalna,
+DRM albo kodek nieobsługiwany przez urządzenie mogą uniemożliwić odtwarzanie.
+Odśwież aktualizuje źródła; aktualizacja programu wymaga nowego APK.
+
+Pełna instrukcja: README_ANDROID.md. Testy konkretnego pliku: WERYFIKACJA.json.
+Licencje są także w aplikacji: menu → O aplikacji → Licencje.
+
+
+MOJE ŹRÓDŁA — OD 0.3.0; OSOBNE SEKCJE I EDYCJA OD 0.3.1
+
+Przycisk „Moje źródła” → „Dodaj źródło”:
+• M3U z URL: także adres get.php i serwer z niestandardowym portem; opcjonalny XMLTV.
+• Xtream: adres serwera, login i hasło do własnego konta. Kanały na żywo, kategorie i EPG.
+• Portal MAC: adres portalu oraz MAC zarejestrowany u dostawcy. Podstawowy protokół
+  Stalker/Ministra. Portale wymagające serialu lub aplikacji operatora mogą nie działać.
+• DRM: własny adres transmisji, Widevine albo ClearKey i serwer licencji operatora;
+  opcjonalne nagłówki licencji. ClearKey wymaga zgodnego DASH; nie jest obejściem DRM.
+
+Lista źródła zapisuje się na urządzeniu. Wybierz źródło → Odśwież, aby pobrać nową listę.
+Błąd serwera nie usuwa poprzednich kanałów i nie odmładza daty danych. Własne kanały
+pozostają widoczne także bez oznaczenia kraju. Pole wyszukiwania filtruje je lokalnie.
+Dane dostępu i katalog źródła są szyfrowane kluczem Android Keystore, osobno dla profili.
+Historia i ulubione przechowują referencję, a nie hasło lub rzeczywisty adres transmisji.
+Eksport publicznych playlist pomija własne konta i chronione adresy. Szyfrowany zapis
+jest związany z urządzeniem; nie jest przenośną kopią konta. Po reinstalacji dodaj konto ponownie.
+
+„Stan źródeł” pokazuje dostępność DRM na urządzeniu. To nie gwarantuje licencji operatora,
+HD ani zgodności kodeków. Fizyczny F150 i HY300 wymagają sprawdzenia na sprzęcie.
+Menu → Testery Streamtest otwiera streamtest.co lub streamtest.in/logs. Aplikacja nie
+przekazuje tym serwisom URL kanału, tokenu ani hasła; zewnętrzne publiczne testy są widoczne
+dla innych. Nie pobieramy danych logowania ani adresów MAC z cudzych logów.

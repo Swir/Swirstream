@@ -1,0 +1,14 @@
+Playback clock regression fixtures, generated locally with FFmpeg lavfi.
+No operator streams, accounts or captured personal media.
+
+player-black-av.mp4: 6 seconds, black320x180/25fps plus440Hz48kHz AAC.
+player-static-video.mp4: 6 seconds, constantblue320x180/25fps, no audio.
+player-audio-only.m4a: 6 seconds,440Hz48kHz AAC, no video.
+player-stalled-audio.mp4: 6 seconds testsrc2 video and1second audio.
+player-short-ended.mp4:0.2second black video and tone, naturally ends before proof.
+H.264 uses libx264/pix_fmt yuv420p, AAC uses FFmpeg encoder, faststart MP4.
+
+Tests accept static/black pictures and mute, and use selected renderer clocks.
+Wrong-key DRM test uses the public Google/Shaka Angel One fixture and public
+ClearKey demo service with the original KID and deliberately incorrect key.
+It is not a test of an operator account or commercial DRM entitlement.

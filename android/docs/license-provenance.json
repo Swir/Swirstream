@@ -1,0 +1,91 @@
+[
+  {
+    "File": "licenses/APACHE-2.0.txt",
+    "Source": "https://raw.githubusercontent.com/androidx/media/1.11.1/LICENSE",
+    "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "File": "licenses/GUAVA-LICENSE.txt",
+    "Source": "https://raw.githubusercontent.com/google/guava/v33.3.1/LICENSE",
+    "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "File": "licenses/KOTLIN-LICENSE.txt",
+    "Source": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.2.10/license/LICENSE.txt",
+    "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "File": "licenses/KOTLIN-NOTICE.txt",
+    "Source": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.2.10/license/NOTICE.txt",
+    "Sha256": "0b09a83d3ef7795c7dec65e815866597c066c53898f2852a76599b8f5552941a"
+  },
+  {
+    "File": "licenses/DESUGAR-GPL-2.0-WITH-CLASSPATH.txt",
+    "Source": "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/LICENSE",
+    "Sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+  },
+  {
+    "File": "licenses/DESUGAR-ADDITIONAL_LICENSE_INFO",
+    "Source": "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/ADDITIONAL_LICENSE_INFO",
+    "Sha256": "a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916"
+  },
+  {
+    "File": "licenses/DESUGAR-ASSEMBLY_EXCEPTION",
+    "Source": "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/ASSEMBLY_EXCEPTION",
+    "Sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+  },
+  {
+    "File": "licenses/DESUGAR-README.txt",
+    "Source": "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/README.md",
+    "Sha256": "346c7ffdc8b6352c263f02a34ab680f18eec4e909fae2d19de97313aed8b3ced"
+  },
+  {
+    "File": "licenses/DESUGAR-VERSION_JDK11.txt",
+    "Source": "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/VERSION_JDK11.txt",
+    "Sha256": "b7a8eda0fbec0ddb0559f399347247da67dc8d36424c946e355b758813563cfc"
+  },
+  {
+    "File": "licenses/DESUGAR-DEPENDENCIES_JDK11.txt",
+    "Source": "https://raw.githubusercontent.com/google/desugar_jdk_libs/73170c345e6a762fc6a1f0301bb15218850023ef/DEPENDENCIES_JDK11.txt",
+    "Sha256": "3c16222f316a4e6bbb4298a79524cb2e0425a18a021c61d62eb3b162faddb1c3"
+  },
+  {
+    "File": "LICENSE_APP_MIT.txt",
+    "Source": "Copied unchanged from the SwirStream AI project LICENSE.txt",
+    "Sha256": "e122ff6c761184488d7c7ce647ea946d1859c0da987b5b66e1c9f85cbdb7e915"
+  },
+  {
+    "File": "ICON_PROVENANCE.txt",
+    "Source": "Copied unchanged from Windows 0.7.0 asset provenance; generator and original image hash are recorded inside",
+    "Sha256": "9810a1f33c90e3b8ca79951fb80a4f1cebda042825e8ed18986797b9c16ba280"
+  },
+  {
+    "File": "licenses/UNICODE-3.0.txt",
+    "Source": "Copied unchanged from the Windows countries/CLDR asset license; upstream https://www.unicode.org/license.txt",
+    "Sha256": "220ba0e1c43b99530d2d5bdb892a99dca0989414f51ab695ecd90163eaa1ec3b"
+  },
+  {
+    "File": "licenses/OKHTTP-LICENSE.txt",
+    "Source": "https://raw.githubusercontent.com/square/okhttp/parent-4.12.0/LICENSE.txt",
+    "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "VerifiedAt": "2026-11-08T18:20:11.365718+00:00"
+  },
+  {
+    "File": "licenses/OKIO-LICENSE.txt",
+    "Source": "https://raw.githubusercontent.com/square/okio/parent-3.6.0/LICENSE.txt",
+    "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "VerifiedAt": "2026-11-08T18:20:11.365718+00:00"
+  },
+  {
+    "File": "licenses/KOTLIN-1.9.10-LICENSE.txt",
+    "Source": "https://raw.githubusercontent.com/JetBrains/kotlin/v1.9.10/license/LICENSE.txt",
+    "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "VerifiedAt": "2026-11-08T18:20:11.365718+00:00"
+  },
+  {
+    "File": "licenses/KOTLIN-1.9.10-NOTICE.txt",
+    "Source": "https://raw.githubusercontent.com/JetBrains/kotlin/v1.9.10/license/NOTICE.txt",
+    "Sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19",
+    "VerifiedAt": "2026-11-08T18:20:11.365718+00:00"
+  }
+]

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <Version>0.9.7</Version>
+    <Company>Swir</Company>
+    <Product>SwirStream AI — by Swir</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>assets\swirstream-v070.ico</ApplicationIcon>
+    <DebugType>none</DebugType>
+    <RestorePackagesPath>$(MSBuildThisFileDirectory)..\packages</RestorePackagesPath>
+  </PropertyGroup>
+  <ItemGroup><Content Include="model\**;assets\**"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content></ItemGroup>
+</Project>

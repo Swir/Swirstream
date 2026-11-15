@@ -1,0 +1,18 @@
+# Generated builds and machine-local state
+**/bin/
+**/obj/
+**/build/
+**/.gradle/
+**/dependency-cache*/
+**/local.properties
+**/__pycache__/
+packages/
+artifacts/
+data/
+*.dpapi
+*.jks
+*.keystore
+*.p12
+*.pfx
+.env
+.env.*

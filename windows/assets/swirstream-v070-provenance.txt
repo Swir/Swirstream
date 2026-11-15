@@ -1,0 +1,28 @@
+SwirStream AI — original icon for 0.7.0
+Created: 2026-11-07
+Method: built-in image_gen image generation, transparent background requested.
+No external reference image or third-party logo was used.
+
+Original generated file:
+exec-b48b918a-f93e-4efc-ac5a-a2cc7c7243b0.png (generated original; machine-local path omitted)
+
+Workspace master: swirstream-v070.png (1254 x 1254, transparent corners)
+PNG SHA-256: CBE5F9BC8BB9874FED05D8049C9740480777374468D76D8F2233B7FBCE42CE21
+Windows icon: swirstream-v070.ico
+ICO SHA-256: 2A2813BBBEFC449E6A7194C32E45558303DEA6B7A9F73C4D0D442850E6CF93D2
+ICO frames: 16, 20, 24, 32, 40, 48, 64, 96, 128, 256 px; PNG RGBA entries.
+Only format conversion and high-quality size reduction were applied to the master.
+No existing icon was overwritten. Parent application chooses the new asset explicitly.
+
+Prompt:
+Use case: logo-brand. Asset type: production Windows desktop application icon for SwirStream AI, a dark gaming live-TV player. Create one original, exceptionally polished compact app icon, square, front-on, no mockup. A bold sculpted angular S ribbon incorporates a strong right-pointing play triangle in its center negative space. The S is primarily vivid cyan/teal with restrained electric violet on the lower return, set on a deep graphite rounded-square tile. Clear strong silhouette and generous internal negative space so the same symbol stays recognizable at 16, 32 and 48 pixels. Subtle clean beveled edge, controlled luminous accents, sophisticated premium gaming aesthetic, mostly flat graphic geometry with very slight dimensionality; no tiny circuitry, no busy texture, no bloom cloud. Icon centered, tile fills about 90 percent of canvas, transparent pixels outside the rounded tile. No words, no tiny text, no caption, no watermark, no VLC cone, no other brand logos, no border around the entire image. One icon only, not a grid or presentation.
+
+Validation:
+Native-size preview inspected at 16, 24, 32, 48, 64, 128 and 256 pixels.
+Bold cyan S/play silhouette remains distinguishable; no small text or busy detail.
+Transparent corner alpha = 0 in master and all icon frame PNGs.
+System.Drawing.Icon loads requested 16–128 sizes. Its legacy size selector picks
+128 for a requested 256; the standard ICO 256 PNG entry itself is 256 x 256.
+The 256 frame uses width/height byte 0, as required by ICO format.
+Conversion script: work/convert_icon_v070.ps1
+Evidence: work/icon-evidence-v070/verification.json and native-size-preview.png

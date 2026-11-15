@@ -1,0 +1,62 @@
+{
+  "news": [
+    "European news television",
+    "najnowsze wiadomości i informacje",
+    "noticias del mundo",
+    "Nachrichten aus der Region"
+  ],
+  "music": [
+    "radio jazz lounge",
+    "najlepsza muzyka taneczna",
+    "musique classique",
+    "Rock und Musik"
+  ],
+  "sports": [
+    "international football live",
+    "sport i siatkówka",
+    "deportes de invierno",
+    "Fußball und Tennis"
+  ],
+  "movies": [
+    "classic cinema movies",
+    "kanał z filmami i seriale",
+    "cine y películas",
+    "Spielfilme und Serien"
+  ],
+  "kids": [
+    "cartoons for children",
+    "bajki dla maluchów",
+    "dessins animés pour enfants",
+    "Kinder und Zeichentrick"
+  ],
+  "documentary": [
+    "science and wildlife documentaries",
+    "dokumenty o przyrodzie nauka",
+    "histoire et documentaires",
+    "Natur und Wissenschaft"
+  ],
+  "entertainment": [
+    "live talent and game show",
+    "kabaret i teleturniej",
+    "divertissement et téléréalité",
+    "Quizshow und Unterhaltung"
+  ],
+  "lifestyle": [
+    "travel and cooking television",
+    "gotowanie dom ogród",
+    "cuisine et voyage",
+    "Kochen und Reisen"
+  ],
+  "religious": [
+    "christian worship television",
+    "modlitwa i msza na żywo",
+    "messe et prière",
+    "Gottesdienst und Bibel"
+  ],
+  "general": [
+    "national public television",
+    "regionalna telewizja publiczna",
+    "télévision généraliste",
+    "öffentlich rechtliches Vollprogramm"
+  ]
+}

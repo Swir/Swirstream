@@ -1,0 +1,32 @@
+SwirStream Android legacy TLS compatibility anchor
+Retrieved and inspected: 2026-11-07
+
+Public certificate: ISRG Root X1 (self-signed, RSA 4096)
+Official download: https://letsencrypt.org/certs/isrgrootx1.pem
+Issuer details: https://letsencrypt.org/certs/isrgrootx1.txt
+Chain policy: https://letsencrypt.org/certificates/
+Android compatibility: https://letsencrypt.org/docs/certificate-compatibility/
+
+Certificate DER SHA-256:
+96bcec06264976f37460779acf28c5a7cfe8a3c0aae11a8ffcee05c0bddf08c6
+Downloaded PEM bytes SHA-256 (stored unchanged with .crt extension):
+22b557a27055b33606b6559f37703928d3e4ad79f110b407d04986e1843543d1
+Certificate notBefore: 2015-06-04T11:04:38Z
+Certificate notAfter: 2035-06-04T11:04:38Z
+Published trust horizon: 2030-06-04 (fallback disabled from this date).
+
+Only Android SDK 23-25 uses the compatibility trust manager. Normal system
+validation runs first. Fallback performs standard certificate path validation
+against this one public CA. Hostname verification is unchanged. No private key,
+client certificate, permissive trust manager, runtime CA download or Google Play
+dependency is included. SDK 26+ retains system TLS defaults unchanged.
+
+The X.509 certificate is public CA trust material distributed by its issuer for
+verification. No private material is present. Issuer legal documents and relying
+party terms: https://letsencrypt.org/repository/ . No separate software license is
+asserted for the certificate. SwirStream's compatibility code is under the same
+license as the surrounding application source.
+
+Maintenance: revisit issuer policy and device support in app releases. This is
+not a full replacement root store and cannot repair all TLS limitations of old
+Android. APK updates are required for trust-policy changes or future missing CAs.

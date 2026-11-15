@@ -1,0 +1,13 @@
+{
+  "Archive": "desugar_jdk_libs-73170c345e6a762fc6a1f0301bb15218850023ef.zip",
+  "Bytes": 30020254,
+  "Sha256": "cf0b48cb046b6517ed8e2a816c125116a907e13e48e341882ba6f4016a155d9f",
+  "Source": "https://codeload.github.com/google/desugar_jdk_libs/zip/73170c345e6a762fc6a1f0301bb15218850023ef",
+  "Repository": "https://github.com/google/desugar_jdk_libs",
+  "Commit": "73170c345e6a762fc6a1f0301bb15218850023ef",
+  "VersionFile": "VERSION_JDK11.txt",
+  "Version": "2.1.5",
+  "CommitPurpose": "Prepare for jdk-11 based desugared library version 2.1.5",
+  "Artifact": "com.android.tools:desugar_jdk_libs:2.1.5",
+  "Limitation": "Upstream version-preparation source snapshot, not independently rebuilt or proven byte-identical to the published Maven JAR. Official 2.1.5 sources.jar returned HTTP 404."
+}

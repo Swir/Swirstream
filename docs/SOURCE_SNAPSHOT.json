@@ -1,0 +1,1535 @@
+{
+  "scope": "Exact application source bytes extracted from the finalized tested source archives; documentation added at repository root is separate. Native Windows corresponding-source coverage remains incomplete.",
+  "versions": {
+    "windows": "0.9.7",
+    "android": "0.3.6"
+  },
+  "archives": [
+    {
+      "file": "SwirStreamAI_0.9.7_ZRODLA.zip",
+      "sha256": "cb5f7330427807acedd4fbff459c66760ebf6ef8bd0c39062bf7d34182f433ef"
+    },
+    {
+      "file": "SwirStreamAI_Android_0.3.6_ZRODLA.zip",
+      "sha256": "4f3572cd396ba5e00359b5d191b7d100ed006c277494ef245ceb5f420bce6dd7"
+    }
+  ],
+  "fileCount": 303,
+  "files": [
+    {
+      "path": "windows/Acquire-SwirPlayer.ps1",
+      "bytes": 6909,
+      "sha256": "4ed1d1e52499dbbce625810b29be6afb5430d51b5e667c5518689a0088f9dc79"
+    },
+    {
+      "path": "windows/app.manifest",
+      "bytes": 554,
+      "sha256": "30abd4fb008a2838e587cfb2c354206aef5ff2133bd12aade4a7ebc477cbc2a0"
+    },
+    {
+      "path": "windows/assets/CLDR-LICENSE.txt",
+      "bytes": 2033,
+      "sha256": "220ba0e1c43b99530d2d5bdb892a99dca0989414f51ab695ecd90163eaa1ec3b"
+    },
+    {
+      "path": "windows/assets/countries.json",
+      "bytes": 19099,
+      "sha256": "4946516cd97fba9f0b573270fd7f54cbb1ad0dfa678de9afff64ff41c3f73f32"
+    },
+    {
+      "path": "windows/assets/local-test.mp4",
+      "bytes": 2624894,
+      "sha256": "6c533e9ea73e9bc74080b54901fa8a6d2822827dc1805ec147d0b8876f94d145"
+    },
+    {
+      "path": "windows/assets/player-stalled-video.mp4",
+      "bytes": 89573,
+      "sha256": "a6aa7ba966a44c62537e265237c43d504545877fc411f676e976ef1ad405cc54"
+    },
+    {
+      "path": "windows/assets/swirstream-v070-provenance.txt",
+      "bytes": 2484,
+      "sha256": "9810a1f33c90e3b8ca79951fb80a4f1cebda042825e8ed18986797b9c16ba280"
+    },
+    {
+      "path": "windows/assets/swirstream-v070.ico",
+      "bytes": 155225,
+      "sha256": "2a2813bbbefc449e6a7194c32e45558303dea6b7a9f73c4d0d442850e6cf93d2"
+    },
+    {
+      "path": "windows/assets/swirstream-v070.png",
+      "bytes": 1530858,
+      "sha256": "cbe5f9bc8bb9874fed05d8049c9740480777374468d76d8f2233b7fbce42ce21"
+    },
+    {
+      "path": "windows/assets/swirstream.ico",
+      "bytes": 119454,
+      "sha256": "d2e90b9281186fb147469f1259f41a58c02d048073ca08503c4a7c237e981e06"
+    },
+    {
+      "path": "windows/assets/test-hls/index.m3u8",
+      "bytes": 208,
+      "sha256": "da761168041a3711a6f0db8318c0eaa408e8797d06d7a7a34a6f7524d7be5980"
+    },
+    {
+      "path": "windows/assets/test-hls/segment0.ts",
+      "bytes": 64296,
+      "sha256": "2dda6691d90cd7336e5d6f19120924f1a83019bf079965e6451fb0333fe3a7fa"
+    },
+    {
+      "path": "windows/assets/test-hls/segment1.ts",
+      "bytes": 64860,
+      "sha256": "e928d890129073f2ece59e092053b86759a7835aa255bd4b33b330b1042cb0ba"
+    },
+    {
+      "path": "windows/assets/test-hls/segment2.ts",
+      "bytes": 64672,
+      "sha256": "0404c3a88bfd0adf4fa0c80f64b0e77f37a06c58a478a80d7b4033f26f1d7978"
+    },
+    {
+      "path": "windows/assets/test-hls/segment3.ts",
+      "bytes": 64860,
+      "sha256": "7d96b17a6cbcb1a039386264cccb0de13b3548e7647101b034fbc4c47b1a96fa"
+    },
+    {
+      "path": "windows/build.ps1",
+      "bytes": 5425,
+      "sha256": "92d0775e75c64a6bc0b5e9441d0d437b935c1b4bf20427f3791f39c64126c0d5"
+    },
+    {
+      "path": "windows/CatalogUiTests.cs",
+      "bytes": 7985,
+      "sha256": "e3ff5329f0585d60b2779472d7fcda15ca29eed853c408ed22f03b3901e310f6"
+    },
+    {
+      "path": "windows/CatalogView.cs",
+      "bytes": 8479,
+      "sha256": "86ab7894efdc379278d7f7d2f8f2d62198c5dd2821ec2cbad734702d380df06c"
+    },
+    {
+      "path": "windows/ChannelSearch.cs",
+      "bytes": 11013,
+      "sha256": "47683f896f91fd368adf09a6e36ea15a2a2d512b660b33d0922b27fea1fd050a"
+    },
+    {
+      "path": "windows/Core.cs",
+      "bytes": 17600,
+      "sha256": "7455e1d3a2799d6e2c41c6d4839fd7a260a0450f9ce5ec6edd68cd15fc5ea788"
+    },
+    {
+      "path": "windows/DeepIdentityTests.cs",
+      "bytes": 8275,
+      "sha256": "2729acad3754406d0ce00e4c5de4b62057ed0a757f9017f0803d2af4cf8409fb"
+    },
+    {
+      "path": "windows/DeepSearchTests.cs",
+      "bytes": 13408,
+      "sha256": "3e7488adfcb65ccb16fce116538ba050cf7f2c878441734745555fe5446fc72e"
+    },
+    {
+      "path": "windows/DeepWebTests.cs",
+      "bytes": 5899,
+      "sha256": "63640e3f54e5626b120d2554771c69351eb11822c4765acc6bbf0c462d100f2a"
+    },
+    {
+      "path": "windows/Discovery.cs",
+      "bytes": 28387,
+      "sha256": "89b6ecd46c8e911d1cbe9a8f19c5708c1f267aae67713061bfd1850dcdc306ca"
+    },
+    {
+      "path": "windows/DiscoveryCoverage.cs",
+      "bytes": 4049,
+      "sha256": "602a1770714cc3dbe9455b70162a327f86d5e4cf3f8a6d9f79ca3a6d6d996d05"
+    },
+    {
+      "path": "windows/DiscoveryForm.cs",
+      "bytes": 29822,
+      "sha256": "dcee3eab2923b3019146a3c9ad061e796c5d567d237ac73ce95d3f73691e732c"
+    },
+    {
+      "path": "windows/DiscoveryPipeline.cs",
+      "bytes": 1001,
+      "sha256": "9b38e72cad3d3f25b0fd06fb933cd4d4005ae1d2a517a64356fd57e036159470"
+    },
+    {
+      "path": "windows/DiscoveryTests.cs",
+      "bytes": 10882,
+      "sha256": "5394d5ae9ea05c7e449825f1e08327177ad92bf2896554ab244b785aa10521b7"
+    },
+    {
+      "path": "windows/EncryptedPlaybackGuard.cs",
+      "bytes": 3527,
+      "sha256": "e7f5630bd09029a76e13f81319c774c06d74dabddb2a98b579d04cf960a26519"
+    },
+    {
+      "path": "windows/EncryptedPlaybackGuardTests.cs",
+      "bytes": 6499,
+      "sha256": "7fc5b6f9b9d9a52203dcbe2cdbb71cb28ca3e247504036a073d7b7ad1ee525b1"
+    },
+    {
+      "path": "windows/Epg.cs",
+      "bytes": 19873,
+      "sha256": "7af21a87c5154700687aa76c49ace8b1743aff5426978d4cc9d36c8b45569505"
+    },
+    {
+      "path": "windows/EpgForm.cs",
+      "bytes": 11772,
+      "sha256": "ab0a84034b376281806ca3958f7af9b0bd91dfb57fd10d2c17dd5f78540263f6"
+    },
+    {
+      "path": "windows/EpgTests.cs",
+      "bytes": 15045,
+      "sha256": "74396acf031ccc6e09fcc6bad7247a9da4b2fc0b831b21b5321ef509db9ceec0"
+    },
+    {
+      "path": "windows/HlsPlaybackSource.cs",
+      "bytes": 7095,
+      "sha256": "20c2266edc2842c22e007724626a71d240edd293f720ea0cf0d30dbb024b26d4"
+    },
+    {
+      "path": "windows/IntentNet.cs",
+      "bytes": 5760,
+      "sha256": "26a5b52dc867fd04f95f1d99bb49e609ab0de915a61b5debff81d55ee0b6ea74"
+    },
+    {
+      "path": "windows/LICENSE.txt",
+      "bytes": 1080,
+      "sha256": "e122ff6c761184488d7c7ce647ea946d1859c0da987b5b66e1c9f85cbdb7e915"
+    },
+    {
+      "path": "windows/LocalSearchTests.cs",
+      "bytes": 11629,
+      "sha256": "13319b326dc356456fe7bb313fb58bf88a9b81e3d08712c7c30259006d5b8cbd"
+    },
+    {
+      "path": "windows/LocalSearchUiTests.cs",
+      "bytes": 5438,
+      "sha256": "eb2fdc6dff144789f0cc9dc49b3b584a2371d76d48493ddae3dc005e4c47355f"
+    },
+    {
+      "path": "windows/MainForm.cs",
+      "bytes": 34278,
+      "sha256": "e598182b6b410900a56c6df8c601702ed3b10d17187e7e7251d45e91d2329b0b"
+    },
+    {
+      "path": "windows/MAINTENANCE.md",
+      "bytes": 28145,
+      "sha256": "8fc3207bb2689922f6a314fa3b43e719d0a90232fa5ff78e7cab71ae58f9fb45"
+    },
+    {
+      "path": "windows/MODEL_CARD.md",
+      "bytes": 7905,
+      "sha256": "399d1c4889ac0e90e34cea8e3678b9c0387a73f1579a61f99923ef37649da948"
+    },
+    {
+      "path": "windows/model/evaluation.json",
+      "bytes": 1336,
+      "sha256": "da1e013389f73aa1843a05d82064b40eb2ac7a3609ea877687d0482a667840a7"
+    },
+    {
+      "path": "windows/model/intentnet.json",
+      "bytes": 1392267,
+      "sha256": "17d4955aa501e2349a88c79814f8af98cb9c26e992baedd4c79b50e67621f3c5"
+    },
+    {
+      "path": "windows/model/taste-evaluation.json",
+      "bytes": 1516,
+      "sha256": "1f74f9be54485c85cb54eea01ae7aa00e63fc8b59bae410907e4d648659140dc"
+    },
+    {
+      "path": "windows/model/taste-training.json",
+      "bytes": 6403,
+      "sha256": "1b06c96c2ae49a21c2966394c4732581d15da70dc9ac2688c5b0b3b4896b28eb"
+    },
+    {
+      "path": "windows/model/tastenet.json",
+      "bytes": 1379871,
+      "sha256": "c391f83f06cf8d75be36c17ee3a41b79f8eca5563a7be4525c57d04a5ca6df65"
+    },
+    {
+      "path": "windows/model/training.json",
+      "bytes": 5369,
+      "sha256": "da8e874710db98684e0a1089e580c643b3fbecec256289b77c05b484523dfe1b"
+    },
+    {
+      "path": "windows/OfficialViewing.cs",
+      "bytes": 1538,
+      "sha256": "ba52f942f25ab447df32695a5b1ed88f0c8edb258d6a007d24d06e3ee19cee08"
+    },
+    {
+      "path": "windows/Personalization.cs",
+      "bytes": 8772,
+      "sha256": "35f3e4c4080afeaaa31dd9ee7747e1798bffe59dd5d47f4a49d121a3e1bc6202"
+    },
+    {
+      "path": "windows/PersonalizationTests.cs",
+      "bytes": 11888,
+      "sha256": "e7a13109c5386867e881d7f2d686ef3f065282647d4e72453310acb5683e9ec4"
+    },
+    {
+      "path": "windows/PlaybackProgress.cs",
+      "bytes": 3132,
+      "sha256": "5079a04f065c3253cafe2299d91f1a8cb6bd6846467fd2c063abc22586ab4349"
+    },
+    {
+      "path": "windows/PlaybackProgressTests.cs",
+      "bytes": 8051,
+      "sha256": "4cde0a54f6beceddad650c30046b402d5c322e5517280bc513f0c0d574a29646"
+    },
+    {
+      "path": "windows/PlayerEngineTests.cs",
+      "bytes": 15335,
+      "sha256": "e97472135ee795120ecc5c482f664c74d1ab6aa11ff75a9880b3ef82d34131a8"
+    },
+    {
+      "path": "windows/PlayerStartup.cs",
+      "bytes": 868,
+      "sha256": "bb4ef0ebcde571ebad55b0b875d04bb5bb4f47b9df59ddacbcd7f34691a7794c"
+    },
+    {
+      "path": "windows/PlaylistRecommendations.cs",
+      "bytes": 1443,
+      "sha256": "4425ec1d0410df51cc29ca0ab5c4230664b5bc7e3f2ff3a2f8303b3fb2c29240"
+    },
+    {
+      "path": "windows/PlaylistRepository.cs",
+      "bytes": 12923,
+      "sha256": "38c53afd82926809940bab7724c655368bb075111c9e8a44170064423a51b125"
+    },
+    {
+      "path": "windows/PlaylistsForm.cs",
+      "bytes": 11025,
+      "sha256": "2682a97007b13913ee880d8bb5ce1593ba6fb39949bd69f75c10e44517737c2f"
+    },
+    {
+      "path": "windows/PlaylistTests.cs",
+      "bytes": 16496,
+      "sha256": "f4d52e65174d878ea43c22e6beea80ce01b8f78583330c3f4f26d08f1178f755"
+    },
+    {
+      "path": "windows/PlaylistUiTests.cs",
+      "bytes": 1791,
+      "sha256": "d1b5644567e484468c55c3d98e8f7224ba7a243ba8e860ee50c79e60836982d5"
+    },
+    {
+      "path": "windows/PortalAddress.cs",
+      "bytes": 2692,
+      "sha256": "bc2e3b372cfdca3a320e8464742bcb6670450d48fb7ed9803d1698f88eec8856"
+    },
+    {
+      "path": "windows/PortalCatalogTests.cs",
+      "bytes": 15383,
+      "sha256": "1dee893a436ed63d6ff5d312d48a5a46525b6797e2a104950bc95b3a4c694908"
+    },
+    {
+      "path": "windows/PortalChannelReader.cs",
+      "bytes": 12948,
+      "sha256": "931d362e2c27d35583400dd0eb06469d4130b57cfa4fcac723f44fc753f3d69b"
+    },
+    {
+      "path": "windows/PortalProtocol.cs",
+      "bytes": 5299,
+      "sha256": "842ebf4b89a5b63e9ad0afd3efaa4117d18161470563d1c98a7a6c81ee3b4363"
+    },
+    {
+      "path": "windows/PortalProtocolTests.cs",
+      "bytes": 21672,
+      "sha256": "861d39d137a3b2d6f8b5cd6598b2729c0f03faa256dc93f538a96ca20a2975fb"
+    },
+    {
+      "path": "windows/PortalStatusUiTests.cs",
+      "bytes": 6059,
+      "sha256": "d1ef6c6380272c5c988bc09adb4d1aeb572caaf14001093cba58d3366ca2141f"
+    },
+    {
+      "path": "windows/PRIVATE_SOURCES.md",
+      "bytes": 14846,
+      "sha256": "cc238fd931f3d9c557533aaf10da973d0926f1908bd2f3d5ae3966da4afaa3dc"
+    },
+    {
+      "path": "windows/PrivateData.cs",
+      "bytes": 6259,
+      "sha256": "e39f3f1981c132502113ea5d86254378934886ec8decf3c5250f4467403c7675"
+    },
+    {
+      "path": "windows/PrivateEpgTests.cs",
+      "bytes": 15541,
+      "sha256": "6082da4e161a0df706b2d8f425d3ceb583bc6dc56f892b38195b97c96e87c829"
+    },
+    {
+      "path": "windows/PrivateProviderClients.cs",
+      "bytes": 31737,
+      "sha256": "61d868099033d394ae88c09ae2ed7b49ce28a9722dbf59cbb59408a0e14a1610"
+    },
+    {
+      "path": "windows/PrivateProviderPlayerTests.cs",
+      "bytes": 18228,
+      "sha256": "089534c32431f6937fa18a9022f806ac64e9df0e59277b33dd5418738b978e52"
+    },
+    {
+      "path": "windows/PrivateProviderTests.cs",
+      "bytes": 29479,
+      "sha256": "3f91f87a3964726eb01d856172434ab2e7a43c07dd8d07afb3039c543d8c81c5"
+    },
+    {
+      "path": "windows/PrivateSourcesForm.cs",
+      "bytes": 6054,
+      "sha256": "1b59c7931fa077bb289f5f2eff0648359b01df664b4f3e4d8847a3643a1a28bf"
+    },
+    {
+      "path": "windows/PrivateSourceStore.cs",
+      "bytes": 13546,
+      "sha256": "bcf83fb81803a397a852eecb794730dea17bcf12b592d528e90945b8e0f6b728"
+    },
+    {
+      "path": "windows/PrivateSourcesUiTests.cs",
+      "bytes": 6370,
+      "sha256": "7c88627157915764032a2d90f9b6c3260a48927ec5da729d991aad1dd0a4b35d"
+    },
+    {
+      "path": "windows/ProfileForm.cs",
+      "bytes": 15129,
+      "sha256": "06bdda441624554f100cdf204da16420b41cba557001660384c989009a73cdbd"
+    },
+    {
+      "path": "windows/Program.cs",
+      "bytes": 10804,
+      "sha256": "befea58ad05eb5e85e93c9d2e3a8f7f1c6741a06169909089563cd1dca8b0420"
+    },
+    {
+      "path": "windows/ProviderFailures.cs",
+      "bytes": 3208,
+      "sha256": "99facd3f3b5c2b668ba3758f357df4bbc60c11972b868e0005198b06e3bfd2f8"
+    },
+    {
+      "path": "windows/ProviderFailureTests.cs",
+      "bytes": 18699,
+      "sha256": "cdffd38a54691b540a84e99ae807f3b8e652d59083c4c4025fe16ac9bd85e932"
+    },
+    {
+      "path": "windows/ProviderModules.cs",
+      "bytes": 21966,
+      "sha256": "1bc37270443865d0fee164e3c8b880ecf5b8d7bff8f65a8ae48378d5aab5606a"
+    },
+    {
+      "path": "windows/ProviderModulesUiTests.cs",
+      "bytes": 10706,
+      "sha256": "e7a20a1374bcc5d1b7cc1150551d0abe629d8310512fa4e7860238b021f80507"
+    },
+    {
+      "path": "windows/PublicPlaylistDiscoveryTests.cs",
+      "bytes": 8725,
+      "sha256": "02fff0e97fd2f0d523128073d60d9999da2c4af93f54df6790ae71bfdfd88682"
+    },
+    {
+      "path": "windows/PublicPlaylistPrivacy.cs",
+      "bytes": 3474,
+      "sha256": "5e2878ca268048bece2963cad0c521f907b3f2f686afcc665a00f00e95f1fc00"
+    },
+    {
+      "path": "windows/PublicProviderHandoffTests.cs",
+      "bytes": 5452,
+      "sha256": "775008f906b14e7c3cc3da845e01b55e22f02f784d41c51be4c5cdb336221531"
+    },
+    {
+      "path": "windows/README.md",
+      "bytes": 2992,
+      "sha256": "0ea145686b50df9fff1227ed26b7fe582f658f03e61924bd20635a157a7ff671"
+    },
+    {
+      "path": "windows/SearchExpansion.cs",
+      "bytes": 3870,
+      "sha256": "2c56a4c5ef5c2028db7c9acae7282a20c8728909dd599e5df6340b6a30481e8b"
+    },
+    {
+      "path": "windows/SearchLearning.cs",
+      "bytes": 7893,
+      "sha256": "831895a80fcc05a2cc6c1dedbb30b8c9238ec8f4790a95f1c3b76b56fbca7773"
+    },
+    {
+      "path": "windows/SearchLearningTests.cs",
+      "bytes": 10878,
+      "sha256": "778caead3ac103b1db0d064d8854f584abffc4312b62eb50c17d2baa56613b07"
+    },
+    {
+      "path": "windows/SelfTests.cs",
+      "bytes": 9863,
+      "sha256": "498cd1f3499af5171f1bea22f5b3aeb954fd85f59bb754c63ba6934594e0b062"
+    },
+    {
+      "path": "windows/SharedPlaylists.cs",
+      "bytes": 10338,
+      "sha256": "fb5a63957eaedfbb0743afb3452b9a63807d241a46b4313d5d52d27453b4b750"
+    },
+    {
+      "path": "windows/SmartImportForm.cs",
+      "bytes": 7962,
+      "sha256": "3292b6a61f57d7ed036ea652092663c376bbc2d104cfb8afad86275e4c4a7b05"
+    },
+    {
+      "path": "windows/SmartImportUiTests.cs",
+      "bytes": 10706,
+      "sha256": "f46e74da7b19b214e7d9a61cc7af937f15744f5d1307c1bd05cb3ded7308862f"
+    },
+    {
+      "path": "windows/SourceExplorer.cs",
+      "bytes": 24494,
+      "sha256": "30c22fc51ea85fc8914ba9d378373ab2b0d32ee47ac461fef111a586deeb4eb3"
+    },
+    {
+      "path": "windows/SourceExplorerForm.cs",
+      "bytes": 11267,
+      "sha256": "472f126a270d27d0004ec7822578809d56b7f4361010bc171ce74de55ae99649"
+    },
+    {
+      "path": "windows/SourceExplorerTests.cs",
+      "bytes": 23622,
+      "sha256": "aa6bce1f55fe418fda830a7de025f9ea0c2c2d7ff23abaad2d67c4d04f1a099a"
+    },
+    {
+      "path": "windows/SourceExplorerUiTests.cs",
+      "bytes": 8299,
+      "sha256": "dfb97f4da3848c7a331f9786a7445ad14c45f7f5ccb4f85b9555245fe919e82e"
+    },
+    {
+      "path": "windows/StartupDiagnostics.cs",
+      "bytes": 3101,
+      "sha256": "241aafaa7c1f6da1147154a930c2efcddec5f358d91a6220783f3b702c664d7f"
+    },
+    {
+      "path": "windows/StartupGate.cs",
+      "bytes": 7675,
+      "sha256": "4cf83b7cadf52149b4e5c1434b58e0918259de859ade974f8b09eb0b276b8db7"
+    },
+    {
+      "path": "windows/StartupGateTests.cs",
+      "bytes": 10231,
+      "sha256": "992caffab08e99288aba665dddd1ba495b6890450c794eb1c3304465091b5e24"
+    },
+    {
+      "path": "windows/StartupResourceTests.cs",
+      "bytes": 2687,
+      "sha256": "36c0b729f196d004bc860641ecd49506d440e7749d52ebd2c0830bdd4feb16e5"
+    },
+    {
+      "path": "windows/SwirPlayer.cs",
+      "bytes": 19838,
+      "sha256": "a0f2625edafd2e2a015a6d7fc740a48f7e8afab6f70934a30d97ec7352a0d037"
+    },
+    {
+      "path": "windows/SwirStreamAI.csproj",
+      "bytes": 837,
+      "sha256": "df1ce51eff559098690fe44f952f26da659222e7999664e6d1a8debc1278b792"
+    },
+    {
+      "path": "windows/TestMediaServer.cs",
+      "bytes": 2488,
+      "sha256": "9a0e7f2572546b2c5061fb6e1db8c5593854a35467f10ff8a70f23f7fa824ec5"
+    },
+    {
+      "path": "windows/TESTUJ_WINDOWS.cmd",
+      "bytes": 3961,
+      "sha256": "db738f6560f362b8e00e5bd84245501fc52a73fdc52cca434b6c6176af0c5a34"
+    },
+    {
+      "path": "windows/THIRD_PARTY.txt",
+      "bytes": 6126,
+      "sha256": "b72fcdaeee5491e5e0eba6a3606872323820085cae578e0f331b0a38368d0fec"
+    },
+    {
+      "path": "windows/WebDiscovery.cs",
+      "bytes": 26796,
+      "sha256": "fef615a1a21e374abfa5284bf27de609b37038b60f564489cd1c8be22ec6ed5f"
+    },
+    {
+      "path": "windows/WebDiscoveryTests.cs",
+      "bytes": 9196,
+      "sha256": "f01f6498cf84a980f9071fb8b249ec54f84b4e7c68d7862605843d41a668efa2"
+    },
+    {
+      "path": "windows/XtreamLink.cs",
+      "bytes": 8391,
+      "sha256": "1f38f29684d211508f97030cb8a1ec62e6d96f9c5aa8f3b889468ad215529d98"
+    },
+    {
+      "path": "windows/XtreamLinkTests.cs",
+      "bytes": 8990,
+      "sha256": "ee7fc6e91e2a6adcb11a692b470a253aba0f0be5ffb66551b56b4ec367a125d8"
+    },
+    {
+      "path": "windows/ZACZNIJ_TUTAJ.txt",
+      "bytes": 3247,
+      "sha256": "cbf1225f18eb640d792326960ab940146b5e7dd995c2492e448be11f2c1edcb6"
+    },
+    {
+      "path": "android/.gitignore",
+      "bytes": 80,
+      "sha256": "4b3c64846666ff08e8bc2b16fca68957bda9e57c6d45166034c028c459ef5acf"
+    },
+    {
+      "path": "android/app/build.gradle",
+      "bytes": 2136,
+      "sha256": "94691189fe1ad2228849b8caacecf70f438059ee288bc7e694d373b763c7ac78"
+    },
+    {
+      "path": "android/app/src/androidTest/AndroidManifest.xml",
+      "bytes": 102,
+      "sha256": "cba879f740245c76ab09f2664d7ebb3bc37845dce24eba0112cb8441e8bc8744"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/local-test.mp4",
+      "bytes": 2624894,
+      "sha256": "6c533e9ea73e9bc74080b54901fa8a6d2822827dc1805ec147d0b8876f94d145"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/player-audio-only.m4a",
+      "bytes": 54191,
+      "sha256": "ed3b0f57878b563b29247206f83a7a17dc5c01a315a28a560118a9dfb4847b01"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/player-black-av.mp4",
+      "bytes": 61178,
+      "sha256": "cd7f943695f0c09c3d3c1cc9f02fc40941282399d5b41d49c72a118a461c26f2"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/player-short-ended.mp4",
+      "bytes": 4408,
+      "sha256": "2e3ccc2c91043cac8072585c65e79cbe7aa6d7f4f7c921640c61072641c4898c"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/player-stalled-audio.mp4",
+      "bytes": 187059,
+      "sha256": "a02927d7f7b84f3985562262afdaf70fb216dcefbd8125cbe8b8c4c7ebb45508"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/player-stalled-video.mp4",
+      "bytes": 89573,
+      "sha256": "a6aa7ba966a44c62537e265237c43d504545877fc411f676e976ef1ad405cc54"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/player-static-video.mp4",
+      "bytes": 5578,
+      "sha256": "9c2cc4963a3e8a35785ad4ea673f13c5a6351940e8daff17aa469f7ea7276a2d"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/tastenet-parity.json",
+      "bytes": 106230,
+      "sha256": "d0467cfbb9ab368312878f661b67d6fbee33482cbf561438a1563060c82ac727"
+    },
+    {
+      "path": "android/app/src/androidTest/assets/tls/untrusted-self-signed.crt",
+      "bytes": 1216,
+      "sha256": "dfd42a827c6565b32bf00cf95edc09174193863e569d49652d983d6d8a2e35a3"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/CatalogRepositoryTest.java",
+      "bytes": 15235,
+      "sha256": "3eff5803c956537aed2b655603be5e4037c87251f43dd932c2dbee9d2b754f48"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/DeepSearchCrawlerTest.java",
+      "bytes": 8084,
+      "sha256": "a0475afdc8eb3018cba06e00fac029bfc8eae56858c6e9e8c031b87c91e5f711"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/DeepSearchRepositoryTest.java",
+      "bytes": 21596,
+      "sha256": "43c241813600c5792d5f85d28cdd34e66b6438dd89b94e77acc4ef63c76b047d"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/EpgRepositoryTest.java",
+      "bytes": 6010,
+      "sha256": "049defac21b178a2d85f90fab949601635ffea20009f3e3718716e455c922289"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/LegacyTlsInstrumentationTest.java",
+      "bytes": 4543,
+      "sha256": "af75cc777997aa970882ae7c5e00c198f23345b44a7d4350875024131e49beda"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/LiveUiSmokeTest.java",
+      "bytes": 11912,
+      "sha256": "a625f9fc3518c10825fa8c47ff0d18983caf34600c572be25d37d24a3d08ac40"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/LocalSearchUiTest.java",
+      "bytes": 14548,
+      "sha256": "17699e1054e32c53964c19d811cddec19254b86f9d9f216ed02fdc3fa296106a"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/MainUiInstrumentationTest.java",
+      "bytes": 4680,
+      "sha256": "689839cf1437bc7f218651c80184a020e09997b71b4cdba3458dd997df58e4fe"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/NetworkSmokeTest.java",
+      "bytes": 10183,
+      "sha256": "8383a9fc6012d32c79cdb96f47f1dd2e778a4467af6ceff0cfcb528570437eb5"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PersonalAiInstrumentedTest.java",
+      "bytes": 12164,
+      "sha256": "4d51f38f749cf8708b9e2e2e1836db69a2f3624a78c8638792e1bfcfe9f99d57"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PlaybackEvidenceInstrumentationTest.java",
+      "bytes": 17193,
+      "sha256": "7dbfd162aa4495e0d3d82dc6a46c63dca8f1a29190606791332919c2ed6cf836"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PlayerInstrumentationTest.java",
+      "bytes": 9831,
+      "sha256": "9ebf0f942f6cca240ba095a64e9b8a8fd6f7dce0194c25a38ff7fde4592ab187"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PlayerTestActivity.java",
+      "bytes": 650,
+      "sha256": "f9bceb8de43b378437ce5650e74565114b51e1f6289de3fb5c86f9b424feeedf"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PortalChannelReaderTest.java",
+      "bytes": 13090,
+      "sha256": "3dd813abe59f161b0eb3076bdfd56bbd1c7d00485ba5a9b0dc42f1f86dc7ed1f"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PortalDirectRepositoryTest.java",
+      "bytes": 9555,
+      "sha256": "763ebef5bcdc36781789bfb4b9e36dd60ddbd4d31c687dc820b6e9d2d54a859b"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/ProviderIntegrationTest.java",
+      "bytes": 12073,
+      "sha256": "463e571b607d8fa68b3cff2f3a19b7dd0b7d529f87b20d7291c4bb8f1ae00f90"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/ProviderNetworkTest.java",
+      "bytes": 6157,
+      "sha256": "a705ad0415cf7ec5679ba0c5778935fb32bb27147803551d847991f2695298ca"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/ProviderPlaybackTest.java",
+      "bytes": 8045,
+      "sha256": "746864aba9e7449365742b926c5eaba8c564c92dac1bbd0078d5299bf4463cce"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/ProviderRepositoryTest.java",
+      "bytes": 32119,
+      "sha256": "3c531a1f692d88ce10065d2c10b92d4996a21cd8cd1aacd4e76667c3d546d074"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/ProviderSectionsTest.java",
+      "bytes": 14949,
+      "sha256": "56c18215a36ff3f58ca7beccb07273ed03cb35f1260be189cbf8286852a9210d"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/ProviderSmartImportTest.java",
+      "bytes": 12207,
+      "sha256": "eb7291bceae767b6cb46ca97400243a841030fcb3ed07a7bc84d4350e50b59c9"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/ProviderUiTest.java",
+      "bytes": 4734,
+      "sha256": "66b6a617f472277cb478d366baed2ceced180edc6598b5d51b2b92e3029cacab"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PublicPlaylistDiscoveryTest.java",
+      "bytes": 9492,
+      "sha256": "55cd22ea603fa26c5ddc676642c6ba4c774268595a6761e527c81db62480fb19"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PublicPlaylistLiveAuditTest.java",
+      "bytes": 3045,
+      "sha256": "a2008b071947e5e346808c266cb6167c615d1c80bfcbc450c18027cb79d34fad"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/SourceExplorerNetworkTest.java",
+      "bytes": 6921,
+      "sha256": "6329dc6a4b70ae4d07a90cf4acd9218dae84ba7edc93deb29e020f70ffe1c660"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/SourceExplorerTest.java",
+      "bytes": 13049,
+      "sha256": "44127c76bc9c7fcede3b803a9903d6daf047df334953783775bcfce01837c74f"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/SourceExplorerUiTest.java",
+      "bytes": 9442,
+      "sha256": "4e2717edfb4cf7431e453ad1319d4e7e39ab3d2877742f72f06f99996b9528ae"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/UiTestData.java",
+      "bytes": 2907,
+      "sha256": "43a6e93459f36230bf005af58928863cb50c1c4368242d47c0679d893b6701da"
+    },
+    {
+      "path": "android/app/src/main/AndroidManifest.xml",
+      "bytes": 1357,
+      "sha256": "48f71d05c8f223af836af20ee1c1d5e3faea00722d95759c522d2634a4b04912"
+    },
+    {
+      "path": "android/app/src/main/assets/countries.json",
+      "bytes": 19099,
+      "sha256": "4946516cd97fba9f0b573270fd7f54cbb1ad0dfa678de9afff64ff41c3f73f32"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/APACHE-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/DESUGAR-ADDITIONAL_LICENSE_INFO",
+      "bytes": 2114,
+      "sha256": "a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/DESUGAR-ASSEMBLY_EXCEPTION",
+      "bytes": 1522,
+      "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/DESUGAR-DEPENDENCIES_JDK11.txt",
+      "bytes": 124,
+      "sha256": "3c16222f316a4e6bbb4298a79524cb2e0425a18a021c61d62eb3b162faddb1c3"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/DESUGAR-GPL-2.0-WITH-CLASSPATH.txt",
+      "bytes": 19274,
+      "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/DESUGAR-README.txt",
+      "bytes": 373,
+      "sha256": "346c7ffdc8b6352c263f02a34ab680f18eec4e909fae2d19de97313aed8b3ced"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/DESUGAR-VERSION_JDK11.txt",
+      "bytes": 59,
+      "sha256": "b7a8eda0fbec0ddb0559f399347247da67dc8d36424c946e355b758813563cfc"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/GUAVA-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/ISRG-Root-X1-NOTICE.txt",
+      "bytes": 827,
+      "sha256": "2aa54b54da79d7759d9bc81dfa573f13a3366d895f9955a2e4e8221a22ee1c27"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/KOTLIN-1.9.10-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/KOTLIN-1.9.10-NOTICE.txt",
+      "bytes": 482,
+      "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/KOTLIN-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/KOTLIN-NOTICE.txt",
+      "bytes": 482,
+      "sha256": "0b09a83d3ef7795c7dec65e815866597c066c53898f2852a76599b8f5552941a"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/LICENSE_APP_MIT.txt",
+      "bytes": 1080,
+      "sha256": "e122ff6c761184488d7c7ce647ea946d1859c0da987b5b66e1c9f85cbdb7e915"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/OKHTTP-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/OKIO-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/app/src/main/assets/licenses/UNICODE-3.0.txt",
+      "bytes": 2033,
+      "sha256": "220ba0e1c43b99530d2d5bdb892a99dca0989414f51ab695ecd90163eaa1ec3b"
+    },
+    {
+      "path": "android/app/src/main/assets/model/taste-evaluation.json",
+      "bytes": 1516,
+      "sha256": "1f74f9be54485c85cb54eea01ae7aa00e63fc8b59bae410907e4d648659140dc"
+    },
+    {
+      "path": "android/app/src/main/assets/model/taste-training.json",
+      "bytes": 6403,
+      "sha256": "1b06c96c2ae49a21c2966394c4732581d15da70dc9ac2688c5b0b3b4896b28eb"
+    },
+    {
+      "path": "android/app/src/main/assets/model/tastenet.json",
+      "bytes": 1379871,
+      "sha256": "c391f83f06cf8d75be36c17ee3a41b79f8eca5563a7be4525c57d04a5ca6df65"
+    },
+    {
+      "path": "android/app/src/main/assets/THIRD_PARTY_ANDROID.md",
+      "bytes": 9259,
+      "sha256": "5b6239673ff4bfbe6a91b142f5ef1a1b1ced5af6f16fa630aa86cb8560697953"
+    },
+    {
+      "path": "android/app/src/main/assets/tls/isrg-root-x1.crt",
+      "bytes": 1939,
+      "sha256": "22b557a27055b33606b6559f37703928d3e4ad79f110b407d04986e1843543d1"
+    },
+    {
+      "path": "android/app/src/main/assets/tls/PROVENANCE.txt",
+      "bytes": 1784,
+      "sha256": "c0fee65c3a192086d3a2bbd6795b7d1f7e779cc675d3e49bd773b69fc325d4aa"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/CatalogRepository.java",
+      "bytes": 39261,
+      "sha256": "052e3e9c8267255a611a8f61a6cdb526383c3c381ca26ae5c223bcbc6f976f83"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/DeepSearchPlan.java",
+      "bytes": 3312,
+      "sha256": "aee5ca87c64fce3cfb57d137597aadb6dc8b2709ae1556ce454343b7a9f574d0"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/EpgRepository.java",
+      "bytes": 20695,
+      "sha256": "88ae9d56090c03f0b0ed13d703a61b9169d3aed64aa1db00a9819fa08f5deaef"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/LegacyTls.java",
+      "bytes": 5014,
+      "sha256": "41d299d6225d12153b1fd3b6559eb466e39833fb15610606d5b964acee9a80d3"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/LocalChannelSearch.java",
+      "bytes": 6880,
+      "sha256": "123953f3806b9451e77502783cf93e41213715bdad09c89a6041b43879eb4502"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/M3u.java",
+      "bytes": 8996,
+      "sha256": "2ef12fbb038e26a2701bf9b5ef286663bebeda0fdbceb6d672f67338952f42c2"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/MainActivity.java",
+      "bytes": 69407,
+      "sha256": "eefcddd85c76b35eafdacc387b10d8e59338beae2a246908a247e0caf2cd0ffd"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PersonalAi.java",
+      "bytes": 12519,
+      "sha256": "051b2bd5c04d5ce6ea2cb733e493eb1998ab8c6c14cfe72bed1d43da2244a453"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PlaybackEvidence.java",
+      "bytes": 1811,
+      "sha256": "b1e474a378bd246815d8d1267c18e49e5b6e0d8f9c504ca1ca2125a621f1b774"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PlaylistSuggestions.java",
+      "bytes": 1919,
+      "sha256": "d8b6c3e9e0c6fee01f15b180c8a3d1a6a14a2e999c67eec0421af67279d3e8e3"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PortalChannelReader.java",
+      "bytes": 11120,
+      "sha256": "afa4ad5d22a57f6fb58c22a64c7a80c5a93835036c04a5388dc9ea7e2aaa7bbb"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PortalDiscovery.java",
+      "bytes": 7250,
+      "sha256": "7868cde7bfee7cf393a2acf793f71cbd453ed4cc3269e08cedff933c709fe2ef"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PortalJson.java",
+      "bytes": 2473,
+      "sha256": "7898bd0d0fc7a31db20c65e98b7240bab4008ccf1c8f69db438390c5db291a28"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/ProfileStore.java",
+      "bytes": 10807,
+      "sha256": "6d7045aee10e93bdc71b42d9a7ffb1396999b45c8739e11822220cef801a3182"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/ProviderAdapters.java",
+      "bytes": 18196,
+      "sha256": "2b45dba317f7b41c11471a0904c7c56d1bc7dfb5acaf0ea0734aa150f46737dd"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/ProviderDataSource.java",
+      "bytes": 14265,
+      "sha256": "413914b02ecfb92320c4324a6574d59f558d8763c6084c73d416304712fdb65f"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/ProviderHttp.java",
+      "bytes": 12663,
+      "sha256": "d609ad6e51719da13c39b9eb5f57d7537a534bc009dd1dd4009727642a60324b"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/ProviderManagerDialog.java",
+      "bytes": 23774,
+      "sha256": "8cab247d3cd05a869cfd2d8b061f292090cd54f91bcfd51e3db8e97f0dfcba36"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/ProviderRepository.java",
+      "bytes": 28609,
+      "sha256": "60a5e0659fa03b4f3eef8e01dd26847ae6872eb68beafcdd3c270448c1cbe9d1"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/ProviderVault.java",
+      "bytes": 5597,
+      "sha256": "686d63f46945875bffd8194cd0b04f01ecda157e30cc506ff5b940c6642feb65"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PublicHttp.java",
+      "bytes": 7453,
+      "sha256": "f5372acc2d6ddba64049f117a96f435d8dabbbfad035f709864e4b3e1011cdfb"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceCandidate.java",
+      "bytes": 2381,
+      "sha256": "833a5fe71c996a221e783f437c617534f050605b0ec52eadac3ccbc3f6de7698"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceExplorer.java",
+      "bytes": 15512,
+      "sha256": "d17e48d1099b3feaab92a2344221fa47505e316fd06f243d2ca1a057aa38c392"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceExplorerDialog.java",
+      "bytes": 12063,
+      "sha256": "8d3bff4f7c2d9b0180432d608bfd5c9f9168e107419ca18321e0da495dd954f0"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceExplorerHttp.java",
+      "bytes": 4600,
+      "sha256": "d8bf502ca95b56ba8d14773956fc348a42c67e043888ef2453ec1c6127cdf5b3"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceExplorerRules.java",
+      "bytes": 9441,
+      "sha256": "6395e186383f6b13cc1d049e3e4d1192bf0e30b7beb5526ad0371065bf49170a"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceExplorerStore.java",
+      "bytes": 4237,
+      "sha256": "b3f4008790fa230d3f56fe50ab26bc7dd1ffa00d48a70f1075f53f5787e08915"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceLinkParser.java",
+      "bytes": 10179,
+      "sha256": "b249d62ea2f512131a690de2d06f3ff458db0c0efe668f03b8e60638cf4835fe"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourcePrivacy.java",
+      "bytes": 3754,
+      "sha256": "3664c50f2691016c5e87d91aebc797f79c5b19414943e45bb7585bab694d8fc9"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SourceProbe.java",
+      "bytes": 2163,
+      "sha256": "80f042a4a5241b51a055f727bea45b0ceb2444040fad94e181a9f0e2ce07b2c2"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/Station.java",
+      "bytes": 6245,
+      "sha256": "f220a72eeeba4f1c58165981580f5921381f806a72b2306019f620832a496853"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/StreamIndex.java",
+      "bytes": 2800,
+      "sha256": "219f9a6597a5d6c64fa3fdb76b7fb992cc20040e4781b4da83dc99e04a081d0f"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SwirApplication.java",
+      "bytes": 290,
+      "sha256": "1c78b33c839afc193350942b946f82c97980595e83d09db18417be955642da8f"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/SwirPlayer.java",
+      "bytes": 12802,
+      "sha256": "8c8e5718a666f2be838ee924bec26d3b67ab8ff79af835ad551af4139ab202a9"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/TasteNet.java",
+      "bytes": 6451,
+      "sha256": "cfcffd6d983216dcd19af37589521bc75c147eb28f6a131d9732dd13c0dca9f8"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/WebCrawler.java",
+      "bytes": 23689,
+      "sha256": "8435adae88302c2f91830cfa852ce87d392e06634339257cb91cbbc4198b54ce"
+    },
+    {
+      "path": "android/app/src/main/res/drawable/tv_banner.xml",
+      "bytes": 350,
+      "sha256": "f36dc9ce87b5feada15adad90213a4889c36525c68b6ddf4e2347b16a6b7e07c"
+    },
+    {
+      "path": "android/app/src/main/res/mipmap-nodpi/ic_launcher.png",
+      "bytes": 1530858,
+      "sha256": "cbe5f9bc8bb9874fed05d8049c9740480777374468d76d8f2233b7fbce42ce21"
+    },
+    {
+      "path": "android/app/src/main/res/values/base_styles.xml",
+      "bytes": 470,
+      "sha256": "d710ad83fc7c08c51fb4651799bf9908fcd441c4d63ccb3a383f8832c6f8bad3"
+    },
+    {
+      "path": "android/app/src/main/res/xml/data_extraction_rules.xml",
+      "bytes": 550,
+      "sha256": "797cadb967affaf18fbb3ab1f802fcde16025c64ae328dd89900994583a93d92"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/LocalChannelSearchTest.java",
+      "bytes": 8451,
+      "sha256": "4bb6826ba1d909bdad7288172bb0814a87c213fbd8169bb1a724a55a9da08df4"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/M3uStationTest.java",
+      "bytes": 4574,
+      "sha256": "db7c5a0be450e8a3168a38aff43f856b299bf19b497fa5c92a13db17b5588798"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/PlaybackEvidenceTest.java",
+      "bytes": 3530,
+      "sha256": "4ca63e0ca558f5ebb133fd94c880c7d45e43f8311ed517da96c040d91eea8446"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/PlaylistSuggestionsTest.java",
+      "bytes": 2836,
+      "sha256": "1bed3d106e17a12d36ff1cade1c4cd6b1b57599a0d93d7fce43e2da0771a8908"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/PortalDiscoveryTest.java",
+      "bytes": 14070,
+      "sha256": "1621008c2d530449d44ae1ed927190b27d3bfb8869e4113be458d118935de3db"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/PortalProfileTest.java",
+      "bytes": 3689,
+      "sha256": "d68a2a0c04d88e8063cfc79d4b9bc3d956bb331fe9c6d78eabc506c5855bbafe"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/ProviderDataSourceTest.java",
+      "bytes": 9946,
+      "sha256": "0a22760cedeca4e8baf90015e2e9ce0b5e6483cfda5cc26c54e79e6f82039173"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/SourceExplorerRulesTest.java",
+      "bytes": 7730,
+      "sha256": "636ade97bca672ed0b767bb01a0cd20ca66122244de5052805723e4a063c4ba7"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/SourceLinkParserTest.java",
+      "bytes": 6233,
+      "sha256": "dd2cb6993e954ed5481f174e2a1c1d5eb44ef9980c53c8e07d637451dabc81e0"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/SourcePrivacyTest.java",
+      "bytes": 814,
+      "sha256": "f022a0a6adc21a9671f1237e43f594a8c390044dd5b3639890ef3fa85757bf59"
+    },
+    {
+      "path": "android/build.gradle",
+      "bytes": 69,
+      "sha256": "6964d0674d0f854e47d6afa6dbf426d1662b355dd264a7c42133c09ffaca41a7"
+    },
+    {
+      "path": "android/build.ps1",
+      "bytes": 953,
+      "sha256": "1288e17950553b6aabcb90455718f34e3488d5b302617e1e30882ea248fdddee"
+    },
+    {
+      "path": "android/CONTRACT.md",
+      "bytes": 4389,
+      "sha256": "9d5ddd35cd4096bbb940deac1206c504270c78489212d617cc8bf7f9ebae7ef6"
+    },
+    {
+      "path": "android/docs/BUDOWANIE.md",
+      "bytes": 3239,
+      "sha256": "0b79e356144a931d7fd66ab17736c0a1cfdd078cf4ef4d2335fbf9ef8e226bba"
+    },
+    {
+      "path": "android/docs/dependency-inventory.json",
+      "bytes": 29996,
+      "sha256": "07b3f11c9d2ca48b216b54a9ae894c18c0c22c3fa0655c4b2e2d0a3f990d3730"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.annotation_annotation-experimental_1.3.1.pom",
+      "bytes": 1947,
+      "sha256": "426f94310b47bdf004dc2038daeaa943c5ce4f4b063e86f78bc536e232e3ddfc"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.annotation_annotation-jvm_1.6.0.pom",
+      "bytes": 1931,
+      "sha256": "2be665ba7cdb046b41b409c79a3de0c6d9e1255242c087f6b94b2c7493be08f4"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.annotation_annotation_1.6.0.pom",
+      "bytes": 1927,
+      "sha256": "dd882b4c1945ad13121ecdf651eba664a9b226b55db84fa755392de5e10d1e5b"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.arch.core_core-common_2.1.0.pom",
+      "bytes": 1315,
+      "sha256": "83bbb3960eaabc600ac366c94cb59414e441532a1d6aa9388b0b8bfface5cf01"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.arch.core_core-runtime_2.1.0.pom",
+      "bytes": 1531,
+      "sha256": "c0c4ed0160cd2ca18390015de8b392b697c173327c6b2c0947d4e62f6958c05d"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.collection_collection_1.0.0.pom",
+      "bytes": 1497,
+      "sha256": "a7913a5275ad68e555d2612ebe8c14c367b153e14ca48a1872a64899020e54ef"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.concurrent_concurrent-futures_1.2.0.pom",
+      "bytes": 2265,
+      "sha256": "6be9a98d6cd75a787eeae2a1a0a3440ebe1ab4639740df9ec028094ab59b622f"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.core_core-ktx_1.5.0.pom",
+      "bytes": 2121,
+      "sha256": "04d3d961fc2be241f37a7ba17a130a60d7a33b04019916047b2f53cfb58b2911"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.core_core_1.7.0.pom",
+      "bytes": 3001,
+      "sha256": "6c4e7ff09a769cf49ec56705c02ca5caaa25fb2b035e2a3135f1d9787c61702c"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.customview_customview-poolingcontainer_1.0.0.pom",
+      "bytes": 2068,
+      "sha256": "9fa62196c4c4e79b6a58dbb38a8c022bef8db21989d7dae2da0f6f5b66289a9c"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.customview_customview_1.0.0.pom",
+      "bytes": 1795,
+      "sha256": "ce9e47b87184f5bd5e139e9becd5b26476d42d78c31bf2fdedc37acb41b9ad49"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.exifinterface_exifinterface_1.3.6.pom",
+      "bytes": 1763,
+      "sha256": "59cfe5bd98506c27617b778143eb09a6b986a5417a0b1b0fd8b875eaa8db4bab"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.lifecycle_lifecycle-common_2.3.1.pom",
+      "bytes": 1719,
+      "sha256": "8cd23d889a14095c6ce16840d29b1a6388fa5e115144c1309d4d6d469c1bc351"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.lifecycle_lifecycle-runtime_2.3.1.pom",
+      "bytes": 2326,
+      "sha256": "b4442a84fc397edb2e908a1fdf713c6ae7d3a87641a09ee13d10ec8ee10b331f"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-common_1.11.1.pom",
+      "bytes": 9848,
+      "sha256": "146d4b5763b1393f6ce63075fe6e4a6b20a25bd88642081337d5e1d0856d18ce"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-container_1.11.1.pom",
+      "bytes": 1725,
+      "sha256": "1ef9ab1218b7c78ed5cf79455c8dc082e5c1277495ee36a3bcd5fb5e00164447"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-database_1.11.1.pom",
+      "bytes": 1723,
+      "sha256": "1b7e2419d3f839764d3646a1d8552092c1e7e58b8e75371502cee9055841a3c9"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-datasource-okhttp_1.11.1.pom",
+      "bytes": 2317,
+      "sha256": "f2fc4a067b4245885f366b3bd8d8f6e688121169986dba5b78a76d8f1ae5cafe"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-datasource_1.11.1.pom",
+      "bytes": 2145,
+      "sha256": "947de388b37b2c3209bee98f3af6b5ba900485c1f8ca5cb25869dd11b6fedca9"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-decoder_1.11.1.pom",
+      "bytes": 1721,
+      "sha256": "a0e4e32378b098da0399303e787d6b05ab3e928a38364ed54cbf6873516eb81f"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-exoplayer-dash_1.11.1.pom",
+      "bytes": 1738,
+      "sha256": "cd8f1229a23c95dd1389dd8c0a73109e51d979abccb22055f5bb60fc3fa05e2b"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-exoplayer-hls_1.11.1.pom",
+      "bytes": 1926,
+      "sha256": "b6f009ec8863fe6f6cbd70d80f331bb7737f13c1fa610fd4b385f9971c7d8b2b"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-exoplayer_1.11.1.pom",
+      "bytes": 2974,
+      "sha256": "f540fd426f3ed2cf58792fad094052876817d764f88b2a072e530105dfe9d797"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-extractor_1.11.1.pom",
+      "bytes": 2139,
+      "sha256": "c8d99e648dbcb0197c6d85bd2dd10014fc8d2dd1ea2ea3e1fd51507bdfc0f500"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.media3_media3-ui_1.11.1.pom",
+      "bytes": 2107,
+      "sha256": "d8b304aa239e0d09ab8bc841e1eb37e4d26a28bf87cfed99279376e8eb20da30"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.recyclerview_recyclerview_1.3.0.pom",
+      "bytes": 2560,
+      "sha256": "234b2814e75a6aa947e1d0718b2a70dd1d3ab8a0c4b0ccecbb395df8468ed173"
+    },
+    {
+      "path": "android/docs/dependency-poms/androidx.versionedparcelable_versionedparcelable_1.1.1.pom",
+      "bytes": 1643,
+      "sha256": "5f51e65873ca612de3838fa90d2ee95b8d040efd31b9c390a19bf94d615cdb2f"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.android.tools_desugar_jdk_libs_2.1.5.pom",
+      "bytes": 1257,
+      "sha256": "2e195880f15d4545c8d60b2d2cac52201ccf98db7a29db2577ad5826a930fcca"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.google.guava_failureaccess_1.0.2.pom",
+      "bytes": 3339,
+      "sha256": "19ebc6f4bdb4edbb3d07b6ee994f846b54ef295582a9b5634719ffa9f31d03b2"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.google.guava_guava-parent_26.0-android.pom",
+      "bytes": 10180,
+      "sha256": "f8698ab46ca996ce889c1afc8ca4f25eb8ac6b034dc898d4583742360016cc04"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.google.guava_guava-parent_33.3.1-android.pom",
+      "bytes": 20632,
+      "sha256": "6e11986ea7250b51f847157e2dc937f32a306804dfce0007a5e81ddb9b95c579"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.google.guava_guava_33.3.1-android.pom",
+      "bytes": 9321,
+      "sha256": "c728db6f2705ca3ea6a3cf2cf1260dbeff3a4524249a1b1b900edcfe9d72142f"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.google.guava_listenablefuture_9999.0-empty-to-avoid-conflict-with-guava.pom",
+      "bytes": 2278,
+      "sha256": "18d4b1db26153d4e55079ce1f76bb1fe05cdb862ef9954a88cbcc4ff38b8679b"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.squareup.okhttp3_okhttp_4.12.0.pom",
+      "bytes": 1816,
+      "sha256": "7c737040a9419522e7c50cc027416a70fe7c7629e52b219935ade6b4119c7d38"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.squareup.okio_okio-jvm_3.6.0.pom",
+      "bytes": 1897,
+      "sha256": "61b4d7c515a0894ffad925fd7052620c1425a86433fd35113b5fab0de890a57f"
+    },
+    {
+      "path": "android/docs/dependency-poms/com.squareup.okio_okio_3.6.0.pom",
+      "bytes": 1685,
+      "sha256": "aeb3b70a24c103ed0c54541f35f5c511d27ce60cae376a596d7d653697f8cc95"
+    },
+    {
+      "path": "android/docs/dependency-poms/org.jetbrains.kotlin_kotlin-stdlib-common_2.2.10.pom",
+      "bytes": 1842,
+      "sha256": "e199b04f736f0c7334ed5deb737899233442b36238a59310790b216b6934c067"
+    },
+    {
+      "path": "android/docs/dependency-poms/org.jetbrains.kotlin_kotlin-stdlib-jdk7_1.9.10.pom",
+      "bytes": 1389,
+      "sha256": "c7fa67c7961320b89d85a3ca59a2e18c2c65850845595dcae4b46af6945edcd5"
+    },
+    {
+      "path": "android/docs/dependency-poms/org.jetbrains.kotlin_kotlin-stdlib-jdk8_1.9.10.pom",
+      "bytes": 1581,
+      "sha256": "5f4b94dd3065a7764c37fa15de2ad6d81f40d59f8cb33f17d181c6384fb7a72e"
+    },
+    {
+      "path": "android/docs/dependency-poms/org.jetbrains.kotlin_kotlin-stdlib_2.2.10.pom",
+      "bytes": 2322,
+      "sha256": "454ba507a3d36b4ac253df6df96f8739bd26ea19df3f332b10b13f2c5715f787"
+    },
+    {
+      "path": "android/docs/dependency-poms/org.jetbrains_annotations_13.0.pom",
+      "bytes": 4930,
+      "sha256": "965aeb2bedff369819bdde1bf7a0b3b89b8247dd69c88b86375d76163bb8c397"
+    },
+    {
+      "path": "android/docs/dependency-source/desugar_jdk_libs-73170c345e6a762fc6a1f0301bb15218850023ef.zip",
+      "bytes": 30020254,
+      "sha256": "cf0b48cb046b6517ed8e2a816c125116a907e13e48e341882ba6f4016a155d9f"
+    },
+    {
+      "path": "android/docs/dependency-source/source-provenance.json",
+      "bytes": 810,
+      "sha256": "fa60a978722cabb2df8036f448b3d792b22a68b100beb55aa6d7c5ebd1c4fb86"
+    },
+    {
+      "path": "android/docs/ICON_PROVENANCE.txt",
+      "bytes": 2484,
+      "sha256": "9810a1f33c90e3b8ca79951fb80a4f1cebda042825e8ed18986797b9c16ba280"
+    },
+    {
+      "path": "android/docs/license-provenance.json",
+      "bytes": 4461,
+      "sha256": "88e3f9d66ceee7f71d634082762900efbbc228b12b7337a5c3de84aa6a78eda7"
+    },
+    {
+      "path": "android/docs/LICENSE_APP_MIT.txt",
+      "bytes": 1080,
+      "sha256": "e122ff6c761184488d7c7ce647ea946d1859c0da987b5b66e1c9f85cbdb7e915"
+    },
+    {
+      "path": "android/docs/licenses/APACHE-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/docs/licenses/DESUGAR-ADDITIONAL_LICENSE_INFO",
+      "bytes": 2114,
+      "sha256": "a69bce275ba7a3570af6579cb0f55682cd75fedfcd49e0e8e9022270c447c916"
+    },
+    {
+      "path": "android/docs/licenses/DESUGAR-ASSEMBLY_EXCEPTION",
+      "bytes": 1522,
+      "sha256": "a44eb7b5caf5534c6ef536b21edb40b4d6babf91bf97d9d45596868618b2c6fb"
+    },
+    {
+      "path": "android/docs/licenses/DESUGAR-DEPENDENCIES_JDK11.txt",
+      "bytes": 124,
+      "sha256": "3c16222f316a4e6bbb4298a79524cb2e0425a18a021c61d62eb3b162faddb1c3"
+    },
+    {
+      "path": "android/docs/licenses/DESUGAR-GPL-2.0-WITH-CLASSPATH.txt",
+      "bytes": 19274,
+      "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+    },
+    {
+      "path": "android/docs/licenses/DESUGAR-README.txt",
+      "bytes": 373,
+      "sha256": "346c7ffdc8b6352c263f02a34ab680f18eec4e909fae2d19de97313aed8b3ced"
+    },
+    {
+      "path": "android/docs/licenses/DESUGAR-VERSION_JDK11.txt",
+      "bytes": 59,
+      "sha256": "b7a8eda0fbec0ddb0559f399347247da67dc8d36424c946e355b758813563cfc"
+    },
+    {
+      "path": "android/docs/licenses/GUAVA-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/docs/licenses/KOTLIN-1.9.10-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/docs/licenses/KOTLIN-1.9.10-NOTICE.txt",
+      "bytes": 482,
+      "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+    },
+    {
+      "path": "android/docs/licenses/KOTLIN-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/docs/licenses/KOTLIN-NOTICE.txt",
+      "bytes": 482,
+      "sha256": "0b09a83d3ef7795c7dec65e815866597c066c53898f2852a76599b8f5552941a"
+    },
+    {
+      "path": "android/docs/licenses/OKHTTP-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/docs/licenses/OKIO-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "android/docs/licenses/UNICODE-3.0.txt",
+      "bytes": 2033,
+      "sha256": "220ba0e1c43b99530d2d5bdb892a99dca0989414f51ab695ecd90163eaa1ec3b"
+    },
+    {
+      "path": "android/docs/MODEL_CARD_ANDROID.md",
+      "bytes": 8079,
+      "sha256": "161e4090f159bd2a90bf51e59011a338693d577ca4e1be33d17295f2a6ba8ab7"
+    },
+    {
+      "path": "android/docs/PLAYBACK_TEST_FIXTURES.txt",
+      "bytes": 868,
+      "sha256": "7bfc10605d39452437428c5d518d2f94201d90c781d0693b1280454e0b697711"
+    },
+    {
+      "path": "android/docs/README_ANDROID.md",
+      "bytes": 21710,
+      "sha256": "11857454c77a3d6b5960e148a2a2dd702d5978c638355250213fc7c9de60c402"
+    },
+    {
+      "path": "android/docs/release-runtime-classpath.txt",
+      "bytes": 8346,
+      "sha256": "f0edfc8fb1603b2dfb39947a289850ab26c370a7f8f28c040aa1a55fc1b8a617"
+    },
+    {
+      "path": "android/docs/START_PL.txt",
+      "bytes": 11003,
+      "sha256": "ddab0b33b4970a52d52ae6f7ce7e4b8bdf702cc94d3547f7406f277abd2f8a85"
+    },
+    {
+      "path": "android/docs/THIRD_PARTY_ANDROID.md",
+      "bytes": 9259,
+      "sha256": "5b6239673ff4bfbe6a91b142f5ef1a1b1ced5af6f16fa630aa86cb8560697953"
+    },
+    {
+      "path": "android/gradle/wrapper/gradle-wrapper.jar",
+      "bytes": 46175,
+      "sha256": "b3a875ddc1f044746e1b1a55f645584505f4a10438c1afea9f15e92a7c42ec13"
+    },
+    {
+      "path": "android/gradle/wrapper/gradle-wrapper.properties",
+      "bytes": 339,
+      "sha256": "1e3d87ddfd70069f68afa0c9ddcaab26913c3baf3d809447b0362d2d49f57325"
+    },
+    {
+      "path": "android/gradle.properties",
+      "bytes": 134,
+      "sha256": "60325d7428a84341e5920ef271e929714ef9c271b77aa3f52e76f347323b6f1c"
+    },
+    {
+      "path": "android/gradlew",
+      "bytes": 8618,
+      "sha256": "fb68debc1b1acf8ec55dc0d5e5495e1dedd0bd6b61f304bee61613eeb2bd9b92"
+    },
+    {
+      "path": "android/gradlew.bat",
+      "bytes": 2896,
+      "sha256": "fedad02c18e266ec094995a5751b7fe1eb6e74f66bf75db64fae2e50eb22c234"
+    },
+    {
+      "path": "android/settings.gradle",
+      "bytes": 278,
+      "sha256": "c8dc0af63e1051a05bccda0e74894a07f5e31fb8304b1ef3036c015ae7d07e9d"
+    },
+    {
+      "path": "android/tools/package_release.py",
+      "bytes": 15227,
+      "sha256": "2b28773d53d451996f992c2f58123c77a76164019d3b05be894498494fb5abe1"
+    }
+  ]
+}

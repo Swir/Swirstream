@@ -1,0 +1,17 @@
+package com.swir.stream;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public final class PlaybackEvidenceTest {
+    private static final long NONE=PlaybackEvidence.UNSET;
+    private void sample(PlaybackEvidence p,long ms,boolean playing,boolean video,boolean audio,long v,long a,boolean keys){p.sample(ms,playing,video,audio,v<0?NONE:v*1000,a<0?NONE:a*1000,keys);}
+    @Test public void selectedAudioMustAdvanceAlongsideVideo(){PlaybackEvidence p=new PlaybackEvidence(false);sample(p,0,true,true,true,0,0,false);sample(p,500,true,true,true,500,0,false);assertFalse(p.ready());sample(p,1000,true,true,true,1000,500,false);assertTrue(p.ready());assertEquals(500,p.watchedMs());}
+    @Test public void videoOnlyHasNoAudioDependencyOrPixelAssumption(){PlaybackEvidence p=new PlaybackEvidence(false);sample(p,0,true,true,false,0,-1,false);sample(p,500,true,true,false,500,-1,false);assertTrue(p.ready());assertEquals(0,p.audioMs());}
+    @Test public void audioOnlyDoesNotRequireVideo(){PlaybackEvidence p=new PlaybackEvidence(false);sample(p,0,true,false,true,-1,0,false);sample(p,500,true,false,true,-1,500,false);assertTrue(p.ready());assertEquals(0,p.videoMs());}
+    @Test public void unknownTracksAndUnsetClocksDoNotConfirm(){PlaybackEvidence p=new PlaybackEvidence(false);sample(p,0,true,false,false,0,0,false);sample(p,2000,true,false,false,2000,2000,false);assertFalse(p.ready());sample(p,2500,true,true,true,-1,-1,false);sample(p,3000,true,true,true,3000,3000,false);assertFalse(p.ready());}
+    @Test public void pauseAndStallCannotAccrueWatch(){PlaybackEvidence p=new PlaybackEvidence(false);sample(p,0,true,true,true,0,0,false);sample(p,500,true,true,true,500,500,false);sample(p,1000,false,true,true,1000,1000,false);sample(p,1500,true,true,true,1500,1000,false);assertEquals(500,p.watchedMs());sample(p,2000,true,true,true,2000,1500,false);assertEquals(1000,p.watchedMs());}
+    @Test public void jumpsAndDelayedCallbacksDoNotCountAsWatch(){PlaybackEvidence p=new PlaybackEvidence(false);sample(p,0,true,true,true,0,0,false);sample(p,500,true,true,true,10000,10000,false);sample(p,4000,true,true,true,10500,10500,false);assertFalse(p.ready());sample(p,4500,true,true,true,100,100,false);assertFalse(p.ready());}
+    @Test public void drmRequiresTwelveSecondsOfSharedPostKeyProgress(){PlaybackEvidence p=new PlaybackEvidence(true);sample(p,0,true,true,true,0,0,false);for(int i=1;i<=30;i++)sample(p,i*500,true,true,true,i*500,i*500,false);assertFalse(p.ready());sample(p,15500,true,true,true,15500,15500,true);for(int i=1;i<24;i++)sample(p,15500+i*500,true,true,true,15500+i*500,15500+i*500,true);assertFalse(p.ready());assertEquals(0,p.watchedMs());sample(p,27500,true,true,true,27500,27500,true);assertTrue(p.ready());assertEquals(12000,p.watchedMs());}
+    @Test public void changedSelectionDiscardsPriorCounters(){PlaybackEvidence p=new PlaybackEvidence(false);sample(p,0,true,true,false,0,-1,false);sample(p,500,true,true,false,500,-1,false);assertTrue(p.ready());sample(p,1000,true,true,true,1000,0,false);assertFalse(p.ready());assertEquals(0,p.watchedMs());sample(p,1500,true,true,true,1500,500,false);assertTrue(p.ready());}
+    @Test public void newSourceHasNoPriorProof(){PlaybackEvidence first=new PlaybackEvidence(false);sample(first,0,true,false,true,-1,0,false);sample(first,500,true,false,true,-1,500,false);assertTrue(first.ready());PlaybackEvidence next=new PlaybackEvidence(true);sample(next,500,true,false,true,-1,500,true);assertFalse(next.ready());assertEquals(0,next.watchedMs());}
+}

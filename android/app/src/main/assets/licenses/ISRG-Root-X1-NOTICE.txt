@@ -1,0 +1,15 @@
+ISRG Root X1 public certification-authority certificate
+
+Issuer: Internet Security Research Group / Let's Encrypt
+Official source: https://letsencrypt.org/certs/isrgrootx1.pem
+Trust policy: https://letsencrypt.org/certificates/
+Legal and relying-party documents: https://letsencrypt.org/repository/
+
+Used only as an additional verified public trust anchor on Android 6-7.1.
+Normal system validation runs first; certificate validation and hostname checks
+remain enabled. No private key is bundled. The public certificate's DER SHA-256:
+96bcec06264976f37460779acf28c5a7cfe8a3c0aae11a8ffcee05c0bddf08c6
+
+The issuer distributes this public X.509 trust material for certificate
+verification. No separate software license is asserted for the certificate.
+Full provenance and maintenance limits: assets/tls/PROVENANCE.txt in the APK.
