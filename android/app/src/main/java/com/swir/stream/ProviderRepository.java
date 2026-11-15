@@ -71,6 +71,18 @@ public final class ProviderRepository {
     public SourceInfo addPortal(String name,String portal,String registeredMac,AtomicBoolean cancel)throws IOException{
         try{return add(name,"portal",new JSONObject().put("url",PortalDiscovery.input(portal)).put("mac",ProviderAdapters.mac(registeredMac)),cancel);}catch(IOException e){throw e;}catch(Exception e){throw failure();}
     }
+    /** Scanner selection is reloaded, then committed under its lifecycle gate. Scanning itself never calls this. */
+    SourceInfo addScannedPortal(String name,String portal,String mac,AtomicBoolean cancel,Object gate,java.util.function.BooleanSupplier active)throws IOException{
+        try{
+            String address=PortalTxt.address(portal),registered=ProviderAdapters.mac(mac);JSONObject previous=null;
+            synchronized(lock){for(String id:vault.ids()){JSONObject source;try{source=read(id);}catch(IOException unreadable){continue;}if("portal".equals(source.optString("type"))){try{JSONObject config=source.getJSONObject("config");if(address.replaceFirst("/+$","").equals(PortalTxt.address(config.optString("url")).replaceFirst("/+$",""))&&registered.equals(ProviderAdapters.mac(config.optString("mac")))){previous=source;break;}}catch(Exception invalid){/* Old invalid sources must not block this selection. */}}}}
+            boolean existing=previous!=null;String revision=existing?previous.optString("revision"):"";
+            if(!existing)previous=new JSONObject().put("schema",1).put("id",UUID.randomUUID().toString().replace("-","")).put("name",label(name,"Portal TXT")).put("type","portal").put("config",new JSONObject().put("url",address).put("mac",registered)).put("revision",UUID.randomUUID().toString());
+            JSONObject refreshed=download(previous,cancel);PublicHttp.checkCancelled(cancel);
+            synchronized(gate){if(!active.getAsBoolean()){cancel.set(true);PublicHttp.checkCancelled(cancel);}synchronized(lock){PublicHttp.checkCancelled(cancel);if(existing){if(!revision.equals(read(previous.getString("id")).optString("revision")))throw new IOException("Źródło zmieniło się podczas pobierania.");}else if(vault.ids().length>=20)throw new IOException("Można zapisać do 20 źródeł w profilu.");vault.write(refreshed.getString("id"),refreshed);}}
+            return info(refreshed);
+        }catch(IOException error){throw error;}catch(Exception error){throw failure();}
+    }
     public SourceInfo addDrm(String name,String streamUrl,String scheme,String licenseUrl,Map<String,String> licenseHeaders,AtomicBoolean cancel)throws IOException{
         if(!"widevine".equalsIgnoreCase(scheme)&&!"clearkey".equalsIgnoreCase(scheme))throw new IOException("Wybierz Widevine lub ClearKey.");
         try{return add(name,"drm",new JSONObject().put("url",ProviderHttp.checkedUri(streamUrl).toString()).put("scheme",scheme.toLowerCase(Locale.ROOT)).put("license",ProviderHttp.checkedUri(licenseUrl).toString()).put("headers",new JSONObject(ProviderHttp.cleanHeaders(licenseHeaders))),cancel);}catch(IOException e){throw e;}catch(Exception e){throw failure();}

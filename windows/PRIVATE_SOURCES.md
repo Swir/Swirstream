@@ -1,4 +1,31 @@
-# Moje źródła — SwirStream AI Windows 0.9.7
+# Moje źródła — SwirStream AI Windows 0.9.8
+
+## Skaner portali TXT w 0.9.8
+
+Wejdź w **MAC Player → Skaner portali TXT**. Zaimportuj TXT, sprawdź podgląd,
+następnie wybierz **Sprawdź listę**. Własne pary `URL|MAC` albo adres i kilka MAC
+w następnych wierszach sprawdzane są przez ten sam klient, co zwykły MAC Player.
+Duplikaty są usuwane. Daty dopisane po MAC są komentarzem, nie dowodem ważności.
+Obsługiwane komentarze: pełne wiersze `#`/`;`, końcówka MAC po ` - ` albo `#`.
+Niepoprawny wiersz przerywa przypisanie kolejnych MAC do wcześniejszego adresu.
+
+Limit wynosi 1 MiB surowych danych i 200 unikalnych pozycji; przekroczenie limitu
+odrzuca cały import. Kodowania: UTF-8, opcjonalnie z BOM, oraz UTF-16 z BOM.
+Skan jest sekwencyjny, do 30 s na pozycję i 10 min łącznie. Przerwanie pozostawia
+wcześniejsze wyniki; pozostałe pozycje są niesprawdzone. Zmiana profilu zamyka skaner.
+
+URL bez MAC sprawdza wyłącznie publiczną stronę na porcie 80/443. Adres API lub
+inny port wymagają własnego MAC w edytorze. Program nie próbuje logowania z takim
+URL i nie zbiera danych kont z internetu. Rozpoznanie klienta Stalker/Ministra
+nie oznacza bezpłatnego dostępu. Publiczny Eksplorator zachowuje źródło znaleziska.
+
+Skan nie zapisuje kont. **Dodaj wybrany** ponownie pobiera katalog i używa
+chronionego magazynu bieżącego profilu (maksymalnie 12 źródeł). Ponowne dodanie
+tej samej pary aktualizuje istniejące źródło. **Odtwórz próbkę** robi to samo,
+a potem przekazuje kanał do głównego playera, gdzie sprawdzany jest rzeczywisty
+obraz i dźwięk. Katalog, limit katalogu i odtwarzanie mają odrębne statusy.
+Raport CSV zawiera numer pozycji, wiersz TXT, status, liczbę kanałów i datę próby;
+nie eksportuje adresów, MAC, tokenów ani odpowiedzi operatora.
 
 
 ## Rozpoznawanie portalu w 0.9.7

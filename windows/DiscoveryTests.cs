@@ -91,7 +91,7 @@ static class DiscoveryTests
             }
         }
         catch (Exception ex) { Check("Unexpected failure", false, ex.ToString()); }
-        File.WriteAllText(report, JsonSerializer.Serialize(new { version = "0.9.7", date = DateTimeOffset.Now, success, checks }, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(report, JsonSerializer.Serialize(new { version = "0.9.8", date = DateTimeOffset.Now, success, checks }, new JsonSerializerOptions { WriteIndented = true }));
         return success ? 0 : 1;
     }
 }

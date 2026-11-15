@@ -1,6 +1,24 @@
-# SwirStream AI 0.9.7 — by Swir
+# SwirStream AI 0.9.8 — by Swir
 
-Ta wersja dodaje brakujący wariant portalu MAC: katalog udostępniany bez sesji
+Nowy **MAC Player → Skaner portali TXT** pozwala wczytać własną listę, obejrzeć
+podgląd i uruchomić sprawdzanie. Wybierz **Importuj TXT → Sprawdź listę**, a potem
+**Dodaj wybrany** lub **Odtwórz próbkę**. Podczas skanowania konta nie są zapisywane.
+Dodanie wybranej pozycji ponownie pobiera katalog i zapisuje ją w chronionym
+magazynie bieżącego profilu. Próbka otwiera się w głównym Swir Playerze.
+
+TXT obsługuje `URL|MAC`, adres i własne MAC w kolejnych wierszach oraz sam URL.
+Limit wynosi 1 MiB i 200 unikalnych wpisów; kodowanie UTF-8 albo UTF-16 z BOM.
+Podgląd pokazuje liczbę błędnych wierszy i duplikatów. Skan wykonuje jedną próbę
+naraz, do 30 sekund na pozycję i 10 minut łącznie. Można go przerwać bez utraty
+już uzyskanych wyników. Raport CSV nie zawiera adresów ani danych konta.
+
+Sam URL sprawdzany jest tylko jako publiczna strona, bez logowania. Rozpoznanie
+portalu nie potwierdza bezpłatnego dostępu. **Szukaj publicznych portali** otwiera
+Eksplorator z gotową frazą i filtrem portali; wynik zachowuje pochodzenie.
+Wyszukiwanie nie pobiera MAC, loginów ani haseł z internetu. Katalog kanałów
+i rzeczywiste odtwarzanie pozostają odrębnymi wynikami.
+
+Wersja 0.9.7 dodała wariant portalu MAC: katalog udostępniany bez sesji
 tokenowej przez `portal.php`. Program rozpoznaje typ po odpowiedzi serwera,
 zachowując dotychczasową obsługę pełnej sesji handshake i aktywnego profilu.
 Odmowa aktywnego profilu nadal zatrzymuje połączenie.

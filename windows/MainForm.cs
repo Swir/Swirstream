@@ -44,7 +44,7 @@ public sealed partial class MainForm : Form
     {
         SuspendLayout();
         this.categoryModel = categoryModel; profiles = new(dataPath); store = new(profiles.Folder(profiles.Index.ActiveId));InitPrivateStore();
-        Text = "SwirStream AI 0.9.7 — by Swir"; BackColor = Bg; ForeColor = Color.White;
+        Text = "SwirStream AI 0.9.8 — by Swir"; BackColor = Bg; ForeColor = Color.White;
         Icon = new Icon(Path.Combine(AppContext.BaseDirectory, "assets", "swirstream-v070.ico"));
         Font = new Font("Segoe UI", 10); Size = new(1440, 940); MinimumSize = new(1200, 780);
         StartPosition = FormStartPosition.CenterScreen; AutoScaleMode = AutoScaleMode.Dpi; KeyPreview = true;
@@ -139,7 +139,7 @@ public sealed partial class MainForm : Form
         listActions.Controls.Add(Button("Eksport M3U", ExportPlaylist, width: 110)); listActions.Controls.Add(Button("Usuń ★", () => Favorite(false), width: 90));
         listPanel.Controls.Add(listActions, 0, 4); body.Controls.Add(listPanel, 1, 2); InitDiscovery(dataPath, body);
         InitProfilePanel(root); InitEpg(); InitFoundPlaylists();
-        root.Controls.Add(Label("0.9.7  /  WINDOWS x64", 8, Muted), 0, 2); root.Controls.Add(status, 0, 3); root.SetColumnSpan(status, 2);
+        root.Controls.Add(Label("0.9.8  /  WINDOWS x64", 8, Muted), 0, 2); root.Controls.Add(status, 0, 3); root.SetColumnSpan(status, 2);
         InitScanOverlay(root);
         search.TextChanged += (_, _) =>
         {

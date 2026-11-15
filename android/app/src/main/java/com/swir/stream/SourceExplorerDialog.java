@@ -19,6 +19,7 @@ final class SourceExplorerDialog {
     private final List<String> countryCodes,countryNames;private final Set<String> countries;private AtomicBoolean cancel=new AtomicBoolean();private AlertDialog page;private boolean closed,busy;private String query="",address="",message="";private int filter;private List<SourceCandidate> rows=new ArrayList<>();
     SourceExplorerDialog(Activity activity,SourceExplorer engine,SourceExplorerStore store,ExecutorService executor,Listener listener,Set<String> countries,List<String> codes,List<String> names){this.activity=activity;this.engine=engine;this.store=store;this.executor=executor;this.listener=listener;this.countries=new LinkedHashSet<>(countries);countryCodes=new ArrayList<>(codes);countryNames=new ArrayList<>(names);}
     void show(){closed=false;rows=store.load();if(store.unreadable())message="Zapis wyników jest uszkodzony. Plik zachowano; aby zacząć nowy zapis, wybierz Wyczyść wyniki.";render();}
+    void showPortals(){query="free public Stalker Ministra portal";filter=3;message="Szukaj publicznych stron portali. Sam adres nie potwierdza darmowego dostępu. Dane własnego konta wpisujesz dopiero przy dodawaniu źródła.";show();}
     void close(){closed=true;cancel.set(true);dismiss();}
     private boolean active(){return !closed&&listener.active()&&!activity.isFinishing()&&!activity.isDestroyed();}
     private void dismiss(){if(page!=null){page.dismiss();page=null;}}

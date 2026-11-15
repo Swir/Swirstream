@@ -48,7 +48,7 @@ public static class PublicWeb
         for (int redirects = 0; redirects < 5; redirects++)
         {
             if (!Allowed(url)) throw new IOException("Niepubliczny adres EPG.");
-            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.7");
+            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8");
             using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, deadline.Token);
             if ((int)response.StatusCode is >= 300 and < 400 && response.Headers.Location != null) { url = new Uri(new Uri(url), response.Headers.Location).AbsoluteUri; continue; }
             response.EnsureSuccessStatusCode();
@@ -79,7 +79,7 @@ public static class PublicWeb
     }
     static async Task<PublicWebResponse> FetchResponse(string url,CancellationToken ct)
     {
-            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.7 (+public-stream-discovery)");
+            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8 (+public-stream-discovery)");
             using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
             if ((int)response.StatusCode is >= 300 and < 400 && response.Headers.Location != null)return new((int)response.StatusCode,response.Headers.Location.ToString(),null);
             response.EnsureSuccessStatusCode();

@@ -1,4 +1,4 @@
-SWIRSTREAM AI 0.9.7 — by Swir
+SWIRSTREAM AI 0.9.8 — by Swir
 Windows 11 x64 • wersja przenośna
 
 URUCHOMIENIE
@@ -7,7 +7,21 @@ URUCHOMIENIE
 3. Wybierz kraje i wyszukaj publiczne kanały albo dodaj własne źródło.
 4. Kanał uruchamiaj w programie. Sama obecność na liście nie potwierdza obrazu.
 
-NOWE W 0.9.7 — PORTALE MAC BEZ SESJI TOKENOWEJ
+NOWE W 0.9.8 — SKANER PORTALI TXT
+MAC Player → Skaner portali TXT → Importuj TXT → Sprawdź listę.
+Format: URL|MAC albo adres URL i własne MAC w kolejnych wierszach.
+Sam adres URL sprawdza publiczną stronę bez logowania. Nie potwierdza darmowego
+dostępu do kanałów. Dane konta musisz otrzymać od operatora.
+Limit: 1 MiB, 200 unikalnych wpisów, UTF-8 lub UTF-16 z BOM.
+Podgląd pokazuje duplikaty i błędne wiersze; niepoprawne wpisy nie są sprawdzane.
+Próba trwa do 30 sekund na wpis, cały skan do 10 minut. Przerwij zachowuje wyniki.
+Po skanie wybierz Dodaj wybrany lub Odtwórz próbkę. Dopiero ten wybór zapisuje
+źródło w chronionym magazynie profilu i ponownie pobiera kanały.
+Odtwórz próbkę otwiera główny player. Sam katalog nie potwierdza obrazu i dźwięku.
+Szukaj publicznych portali otwiera Eksplorator z filtrem. Program nie wyszukuje
+cudzych MAC/loginów. Raport CSV pomija adresy, MAC i dane kont.
+
+W 0.9.7 — PORTALE MAC BEZ SESJI TOKENOWEJ
 MAC Player rozpoznaje zarówno katalogi portal.php, jak i portale wymagające
 pełnego logowania oraz profilu. Sprawdza najwyżej trzy znane ścieżki pod własnym
 adresem użytkownika. Jawny adres pliku PHP ma pierwszeństwo. Nie zmienia

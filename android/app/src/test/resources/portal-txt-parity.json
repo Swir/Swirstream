@@ -1,0 +1,401 @@
+{
+  "schema": 1,
+  "scope": "Deterministic offline parser parity fixtures; reserved example.org hosts and synthetic MACs only. Expectations are the shared desired contract, not a test result.",
+  "networkRequests": 0,
+  "byteLimit": 1048576,
+  "entryLimit": 200,
+  "cases": [
+    {
+      "name": "url_only",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8K",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": ""
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "inline_pair",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "multiline_two_pairs",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8KMDI6MDA6MDA6MDA6MDA6MDEKMDI6MDA6MDA6MDA6MDA6MDIK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          },
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:02"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "expiry_is_comment",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8KMDI6MDA6MDA6MDA6MDA6MDEgLSBKYW51YXJ5IDEsIDIwMzAsIDEyOjAwIGFtCg==",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "duplicate_pair",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDA6MDEKaHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 1
+      }
+    },
+    {
+      "name": "comments_and_blanks_keep_context",
+      "inputBase64": "IyB0ZXN0IGZpeHR1cmUKaHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8KCjsgY29tbWVudAowMjowMDowMDowMDowMDowMQo=",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "orphan_mac",
+      "inputBase64": "MDI6MDA6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "invalid_local_url_clears_context",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8KaHR0cDovLzEyNy4wLjAuMS9jLwowMjowMDowMDowMDowMDowMQo=",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": ""
+          }
+        ],
+        "invalidLines": 2,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "malformed_http_url_clears_context",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8KaHR0cHM6Ly8KMDI6MDA6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": ""
+          }
+        ],
+        "invalidLines": 2,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "unknown_line_clears_context",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8Kbm90LWEtcG9ydGFsCjAyOjAwOjAwOjAwOjAwOjAxCg==",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": ""
+          }
+        ],
+        "invalidLines": 2,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "userinfo_rejected",
+      "inputBase64": "aHR0cHM6Ly91c2VyOnN5bnRoZXRpYy1wYXNzd29yZEBwb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "query_rejected",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8/cGFzc3dvcmQ9c3ludGhldGljLXNlY3JldHwwMjowMDowMDowMDowMDowMQo=",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "non_http_rejected",
+      "inputBase64": "ZmlsZTovLy9DOi9maXh0dXJlLnR4dHwwMjowMDowMDowMDowMDowMQo=",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "malformed_inline_mac_rejects_pair",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDAK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "pair_followed_by_public_url",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDA6MDEKaHR0cHM6Ly9zZWNvbmQuZXhhbXBsZS5vcmcvYy8K",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          },
+          {
+            "url": "https://second.example.org/c/",
+            "mac": ""
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "trailing_slash_identity",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDA6MDEKaHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvY3wwMjowMDowMDowMDowMDowMQo=",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 1
+      }
+    },
+    {
+      "name": "mac_case_identity",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6QUE6MDA6MDA6MDA6MDEKaHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6YWE6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:AA:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 1
+      }
+    },
+    {
+      "name": "encoded_installation_prefix",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvbXklMjBwb3J0YWwvYy98MDI6MDA6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/my%20portal/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "utf8_bom",
+      "inputBase64": "77u/aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDI6MDA6MDA6MDA6MDA6MDEK",
+      "encoding": "utf-8-sig",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "utf16_le_bom",
+      "inputBase64": "//5oAHQAdABwAHMAOgAvAC8AcABvAHIAdABhAGwALgBlAHgAYQBtAHAAbABlAC4AbwByAGcALwBjAC8AfAAwADIAOgAwADAAOgAwADAAOgAwADAAOgAwADAAOgAwADEADQAKAA==",
+      "encoding": "utf-16-le",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "utf16_be_bom",
+      "inputBase64": "/v8AaAB0AHQAcABzADoALwAvAHAAbwByAHQAYQBsAC4AZQB4AGEAbQBwAGwAZQAuAG8AcgBnAC8AYwAvAHwAMAAyADoAMAAwADoAMAAwADoAMAAwADoAMAAwADoAMAAxAAo=",
+      "encoding": "utf-16-be",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "default_port_host_case_identity",
+      "inputBase64": "SFRUUFM6Ly9QT1JUQUwuRVhBTVBMRS5PUkc6NDQzL2MvfDAyOjAwOjAwOjAwOjAwOjAxCmh0dHBzOi8vcG9ydGFsLmV4YW1wbGUub3JnL2MvfDAyOjAwOjAwOjAwOjAwOjAxCg==",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [
+          {
+            "url": "https://portal.example.org/c/",
+            "mac": "02:00:00:00:00:01"
+          }
+        ],
+        "invalidLines": 0,
+        "duplicates": 1
+      }
+    },
+    {
+      "name": "zero_mac_rejected",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98MDA6MDA6MDA6MDA6MDA6MDAK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "broadcast_mac_rejected",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy98RkY6RkY6RkY6RkY6RkY6RkYK",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "fragment_rejected",
+      "inputBase64": "aHR0cHM6Ly9wb3J0YWwuZXhhbXBsZS5vcmcvYy8jc2Vzc2lvbnwwMjowMDowMDowMDowMDowMQo=",
+      "encoding": "utf-8",
+      "expected": {
+        "fatal": false,
+        "entries": [],
+        "invalidLines": 1,
+        "duplicates": 0
+      }
+    },
+    {
+      "name": "malformed_utf8",
+      "inputBase64": "//8=",
+      "encoding": "deliberately_invalid_or_unsupported",
+      "expected": {
+        "fatal": true
+      }
+    },
+    {
+      "name": "malformed_utf16_surrogate",
+      "inputBase64": "//4A2A==",
+      "encoding": "deliberately_invalid_or_unsupported",
+      "expected": {
+        "fatal": true
+      }
+    },
+    {
+      "name": "utf32_rejected",
+      "inputBase64": "//4AAGEAAAA=",
+      "encoding": "deliberately_invalid_or_unsupported",
+      "expected": {
+        "fatal": true
+      }
+    }
+  ]
+}

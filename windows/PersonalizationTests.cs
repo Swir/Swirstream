@@ -84,6 +84,6 @@ static class PersonalizationTests
             }
         }
         catch (Exception ex) { Check("Unexpected failure", false, ex.ToString()); }
-        File.WriteAllText(report, JsonSerializer.Serialize(new { version = "0.9.7", success, checks }, new JsonSerializerOptions { WriteIndented = true })); return success ? 0 : 1;
+        File.WriteAllText(report, JsonSerializer.Serialize(new { version = "0.9.8", success, checks }, new JsonSerializerOptions { WriteIndented = true })); return success ? 0 : 1;
     }
 }

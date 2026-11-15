@@ -7,7 +7,7 @@ public sealed partial class MainForm
     {
         static IEnumerable<Control> All(Control parent)=>parent.Controls.Cast<Control>().SelectMany(c=>new[]{c}.Concat(All(c)));
         void Capture(Form f,string suffix){f.Refresh();using var image=new Bitmap(f.Width,f.Height);f.DrawToBitmap(image,new(0,0,f.Width,f.Height));image.Save(Path.ChangeExtension(screenshot,suffix+".png"));}
-        string original=profiles.Index.ActiveId;var test=profiles.Add("Test modułów 0.9.7");await SwitchProfile(test.Id,false);
+        string original=profiles.Index.ActiveId;var test=profiles.Add("Test modułów 0.9.8");await SwitchProfile(test.Id,false);
         string folder=profiles.Folder(test.Id);bool fail=false,wait=false;var received=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         string m3u="#EXTM3U x-tvg-url=\"https://fixture.example/guide.xml\"\n#EXTINF:-1 tvg-id=\"one.pl\" tvg-country=\"PL\",Kanał Pierwszy\nhttps://fixture.example/one.m3u8\n#EXTINF:-1 tvg-id=\"two.de\" tvg-country=\"DE\",Kanał Drugi\nhttps://fixture.example/two.m3u8\n";
         var client=new PrivateProviderClient(async(request,ct)=>{if(fail)throw new IOException("Controlled failure");if(wait){received.TrySetResult();await release.Task.WaitAsync(ct);}ct.ThrowIfCancellationRequested();return new ProviderDocument(Encoding.UTF8.GetBytes(request.Url.EndsWith("guide.xml")?"<tv><channel id=\"one.pl\"><display-name>Kanał Pierwszy</display-name></channel></tv>":m3u),request.Url,Modified:DateTimeOffset.UtcNow.AddHours(-1));});

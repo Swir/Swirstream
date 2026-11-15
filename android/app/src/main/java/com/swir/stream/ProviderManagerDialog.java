@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /** Source manager has no global preference fields, credential logs or saved form state. */
 @androidx.media3.common.util.UnstableApi
 public final class ProviderManagerDialog {
-    interface Listener { default boolean active(){return true;} void changed(); void showChannels(String id,String name); void discoverPlaylists(); default void exploreSources(){} }
+    interface Listener { default boolean active(){return true;} void changed(); void showChannels(String id,String name); void discoverPlaylists(); default void exploreSources(){} default void scanPortals(){} }
     private static final String[] TYPES={"m3u","xtream","portal","drm","direct"};
     private static final String[] TITLES={"Playlisty URL","Xtream","MAC Player","DRM"};
     private static final String[] EXPLANATIONS={
@@ -53,6 +53,7 @@ public final class ProviderManagerDialog {
     private Button action(String value,String tag,Runnable run){Button button=new Button(activity);button.setText(value);button.setTag(tag);button.setAllCaps(false);button.setTextSize(14);button.setMinHeight(dp(48));button.setFocusable(true);button.setOnClickListener(v->run.run());return button;}
     private void load(){if(!alive())return;executor.execute(()->{List<ProviderRepository.SourceInfo> sources=sourcesForSection(repository.listSources(),section);main.post(()->{if(alive())list(sources);});});}
     void closePage(){if(page!=null){page.dismiss();page=null;}}
+    static ProviderManagerDialog prefillPortal(Activity activity,ProviderRepository repository,ExecutorService executor,Listener listener,String url){ProviderManagerDialog page=new ProviderManagerDialog(activity,repository,executor,listener,2);page.form(2,"Portal TXT",url,"","",new org.json.JSONObject());return page;}
     private void list(List<ProviderRepository.SourceInfo> sources){
         closePage();LinearLayout box=new LinearLayout(activity);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(dp(18),dp(8),dp(18),dp(10));box.setTag(section<0?"provider_section_all":"provider_section_"+TYPES[section]);
         box.addView(label(section<0?"Własne źródła bieżącego profilu. Wybierz kategorię lub dodaj nowe źródło.":EXPLANATIONS[section],14,0xffa1afc8));
@@ -60,6 +61,7 @@ public final class ProviderManagerDialog {
         box.addView(action(section<0?"＋ Dodaj źródło":"＋ "+new String[]{"Dodaj playlistę URL","Dodaj konto Xtream","Dodaj portal MAC","Dodaj transmisję DRM"}[section],"provider_add",()->{closePage();if(section<0)choose();else form(section);}));
         if(section==0)box.addView(action("Dodaj bezpośredni HLS / DASH / MP4","provider_add_direct",()->{closePage();form(4);}));
         box.addView(action("Eksplorator źródeł WWW","provider_explorer",()->{closePage();listener.exploreSources();}));
+        if(section==2)box.addView(action("Skaner portali • import TXT","provider_scanner",()->{closePage();listener.scanPortals();}));
         if(section==0)box.addView(action("AI: znajdź playlisty","provider_discover",()->{closePage();listener.discoverPlaylists();}));
         if(sources.isEmpty())box.addView(label("Nie dodano jeszcze żadnego źródła w tej sekcji. Dane logowania i prywatne listy pozostają zaszyfrowane na tym urządzeniu, osobno dla każdego profilu.",14,0xffeef5ff));
         for(ProviderRepository.SourceInfo source:sources){

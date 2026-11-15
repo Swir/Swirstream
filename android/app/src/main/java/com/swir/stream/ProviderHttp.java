@@ -109,11 +109,11 @@ public final class ProviderHttp {
     }
     private interface ResponseReader<T>{T read(InputStream input,String url,long downloaded,long modified,long deadline)throws IOException;}
     private static <T>T readResponse(OkHttpClient client,String original,Map<String,String> supplied,AtomicBoolean cancelled,int maxBytes,ResponseReader<T> reader)throws IOException{
-        String current=checkedUri(original).toString();Map<String,String> headers=cleanHeaders(supplied);boolean protect=protectedUrl(original)||headers.keySet().stream().anyMatch(k->k.equalsIgnoreCase("Authorization")||k.equalsIgnoreCase("Cookie"));long deadline=android.os.SystemClock.elapsedRealtime()+30000;
+        String current=checkedUri(original).toString();Map<String,String> headers=cleanHeaders(supplied);boolean protect=protectedUrl(original)||headers.keySet().stream().anyMatch(k->k.equalsIgnoreCase("Authorization")||k.equalsIgnoreCase("Cookie"));long budget=client.callTimeoutMillis()>0?Math.min(30000,client.callTimeoutMillis()):30000;long deadline=android.os.SystemClock.elapsedRealtime()+budget;
         for(int hop=0;hop<5;hop++){
             PublicHttp.checkCancelled(cancelled);checkedUri(current);if(android.os.SystemClock.elapsedRealtime()>deadline)throw new IOException("Przekroczono czas pobierania źródła.");protect|=protectedUrl(current);
             Request.Builder request=new Request.Builder().url(current).header("User-Agent","SwirStreamAndroid/0.3.2").header("Accept-Encoding","gzip");for(Map.Entry<String,String> entry:headers.entrySet())request.header(entry.getKey(),entry.getValue());
-            try(Response response=client.newCall(request.build()).execute()){
+            try(Response response=client.newBuilder().callTimeout(Math.max(1,deadline-android.os.SystemClock.elapsedRealtime()),TimeUnit.MILLISECONDS).build().newCall(request.build()).execute()){
                 int code=response.code();if(code>=300&&code<400){String next=redirect(current,response.header("Location"),protect);if(!sameOrigin(current,next))headers=Collections.emptyMap();current=next;continue;}
                 if(code<200||code>=300)throw new StatusException(code);
                 if(response.body()==null)throw new IOException("Źródło nie zwróciło danych.");if(response.body().contentLength()>maxBytes)throw new IOException("Lista źródła przekracza limit rozmiaru.");

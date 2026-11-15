@@ -1,20 +1,20 @@
 {
-  "scope": "Exact application source bytes extracted from the finalized tested source archives; documentation added at repository root is separate. Native Windows corresponding-source coverage remains incomplete.",
+  "scope": "Exact source files from the tested application source archives, verified against this repository. Root documentation is separate. Native Windows corresponding-source coverage remains incomplete.",
   "versions": {
-    "windows": "0.9.7",
-    "android": "0.3.6"
+    "windows": "0.9.8",
+    "android": "0.3.7"
   },
   "archives": [
     {
-      "file": "SwirStreamAI_0.9.7_ZRODLA.zip",
-      "sha256": "cb5f7330427807acedd4fbff459c66760ebf6ef8bd0c39062bf7d34182f433ef"
+      "file": "SwirStreamAI_0.9.8_ZRODLA.zip",
+      "sha256": "df05dc45364bf3576d00122c56c5697f653c5877b54ef1344dc09a82129f7a1e"
     },
     {
-      "file": "SwirStreamAI_Android_0.3.6_ZRODLA.zip",
-      "sha256": "4f3572cd396ba5e00359b5d191b7d100ed006c277494ef245ceb5f420bce6dd7"
+      "file": "SwirStreamAI_Android_0.3.7_ZRODLA.zip",
+      "sha256": "7f0b0d8b3402ea9dee1db4fe1d86440d94ad4861625f20f4f420f84ae68bd453"
     }
   ],
-  "fileCount": 303,
+  "fileCount": 318,
   "files": [
     {
       "path": "windows/Acquire-SwirPlayer.ps1",
@@ -45,6 +45,11 @@
       "path": "windows/assets/player-stalled-video.mp4",
       "bytes": 89573,
       "sha256": "a6aa7ba966a44c62537e265237c43d504545877fc411f676e976ef1ad405cc54"
+    },
+    {
+      "path": "windows/assets/portal-txt-parity.json",
+      "bytes": 11477,
+      "sha256": "1ce71d9b0c59fdb0533a258de018b7de58f36c66ccbe18a4a77a21e3edfe977c"
     },
     {
       "path": "windows/assets/swirstream-v070-provenance.txt",
@@ -93,8 +98,8 @@
     },
     {
       "path": "windows/build.ps1",
-      "bytes": 5425,
-      "sha256": "92d0775e75c64a6bc0b5e9441d0d437b935c1b4bf20427f3791f39c64126c0d5"
+      "bytes": 5496,
+      "sha256": "60b136d641dd51d36b94d16b17765ba39bee41515983c5a31010f83525fdffbd"
     },
     {
       "path": "windows/CatalogUiTests.cs",
@@ -134,7 +139,7 @@
     {
       "path": "windows/Discovery.cs",
       "bytes": 28387,
-      "sha256": "89b6ecd46c8e911d1cbe9a8f19c5708c1f267aae67713061bfd1850dcdc306ca"
+      "sha256": "78d6ee82557ec8756f1bb9a7f8c5346d35a9e0534948db677dc250f3aaecc4fe"
     },
     {
       "path": "windows/DiscoveryCoverage.cs",
@@ -144,7 +149,7 @@
     {
       "path": "windows/DiscoveryForm.cs",
       "bytes": 29822,
-      "sha256": "dcee3eab2923b3019146a3c9ad061e796c5d567d237ac73ce95d3f73691e732c"
+      "sha256": "1550b6aff4733b7d5545bf429cdea78feadffaf67736bebf10967b4fcb23c289"
     },
     {
       "path": "windows/DiscoveryPipeline.cs",
@@ -154,7 +159,7 @@
     {
       "path": "windows/DiscoveryTests.cs",
       "bytes": 10882,
-      "sha256": "5394d5ae9ea05c7e449825f1e08327177ad92bf2896554ab244b785aa10521b7"
+      "sha256": "f9a06daad7acde54cee2517f75a24fae7781bdf46420493512e4c89d6a3ba64e"
     },
     {
       "path": "windows/EncryptedPlaybackGuard.cs",
@@ -209,12 +214,12 @@
     {
       "path": "windows/MainForm.cs",
       "bytes": 34278,
-      "sha256": "e598182b6b410900a56c6df8c601702ed3b10d17187e7e7251d45e91d2329b0b"
+      "sha256": "caf38dc4557648a090ec13473c86be40ecd15d21ba19412fbb3926fc6c3deb9c"
     },
     {
       "path": "windows/MAINTENANCE.md",
-      "bytes": 28145,
-      "sha256": "8fc3207bb2689922f6a314fa3b43e719d0a90232fa5ff78e7cab71ae58f9fb45"
+      "bytes": 29748,
+      "sha256": "77bafe6b29ff9b501987d6d9a114f763e6fa25670517d1e93a4e4b91e95e105f"
     },
     {
       "path": "windows/MODEL_CARD.md",
@@ -264,7 +269,7 @@
     {
       "path": "windows/PersonalizationTests.cs",
       "bytes": 11888,
-      "sha256": "e7a13109c5386867e881d7f2d686ef3f065282647d4e72453310acb5683e9ec4"
+      "sha256": "feb37297b549da717767860e2da6a540f007a19940931a5ba8dcfebcc3edd98c"
     },
     {
       "path": "windows/PlaybackProgress.cs",
@@ -337,14 +342,39 @@
       "sha256": "861d39d137a3b2d6f8b5cd6598b2729c0f03faa256dc93f538a96ca20a2975fb"
     },
     {
+      "path": "windows/PortalScanner.cs",
+      "bytes": 6281,
+      "sha256": "09805b7bf78d3343447523a2de728c297f803b97bd120c0999d3b1a76a973503"
+    },
+    {
+      "path": "windows/PortalScannerForm.cs",
+      "bytes": 12481,
+      "sha256": "efbda994036958136072c44aecce5ebe7f0f41252e991a94f051f8043f1b0844"
+    },
+    {
+      "path": "windows/PortalScannerTests.cs",
+      "bytes": 12679,
+      "sha256": "b8d084921db38e8c2b336ee31941a7d513785aa24ac4b72ee972be9fbd9d9902"
+    },
+    {
+      "path": "windows/PortalScannerUiTests.cs",
+      "bytes": 9742,
+      "sha256": "a328593a0af4259168e341c47cfc0ab3bb872d4674b14121a20f4024dc66150f"
+    },
+    {
       "path": "windows/PortalStatusUiTests.cs",
       "bytes": 6059,
       "sha256": "d1ef6c6380272c5c988bc09adb4d1aeb572caaf14001093cba58d3366ca2141f"
     },
     {
+      "path": "windows/PortalTxt.cs",
+      "bytes": 5930,
+      "sha256": "4e8f540dc89ce9c20fe43c952631060013b5d7d1325a3d2235cb37caa090ed42"
+    },
+    {
       "path": "windows/PRIVATE_SOURCES.md",
-      "bytes": 14846,
-      "sha256": "cc238fd931f3d9c557533aaf10da973d0926f1908bd2f3d5ae3966da4afaa3dc"
+      "bytes": 16645,
+      "sha256": "9be1855a4f311fe3eebf56d9b468cfb9552aaebf33e54db17145ccaaeaef716d"
     },
     {
       "path": "windows/PrivateData.cs",
@@ -359,7 +389,7 @@
     {
       "path": "windows/PrivateProviderClients.cs",
       "bytes": 31737,
-      "sha256": "61d868099033d394ae88c09ae2ed7b49ce28a9722dbf59cbb59408a0e14a1610"
+      "sha256": "0c13e26cdc0658d1d6e4ea0ab5b7881a8eb91d21075af4412f29ef00bc2b2f91"
     },
     {
       "path": "windows/PrivateProviderPlayerTests.cs",
@@ -393,8 +423,8 @@
     },
     {
       "path": "windows/Program.cs",
-      "bytes": 10804,
-      "sha256": "befea58ad05eb5e85e93c9d2e3a8f7f1c6741a06169909089563cd1dca8b0420"
+      "bytes": 11240,
+      "sha256": "6f47c1e9cc437c265fb07851dcb603a65a63a1e235ab8353f690b6ca063ec172"
     },
     {
       "path": "windows/ProviderFailures.cs",
@@ -408,13 +438,13 @@
     },
     {
       "path": "windows/ProviderModules.cs",
-      "bytes": 21966,
-      "sha256": "1bc37270443865d0fee164e3c8b880ecf5b8d7bff8f65a8ae48378d5aab5606a"
+      "bytes": 22196,
+      "sha256": "01232822349bc7407f30d66f2c72481b2286b545d8415d62e2d3449a28918e5d"
     },
     {
       "path": "windows/ProviderModulesUiTests.cs",
       "bytes": 10706,
-      "sha256": "e7a20a1374bcc5d1b7cc1150551d0abe629d8310512fa4e7860238b021f80507"
+      "sha256": "e43431d777810c57f20b1f4a2b42fa39fd9d359aca578214e49e4aa6c2738d85"
     },
     {
       "path": "windows/PublicPlaylistDiscoveryTests.cs",
@@ -433,8 +463,8 @@
     },
     {
       "path": "windows/README.md",
-      "bytes": 2992,
-      "sha256": "0ea145686b50df9fff1227ed26b7fe582f658f03e61924bd20635a157a7ff671"
+      "bytes": 4204,
+      "sha256": "b15847c5c671fb7294be3d92b616462a9b4d3229fea9975e772456f99c9a3c46"
     },
     {
       "path": "windows/SearchExpansion.cs",
@@ -454,7 +484,7 @@
     {
       "path": "windows/SelfTests.cs",
       "bytes": 9863,
-      "sha256": "498cd1f3499af5171f1bea22f5b3aeb954fd85f59bb754c63ba6934594e0b062"
+      "sha256": "7c08aaadc8ca777b639739a31fe8b5f452c07299025d1183f25bfb318112abb6"
     },
     {
       "path": "windows/SharedPlaylists.cs",
@@ -478,8 +508,8 @@
     },
     {
       "path": "windows/SourceExplorerForm.cs",
-      "bytes": 11267,
-      "sha256": "472f126a270d27d0004ec7822578809d56b7f4361010bc171ce74de55ae99649"
+      "bytes": 11397,
+      "sha256": "16675c3cfd8f1c9958b857df1bb66b8cdf252e1d137b36a72f5c92b53a654e17"
     },
     {
       "path": "windows/SourceExplorerTests.cs",
@@ -514,12 +544,12 @@
     {
       "path": "windows/SwirPlayer.cs",
       "bytes": 19838,
-      "sha256": "a0f2625edafd2e2a015a6d7fc740a48f7e8afab6f70934a30d97ec7352a0d037"
+      "sha256": "9d3dd59425c26f685e187dcae5abf5da4556c9cd692da4ca467653247f48c828"
     },
     {
       "path": "windows/SwirStreamAI.csproj",
       "bytes": 837,
-      "sha256": "df1ce51eff559098690fe44f952f26da659222e7999664e6d1a8debc1278b792"
+      "sha256": "cf43c5dc7c2edbdf50cb39fa7704bdc5b980f7d73eccd8c551f7c38d10972f15"
     },
     {
       "path": "windows/TestMediaServer.cs",
@@ -528,8 +558,8 @@
     },
     {
       "path": "windows/TESTUJ_WINDOWS.cmd",
-      "bytes": 3961,
-      "sha256": "db738f6560f362b8e00e5bd84245501fc52a73fdc52cca434b6c6176af0c5a34"
+      "bytes": 4104,
+      "sha256": "b2b93ab5e528b14504d7ad3786799912efc7b4ec870463cb1fa74996b3ca8a16"
     },
     {
       "path": "windows/THIRD_PARTY.txt",
@@ -539,7 +569,7 @@
     {
       "path": "windows/WebDiscovery.cs",
       "bytes": 26796,
-      "sha256": "fef615a1a21e374abfa5284bf27de609b37038b60f564489cd1c8be22ec6ed5f"
+      "sha256": "fff49b14b50e35282c29d933e4e47b8ecfc22909d0427e9d7093df5dd8c1749a"
     },
     {
       "path": "windows/WebDiscoveryTests.cs",
@@ -558,8 +588,8 @@
     },
     {
       "path": "windows/ZACZNIJ_TUTAJ.txt",
-      "bytes": 3247,
-      "sha256": "cbf1225f18eb640d792326960ab940146b5e7dd995c2492e448be11f2c1edcb6"
+      "bytes": 4186,
+      "sha256": "0d8a914b8db21340c80ed4c2d9600d0f664624a0e5624d383e1f3980b519bcc9"
     },
     {
       "path": "android/.gitignore",
@@ -569,7 +599,7 @@
     {
       "path": "android/app/build.gradle",
       "bytes": 2136,
-      "sha256": "94691189fe1ad2228849b8caacecf70f438059ee288bc7e694d373b763c7ac78"
+      "sha256": "cea19ca751b91c8e0f08b4c53a4e39a93b01a11b9c35432e2b92bf363b078553"
     },
     {
       "path": "android/app/src/androidTest/AndroidManifest.xml",
@@ -695,6 +725,16 @@
       "path": "android/app/src/androidTest/java/com/swir/stream/PortalDirectRepositoryTest.java",
       "bytes": 9555,
       "sha256": "763ebef5bcdc36781789bfb4b9e36dd60ddbd4d31c687dc820b6e9d2d54a859b"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PortalScannerInstrumentedTest.java",
+      "bytes": 8878,
+      "sha256": "008ff05fe127d5549bde535d31b2c9343f603832978941fe6cbdca994f9f14b1"
+    },
+    {
+      "path": "android/app/src/androidTest/java/com/swir/stream/PortalScannerUiTest.java",
+      "bytes": 12233,
+      "sha256": "7fe398e64a20ab88be4beefa604d85fefec9131f53d401a259d5df7714961320"
     },
     {
       "path": "android/app/src/androidTest/java/com/swir/stream/ProviderIntegrationTest.java",
@@ -918,8 +958,8 @@
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/MainActivity.java",
-      "bytes": 69407,
-      "sha256": "eefcddd85c76b35eafdacc387b10d8e59338beae2a246908a247e0caf2cd0ffd"
+      "bytes": 73401,
+      "sha256": "09f548665ecf7566e315d7fdc708f6d7aef5731f5f6ff53db199fe9e1db2b769"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/PersonalAi.java",
@@ -952,14 +992,29 @@
       "sha256": "7898bd0d0fc7a31db20c65e98b7240bab4008ccf1c8f69db438390c5db291a28"
     },
     {
+      "path": "android/app/src/main/java/com/swir/stream/PortalScanner.java",
+      "bytes": 6543,
+      "sha256": "116a863206c2620514b590f2eb008f86784973b4b17500a855b65453b129a139"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PortalScannerDialog.java",
+      "bytes": 9974,
+      "sha256": "466dfba57c2d763ce336750a4bb98b89d85821aa0702db78d79ab6e7a8c7e566"
+    },
+    {
+      "path": "android/app/src/main/java/com/swir/stream/PortalTxt.java",
+      "bytes": 7116,
+      "sha256": "6aeaadaa2a741f8bc731781cffaaa683605969e8f98a07aafb5be356f6a92c05"
+    },
+    {
       "path": "android/app/src/main/java/com/swir/stream/ProfileStore.java",
       "bytes": 10807,
       "sha256": "6d7045aee10e93bdc71b42d9a7ffb1396999b45c8739e11822220cef801a3182"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/ProviderAdapters.java",
-      "bytes": 18196,
-      "sha256": "2b45dba317f7b41c11471a0904c7c56d1bc7dfb5acaf0ea0734aa150f46737dd"
+      "bytes": 18465,
+      "sha256": "28bb4d980ad47ae375969c2c119c5442606157a968cce7ce33a5ebe4f8749350"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/ProviderDataSource.java",
@@ -968,18 +1023,18 @@
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/ProviderHttp.java",
-      "bytes": 12663,
-      "sha256": "d609ad6e51719da13c39b9eb5f57d7537a534bc009dd1dd4009727642a60324b"
+      "bytes": 12872,
+      "sha256": "9cee7013e42db52905f0d96e02ad8f31638f3b82980acba75a1f67cf35f40831"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/ProviderManagerDialog.java",
-      "bytes": 23774,
-      "sha256": "8cab247d3cd05a869cfd2d8b061f292090cd54f91bcfd51e3db8e97f0dfcba36"
+      "bytes": 24262,
+      "sha256": "3985ab96ebd8c7a16bd1da0c00020e7cef1af7bd7e8ad43ff7477522e8982aab"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/ProviderRepository.java",
-      "bytes": 28609,
-      "sha256": "60a5e0659fa03b4f3eef8e01dd26847ae6872eb68beafcdd3c270448c1cbe9d1"
+      "bytes": 30650,
+      "sha256": "4738ccb0e25e01f1a4418330fb431e69548c4989c8da41de8534795d07053d54"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/ProviderVault.java",
@@ -1003,13 +1058,13 @@
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/SourceExplorerDialog.java",
-      "bytes": 12063,
-      "sha256": "8d3bff4f7c2d9b0180432d608bfd5c9f9168e107419ca18321e0da495dd954f0"
+      "bytes": 12303,
+      "sha256": "1aa3b5696c7ed66064d132112817dbb8db89ee5b586f973a4fa12eefb2f82350"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/SourceExplorerHttp.java",
-      "bytes": 4600,
-      "sha256": "d8bf502ca95b56ba8d14773956fc348a42c67e043888ef2453ec1c6127cdf5b3"
+      "bytes": 5646,
+      "sha256": "3ed278e91b7037f99f025b9eef51b1871f706f6c21a0a4d2215db655c909f7c4"
     },
     {
       "path": "android/app/src/main/java/com/swir/stream/SourceExplorerRules.java",
@@ -1117,6 +1172,16 @@
       "sha256": "d68a2a0c04d88e8063cfc79d4b9bc3d956bb331fe9c6d78eabc506c5855bbafe"
     },
     {
+      "path": "android/app/src/test/java/com/swir/stream/PortalScannerTest.java",
+      "bytes": 2706,
+      "sha256": "bd9840cd9a39f8dd8cb04bac9c107072e9f635899f561ab9c0453f6917218bac"
+    },
+    {
+      "path": "android/app/src/test/java/com/swir/stream/PortalTxtTest.java",
+      "bytes": 4353,
+      "sha256": "d18f68f9ff642a3abce0c1fe22a44657a7e8bb29d930940374844a74210e768d"
+    },
+    {
       "path": "android/app/src/test/java/com/swir/stream/ProviderDataSourceTest.java",
       "bytes": 9946,
       "sha256": "0a22760cedeca4e8baf90015e2e9ce0b5e6483cfda5cc26c54e79e6f82039173"
@@ -1135,6 +1200,11 @@
       "path": "android/app/src/test/java/com/swir/stream/SourcePrivacyTest.java",
       "bytes": 814,
       "sha256": "f022a0a6adc21a9671f1237e43f594a8c390044dd5b3639890ef3fa85757bf59"
+    },
+    {
+      "path": "android/app/src/test/resources/portal-txt-parity.json",
+      "bytes": 11477,
+      "sha256": "1ce71d9b0c59fdb0533a258de018b7de58f36c66ccbe18a4a77a21e3edfe977c"
     },
     {
       "path": "android/build.gradle",
@@ -1477,9 +1547,14 @@
       "sha256": "7bfc10605d39452437428c5d518d2f94201d90c781d0693b1280454e0b697711"
     },
     {
+      "path": "android/docs/PORTALE_PRZYKLAD.txt",
+      "bytes": 488,
+      "sha256": "661053883d841b3c49f489bc0f93d75fc549f0c6f2f195a9aca11562227ea298"
+    },
+    {
       "path": "android/docs/README_ANDROID.md",
-      "bytes": 21710,
-      "sha256": "11857454c77a3d6b5960e148a2a2dd702d5978c638355250213fc7c9de60c402"
+      "bytes": 23441,
+      "sha256": "6888e6e0be10234b1c0e06bb49501c993ffe233d5b2172539029d82cdd42e234"
     },
     {
       "path": "android/docs/release-runtime-classpath.txt",
@@ -1488,8 +1563,8 @@
     },
     {
       "path": "android/docs/START_PL.txt",
-      "bytes": 11003,
-      "sha256": "ddab0b33b4970a52d52ae6f7ce7e4b8bdf702cc94d3547f7406f277abd2f8a85"
+      "bytes": 12734,
+      "sha256": "57bd0e299c78b6388d0aaabc66f287c1ed6bf77556e6e3718238aefa904d73c0"
     },
     {
       "path": "android/docs/THIRD_PARTY_ANDROID.md",
@@ -1528,8 +1603,8 @@
     },
     {
       "path": "android/tools/package_release.py",
-      "bytes": 15227,
-      "sha256": "2b28773d53d451996f992c2f58123c77a76164019d3b05be894498494fb5abe1"
+      "bytes": 15251,
+      "sha256": "e6c3fc54eae62bfd09eb9e926aae56795dd5b39dee9ebb98ce9b7a67e83546f6"
     }
   ]
 }

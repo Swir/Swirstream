@@ -2,6 +2,8 @@ SwirStream AI — proposed next steps
 
 The next development cycle should prioritize reliable playback and complete, searchable catalogues before adding more provider types or changing the visual design. These are planned tasks, not capabilities already delivered.
 
+The 0.9.8 / Android 0.3.7 preview adds TXT portal import and bounded checks. Follow-up scanner work should add resuming only unchecked entries, clearer handling of slow Android document providers, and provider-specific diagnostics while preserving credential-free reports. It does not replace the playback, pagination or physical-device milestones below.
+
 ## 1. Playback reliability and release reproducibility
 
 Investigate the remaining GUI/native-player hangs and add bounded recovery for expired sessions, temporary network loss, and live streams ending unexpectedly. Keep manual Stop final, avoid reconnect loops after an access refusal, and preserve the working library during failures. Complete the native dependencies' corresponding-source bundle and document a reproducible release process.

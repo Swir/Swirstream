@@ -1,4 +1,28 @@
-# SwirStream AI — utrzymanie 0.9.7
+# SwirStream AI — utrzymanie 0.9.8
+
+## Portal TXT scanner 0.9.8
+
+The scanner accepts at most 1 MiB before decoding and 200 unique entries. UTF-8
+is strict; UTF-16 requires BOM. Parse diagnostics retain at most 50 safe line/code
+records with separate totals. Query/userinfo/fragment URLs and malformed MACs are
+rejected. No identifier is generated; only user-provided exact pairs are probed.
+Preview and scan never persist accounts. A selected Add action uses the existing
+protected transactional store and a fresh catalogue, reusing matching identities.
+
+Sequential scans have a 30-second per-entry deadline, 10-minute overall budget,
+cancellation and profile/lifetime guards. Only counts and status survive each
+catalogue fetch. URL-only requests use public-page restrictions without MAC/token;
+API paths and nonstandard ports are unsupported for this public check. Redirects
+stay on the original public host/origin, permitting standard HTTP-to-HTTPS upgrade.
+HTTP success or recognized portal HTML never imply catalogue/playback availability.
+The separate sample action hands off to existing decoded A/V confirmation.
+
+Offline `--portal-scanner-test` includes bundled shared Windows/Android fixtures
+in assets/portal-txt-parity.json plus resource, cancellation, redaction and mock
+production-client cases. `--gui-test --portal-scanner-ui-only` covers visible entry,
+preview/results, source save/reuse, URL-only editor, public-search handoff, import
+interleaving and profile switch. These synthetic results do not validate operator
+availability. Current exact-build results belong to verification/RAPORT_WYDANIA.
 
 ## Portal protocol compatibility 0.9.7
 

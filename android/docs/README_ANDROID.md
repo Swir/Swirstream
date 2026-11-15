@@ -1,3 +1,10 @@
+Skaner portali TXT w 0.3.7
+MAC Player → Skaner portali • import TXT → Importuj TXT. Najpierw zobaczysz liczbę pozycji, błędnych wierszy i duplikatów; połączenia zaczynają się dopiero po „Sprawdź listę”.
+Obsługiwane: sam URL, URL|MAC, albo adres i własne MAC w kolejnych wierszach. UTF-8 lub UTF-16 z BOM; do 1 MiB i 200 unikalnych pozycji. Przekroczenie limitu odrzuca cały import. Opcjonalny komentarz po MAC zaczyna się od „ - ” lub „ #”. Adresy z loginem, hasłem lub innymi parametrami zapytania dodaj normalnym formularzem, nie TXT.
+Skan jest kolejny, do 30 s na pozycję i 10 min na listę. Przerwanie zachowuje ukończone wyniki. Niesprawdzone pozycje nie są oznaczane jako działające. Ponowny skan zaczyna od pierwszego wiersza; długie listy z timeoutami podziel lub zmień kolejność.
+Sam URL sprawdza tylko publiczną stronę bez logowania (porty 80/443); prywatny adres API lub inny port wymaga własnego MAC. Rozpoznany portal i pobrany katalog nie potwierdzają obrazu. „Dodaj wybrane źródło” ponownie pobiera tylko wybrany katalog i zapisuje go w chronionym magazynie. „Dodaj i otwórz próbkę w playerze” uruchamia pierwszy kanał po pominięciu prostych separatorów; wynik potwierdza dopiero odtwarzacz. Pozostałe konta nie są zapisywane.
+Raport CSV zawiera tylko numery wierszy, statusy i liczby kanałów. Zamknięcie skanera, zmiana profilu lub odtworzenie aplikacji usuwa tymczasową listę. Plik TXT wybrany przez użytkownika pozostaje w jego lokalizacji.
+„Szukaj publicznych portali” otwiera eksplorator z przygotowanym tematem i filtrem portali. Nie wyszukuje cudzych MAC/loginów. Adres opublikowany w WWW sam w sobie nie oznacza darmowego dostępu.
 # MAC Player w 0.3.6
 Program rozpoznaje dwa rodzaje interfejsu: katalog MAC dostępny bez pełnej sesji oraz portal wymagający handshake i aktywnego profilu. Rozpoznaje maksymalnie trzy adresy API na tym samym serwerze, zachowując wpisany adres źródła. Każde odtwarzanie ponawia rozpoznanie sesji. Gdy operator jawnie wyłącza link tymczasowy i równoważenie serwerów, używany jest oryginalny publiczny adres kanału; w pozostałych przypadkach pobierany jest nowy create_link. Starszy zapis bez tych flag wymaga odświeżenia listy, aby skorzystać z tej obsługi.
 
@@ -85,7 +92,7 @@ dostawcy mogą wymagać ponownego wybrania kanału.
 
 # SwirStream AI na Androida — by Swir
 
-Wersja Android 0.3.6 to osobna aplikacja dla telefonu i projektora: publiczne TV/radio,
+Wersja Android 0.3.7 to osobna aplikacja dla telefonu i projektora: publiczne TV/radio,
 odtwarzanie w programie, playlisty M3U, EPG, ulubione i lokalna nauka preferencji.
 Nie ma panelu asystenta ani potrzeby kupowania abonamentu AI.
 Własne źródła URL, Xtream, MAC oraz konfiguracja DRM są dostępne od 0.3.0. Wydanie 0.3.1 dodaje dla nich osobne widoczne sekcje, edycję i wyszukiwanie publicznych playlist. Zachowuje poprawione wyszukiwanie lokalne i zakładkę „Wszystkie”.

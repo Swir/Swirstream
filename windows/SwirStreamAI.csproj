@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PlatformTarget>x64</PlatformTarget>
-    <Version>0.9.7</Version>
+    <Version>0.9.8</Version>
     <Company>Swir</Company>
     <Product>SwirStream AI — by Swir</Product>
     <ApplicationManifest>app.manifest</ApplicationManifest>

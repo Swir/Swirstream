@@ -27,7 +27,8 @@ public sealed partial class MainForm
         if(approved==null||!ReferenceEquals(repository,privateSources))return;
         await ConnectDraft(approved,repository);
     }
-    async Task ShowSourceExplorer()
+    Task ShowSourceExplorer()=>ShowSourceExplorer(null,false);
+    async Task ShowSourceExplorer(string? initialQuery,bool portalsOnly)
     {
         var repository=privateSources;string profile=profiles.Index.ActiveId;var saved=new SourceExplorerStore(profiles.Folder(profile));
         string[] countries=store.Data.SelectedCountries.ToArray();var directory=knownChannels.ToArray();var engine=sourceExplorer;
@@ -38,9 +39,9 @@ public sealed partial class MainForm
         var layout=new TableLayoutPanel{Dock=DockStyle.Fill,Padding=new(18),ColumnCount=1,RowCount=8};foreach(float h in new[]{38f,65f,43f,42f,-1f,170f,43f,45f})layout.RowStyles.Add(new(h<0?SizeType.Percent:SizeType.Absolute,h<0?100:h));
         layout.Controls.Add(Label("EKSPLORATOR ŹRÓDEŁ",20,Cyan,true),0,0);
         layout.Controls.Add(Label("Publiczne strony, playlisty i transmisje. Portal nie oznacza dostępnego konta ani kanałów.\n"+CountryCaption()+" • kraje doprecyzują zapytanie; kraj wyniku tylko z metadanych. Maks. 20 stron / 90 s.",10,Muted),0,1);
-        var query=Input("Temat lub nazwa, np. telewizja regionalna Polska • albo publiczny URL");query.Name="explorer-query";query.Dock=DockStyle.Fill;query.Text=XtreamLink.PrivateInput(search.Text)?"":search.Text;layout.Controls.Add(query,0,2);
+        var query=Input("Temat lub nazwa, np. telewizja regionalna Polska • albo publiczny URL");query.Name="explorer-query";query.Dock=DockStyle.Fill;query.Text=initialQuery??(XtreamLink.PrivateInput(search.Text)?"":search.Text);layout.Controls.Add(query,0,2);
         var filters=new FlowLayoutPanel{Dock=DockStyle.Fill,WrapContents=false};layout.Controls.Add(filters,0,3);
-        var kindFilter=new ComboBox{DropDownStyle=ComboBoxStyle.DropDownList,Width=205,Name="explorer-type"};kindFilter.Items.AddRange(["Wszystkie typy","Portale MAC","Playlisty M3U","Transmisje","Strony źródłowe"]);kindFilter.SelectedIndex=0;filters.Controls.Add(kindFilter);
+        var kindFilter=new ComboBox{DropDownStyle=ComboBoxStyle.DropDownList,Width=205,Name="explorer-type"};kindFilter.Items.AddRange(["Wszystkie typy","Portale MAC","Playlisty M3U","Transmisje","Strony źródłowe"]);kindFilter.SelectedIndex=portalsOnly?1:0;filters.Controls.Add(kindFilter);
         var localFilter=Input("Filtruj zapisane wyniki po nazwie lub domenie");localFilter.Name="explorer-local-filter";localFilter.Width=420;filters.Controls.Add(localFilter);
         var list=new ListView{Dock=DockStyle.Fill,View=View.Details,FullRowSelect=true,MultiSelect=false,HideSelection=false,BackColor=Card,ForeColor=Color.White,BorderStyle=BorderStyle.None,Name="explorer-results"};
         foreach(var c in new[]{("Nazwa / domena",300),("Typ",145),("Kraj",65),("Kanały",65),("Odczytano",140),("Stan",250)})list.Columns.Add(c.Item1,c.Item2);layout.Controls.Add(list,0,4);

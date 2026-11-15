@@ -57,7 +57,7 @@ public sealed class PrivateProviderClient
         var message=new HttpRequestMessage(new HttpMethod(request.Method),request.Url);
         try
         {
-            message.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.7");
+            message.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8");
             foreach(var pair in request.Headers??[])
             {
                 if(pair.Key.Any(c=>c<=32||c>=127)||pair.Value.Any(c=>c is '\r' or '\n' or '\0'))throw new InvalidDataException("Nieobsługiwane nagłówki źródła.");

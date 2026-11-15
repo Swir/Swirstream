@@ -19,7 +19,7 @@ import tempfile
 import zipfile
 
 
-VERSION = "0.3.6"
+VERSION = "0.3.7"
 PREFIX = f"SwirStreamAI_Android_{VERSION}"
 APK_NAME = f"{PREFIX}.apk"
 EXCLUDED_DIRS = {
@@ -35,7 +35,7 @@ SENSITIVE_NAME = re.compile(
     r"password|passwd|credential|keystore|signing|private[-_.]?key", re.IGNORECASE
 )
 USER_DOCS = (
-    "START_PL.txt", "README_ANDROID.md", "MODEL_CARD_ANDROID.md",
+    "START_PL.txt", "README_ANDROID.md", "PORTALE_PRZYKLAD.txt", "MODEL_CARD_ANDROID.md",
     "THIRD_PARTY_ANDROID.md", "LICENSE_APP_MIT.txt", "ICON_PROVENANCE.txt",
     "license-provenance.json", "dependency-inventory.json",
     "release-runtime-classpath.txt",

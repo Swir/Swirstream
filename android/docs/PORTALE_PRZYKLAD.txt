@@ -1,0 +1,12 @@
+# PRZYKLAD FORMATU. Adresy example.org i MAC ponizej sa fikcyjne.
+# Zastap je danymi wlasnego konta otrzymanymi od operatora.
+# Sam URL sprawdza tylko publiczna strone, bez logowania.
+https://public.example.org/c/
+
+# Jeden adres i wlasny MAC w jednym wierszu:
+https://portal.example.org/c/|02:00:00:00:00:01
+
+# Jeden adres z kilkoma dokladnie podanymi wlasnymi MAC:
+https://other.example.org/stalker_portal/c/
+02:00:00:00:00:02 - przykladowy komentarz
+02:00:00:00:00:03 # kolejny przyklad

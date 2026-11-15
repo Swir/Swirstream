@@ -6,13 +6,15 @@ set "REPORTS=%~dp0test-results\run-%RANDOM%-%RANDOM%"
 mkdir "%REPORTS%"
 if not "%errorlevel%"=="0" goto failed
 if not exist "%~dp0SwirStreamAI.exe" goto failed
+start "" /wait "%~dp0SwirStreamAI.exe" --portal-scanner-test --report "%REPORTS%\portal-scanner.json"
+if not "%errorlevel%"=="0" goto failed
 start "" /wait "%~dp0SwirStreamAI.exe" --public-playlist-test --report "%REPORTS%\public-playlist.json"
 if not "%errorlevel%"=="0" goto failed
 start "" /wait "%~dp0SwirStreamAI.exe" --public-provider-test --report "%REPORTS%\public-provider.json"
 if not "%errorlevel%"=="0" goto failed
 start "" /wait "%~dp0SwirStreamAI.exe" --source-explorer-test --report "%REPORTS%\source-explorer.json"
 if not "%errorlevel%"=="0" goto failed
-echo Lokalne testy SwirStream AI 0.9.7. Okna testowe moga pojawic sie na chwile.
+echo Lokalne testy SwirStream AI 0.9.8. Okna testowe moga pojawic sie na chwile.
 start "" /wait "%~dp0SwirStreamAI.exe" --xtream-link-test --report "%REPORTS%\xtream-link.json"
 if not "%errorlevel%"=="0" goto failed
 start "" /wait "%~dp0SwirStreamAI.exe" --provider-failure-test --report "%REPORTS%\provider-failure.json"

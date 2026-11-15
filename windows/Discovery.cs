@@ -81,7 +81,7 @@ public sealed class SmartCatalog
     }
     static async Task<(string, DateTimeOffset?)> Fetch(string url, CancellationToken ct)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.7");
+        using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8");
         using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct); response.EnsureSuccessStatusCode();
         if (response.Content.Headers.ContentLength > 20_000_000) throw new IOException("Katalog przekracza 20 MB.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct); deadline.CancelAfter(TimeSpan.FromSeconds(20));

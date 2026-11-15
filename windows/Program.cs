@@ -16,6 +16,7 @@ static class Program
             if (args.Contains("--provider-test")) return PrivateProviderTests.Run(report, args.Contains("--network"));
             if (args.Contains("--portal-protocol-test")) return PortalProtocolTests.Run(report);
             if (args.Contains("--portal-catalog-test")) return PortalCatalogTests.Run(report);
+            if (args.Contains("--portal-scanner-test")) return PortalScannerTests.Run(report,Arg("--fixtures",Path.Combine(AppContext.BaseDirectory,"assets","portal-txt-parity.json")));
             if (args.Contains("--source-explorer-test")) return SourceExplorerTests.Run(report,args.Contains("--network"));
             if (args.Contains("--xtream-link-test")) return XtreamLinkTests.Run(report);
             if (args.Contains("--public-playlist-test")) return PublicPlaylistDiscoveryTests.Run(report,args.Contains("--network"));
@@ -69,7 +70,11 @@ static class Program
                     void Check(string name, bool ok, object? detail = null) { checks.Add(new { name, ok, detail }); success &= ok; }
                     try
                     {
-                        if(args.Contains("--provider-ui-only"))
+                        if(args.Contains("--portal-scanner-ui-only"))
+                        {
+                            await form.PortalScannerUiTest(Check,Path.ChangeExtension(report,".portal-scanner.png"));
+                        }
+                        else if(args.Contains("--provider-ui-only"))
                         {
                             await form.PlayerReady.WaitAsync(TimeSpan.FromSeconds(30));
                             await form.PortalStatusUiTest(Check,Path.ChangeExtension(report,".portal-status.png"));

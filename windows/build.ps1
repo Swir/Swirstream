@@ -1,10 +1,12 @@
 param(
-    [string]$Destination = (Join-Path $PSScriptRoot 'dist\SwirStreamAI_0.9.7'),
-    [string]$DependencyCache = (Join-Path $PSScriptRoot 'dependency-cache-v070')
+    [string]$Destination = (Join-Path $PSScriptRoot 'dist\SwirStreamAI_0.9.8'),
+    [string]$DependencyCache = (Join-Path $PSScriptRoot 'dependency-cache-v070'),
+    [string]$Packages = (Join-Path $PSScriptRoot '..\packages')
 )
 $ErrorActionPreference = 'Stop'
 $Destination = [IO.Path]::GetFullPath($Destination)
 $DependencyCache = [IO.Path]::GetFullPath($DependencyCache)
+$Packages = [IO.Path]::GetFullPath($Packages)
 $project = Join-Path $PSScriptRoot 'SwirStreamAI.csproj'
 $acquire = Join-Path $PSScriptRoot 'Acquire-SwirPlayer.ps1'
 
@@ -25,10 +27,10 @@ Get-Command tar -ErrorAction Stop | Out-Null
 $sdkVersion = (& dotnet --version).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Nie udało się odczytać wersji SDK .NET.' }
 
-& dotnet publish $project -c Release -r win-x64 --self-contained true --source https://api.nuget.org/v3/index.json -o $Destination
+& dotnet publish $project -c Release -r win-x64 --self-contained true --source https://api.nuget.org/v3/index.json "-p:RestorePackagesPath=$Packages" -o $Destination
 if ($LASTEXITCODE -ne 0) { throw 'Kompilacja aplikacji nie powiodła się. Kolejna próba wymaga nowego lub pustego folderu.' }
 if ((Test-Path -LiteralPath (Join-Path $Destination 'vlc')) -or (Test-Path -LiteralPath (Join-Path $Destination 'libvlc.dll'))) {
-    throw 'Publikacja zawiera stary silnik. Wydanie 0.9.7 wymaga nowego folderu player.'
+    throw 'Publikacja zawiera stary silnik. Wydanie 0.9.8 wymaga nowego folderu player.'
 }
 
 # Acquires and checks the pinned upstream binary; does not compile the native engine.
@@ -47,7 +49,6 @@ foreach ($name in @('README.md','ZACZNIJ_TUTAJ.txt','MODEL_CARD.md','THIRD_PARTY
 
 # Copy notices for exactly the runtime versions selected by this publish.
 $runtime = Get-Content -LiteralPath (Join-Path $Destination 'SwirStreamAI.runtimeconfig.json') -Raw | ConvertFrom-Json
-$packages = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\packages'))
 $runtimePacks = @{
     'Microsoft.NETCore.App' = 'microsoft.netcore.app.runtime.win-x64'
     'Microsoft.WindowsDesktop.App' = 'microsoft.windowsdesktop.app.runtime.win-x64'
@@ -56,7 +57,7 @@ foreach ($frameworkName in $runtimePacks.Keys) {
     $framework = @($runtime.runtimeOptions.includedFrameworks | Where-Object { $_.name -eq $frameworkName })
     if ($framework.Count -ne 1) { throw "Brak jednoznacznej wersji dołączonego runtime: $frameworkName" }
     $packageId = $runtimePacks[$frameworkName]
-    $packagePath = Join-Path (Join-Path $packages $packageId) $framework[0].version
+    $packagePath = Join-Path (Join-Path $Packages $packageId) $framework[0].version
     $notices = @(Get-ChildItem -LiteralPath $packagePath -File | Where-Object { $_.Name -match '^(LICENSE|THIRD-PARTY)' })
     if (!($notices | Where-Object { $_.Name -match '^LICENSE' })) { throw "Brak licencji runtime: $packagePath" }
     $licenseDir = Join-Path $Destination ('licenses\' + $packageId + '\' + $framework[0].version)
@@ -65,7 +66,7 @@ foreach ($frameworkName in $runtimePacks.Keys) {
 }
 
 [ordered]@{
-    application = 'SwirStream AI'; version = '0.9.7'; target = 'win-x64'; selfContained = $true
+    application = 'SwirStream AI'; version = '0.9.8'; target = 'win-x64'; selfContained = $true
     builtAtUtc = [DateTimeOffset]::UtcNow.ToString('O'); dotnetSdk = $sdkVersion
     runtimes = $runtime.runtimeOptions.includedFrameworks
     nativeRelease = $native.release; nativeDllSha256 = $native.dllSha256
