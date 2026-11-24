@@ -1,14 +1,16 @@
 plugins { id 'com.android.application' }
 android {
     namespace 'com.swir.stream'
+    sourceSets.main.resources.srcDir '../../shared/discovery'
+    sourceSets.main.resources.srcDir '../../shared/interface'
     testBuildType providers.gradleProperty('testBuildType').getOrElse('debug')
     compileSdk { version = release(36) { minorApiLevel = 1 } }
     defaultConfig {
         applicationId 'com.swir.stream'
         minSdk 23
         targetSdk 36
-        versionCode 11
-        versionName '0.3.7'
+        versionCode 15
+        versionName '0.6.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {

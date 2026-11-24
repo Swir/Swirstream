@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -6,16 +7,39 @@ using System.Text.RegularExpressions;
 
 namespace SwirStreamAI;
 
-public record Country(string Code, string Name) { public override string ToString() => Name + " (" + Code + ")"; }
+public record Country(string Code, string Name)
+{
+    public override string ToString() => (UiLanguage.IsEnglish ? WorldMarkets.Name(Code) : Name) + " (" + Code + ")";
+    public bool Matches(string text)
+    {
+        string query = TextTools.Normalize(text.Trim());
+        return query.Length == 0 || TextTools.Normalize(Name+" "+WorldMarkets.Name(Code)+" "+Code+(Code=="GB"?" UK":"")).Contains(query)
+            || Countries.NativeNames(Code).Contains(query);
+    }
+}
 public static class Countries
 {
+    static readonly Lazy<Dictionary<string,string>> LocalNames = new(() =>
+    {
+        var names = new Dictionary<string,HashSet<string>>();
+        foreach (var culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+        {
+            RegionInfo region;
+            try { region = new RegionInfo(culture.Name); } catch (ArgumentException) { continue; }
+            string code = region.TwoLetterISORegionName;
+            if (!names.TryGetValue(code, out var values)) names[code] = values = [];
+            values.Add(TextTools.Normalize(region.NativeName));
+        }
+        return names.ToDictionary(item => item.Key, item => string.Join(" ", item.Value));
+    });
+    internal static string NativeNames(string code) => LocalNames.Value.GetValueOrDefault(code,"");
     public static List<Country> Load()
     {
         using var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "assets", "countries.json")));
         return doc.RootElement.EnumerateArray().Select(x => {
             string code = x.GetProperty("code").GetString()!, name = x.GetProperty("name").GetString()!;
-            return new Country(code, name);
-        }).DistinctBy(c => c.Code).OrderBy(c => c.Name).ToList();
+            return new Country(WorldMarkets.Canonical(code), code == "UK" ? "Wielka Brytania" : name);
+        }).DistinctBy(c => c.Code).OrderBy(c => c.ToString(), StringComparer.Create(UiLanguage.IsEnglish ? CultureInfo.GetCultureInfo("en") : CultureInfo.GetCultureInfo("pl"),true)).ToList();
     }
     public static (string Query, string[] Codes) Extract(string text, string[] selected)
     {
@@ -81,7 +105,7 @@ public sealed class SmartCatalog
     }
     static async Task<(string, DateTimeOffset?)> Fetch(string url, CancellationToken ct)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8");
+        using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.11.0");
         using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct); response.EnsureSuccessStatusCode();
         if (response.Content.Headers.ContentLength > 20_000_000) throw new IOException("Katalog przekracza 20 MB.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(ct); deadline.CancelAfter(TimeSpan.FromSeconds(20));
@@ -140,21 +164,21 @@ public sealed class SmartCatalog
     }
     public async Task<SearchResult> Search(string query, string mode, string[] countries, bool refresh, CancellationToken ct)
     {
-        countries = countries.Where(c => Regex.IsMatch(c, "^[A-Z]{2}$")).Distinct().ToArray();
-        if (countries.Length > 12) throw new ArgumentException("Wybierz maksymalnie 12 krajów lub odznacz wszystkie, aby szukać globalnie.");
-        var regions = countries.Length == 0 ? new[] { "" } : countries;
+        countries = countries.Where(c => Regex.IsMatch(c, "^[A-Z]{2}$")).Select(WorldMarkets.Canonical).Distinct().ToArray();
+        bool globalTv = countries.Length > 12;
+        var regions = countries.Length == 0 ? [""] : globalTv ? new[] { "" }.Concat(countries).ToArray() : countries;
         using var gate = new SemaphoreSlim(3); var jobs = new List<Task<SearchResult>>();
         foreach (var country in regions)
         {
-            if (mode != "Radio") jobs.Add(Job(async () => {
-                string path = country.Length == 0 ? "index.m3u" : "countries/" + country.ToLowerInvariant() + ".m3u";
+            if (mode != "Radio" && (!globalTv || country.Length == 0)) jobs.Add(Job(async () => {
+                string path = country.Length == 0 ? "index.m3u" : "countries/" + WorldMarkets.TvCatalogCode(country) + ".m3u";
                 var result = await Feed("TV " + country + " (kraj kanału)", settings.TvTemplates.Select(t => t.Replace("{path}", path)).ToArray(), body => {
                     if (!body.TrimStart('\uFEFF', ' ', '\r', '\n').StartsWith("#EXTM3U") || M3u.IsHls(body)) throw new InvalidDataException("Nieprawidłowy format katalogu TV.");
                     return M3u.Parse(body, "https://iptv-org.github.io/iptv/" + path).Select(s => s with { Kind = "TV", Country = s.Country.Length > 0 ? s.Country : country, Source = "iptv-org" }).ToList();
                 }, refresh, ct);
                 return result with { Stations = result.Stations.Where(s => (countries.Length == 0 || countries.Contains(s.Country)) && ChannelSearch.Matches(query, s)).ToList() };
             }));
-            if (mode != "TV") jobs.Add(Job(async () => {
+            if (mode != "TV" && (!globalTv || country.Length > 0)) jobs.Add(Job(async () => {
                 string tail = "/json/stations/search?hidebroken=true&limit=200&order=clickcount&reverse=true" + (country.Length > 0 ? "&countrycode=" + country : "");
                 var list = new List<Station>(); var notes = new List<string>(); var dates = new List<DateTimeOffset>();
                 foreach (string filter in query.Length == 0 ? new[] { "" } : new[] { "&name=", "&tag=" })

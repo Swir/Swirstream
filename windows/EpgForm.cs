@@ -1,3 +1,4 @@
+using static SwirStreamAI.UiLanguage;
 namespace SwirStreamAI;
 
 public sealed partial class MainForm
@@ -61,7 +62,7 @@ public sealed partial class MainForm
     {
         int withNow = 0;
         foreach (ListViewItem item in results.Items) if (item.Tag is Station s)
-        { var slot = Slot(s); if (slot.Now != null) withNow++; item.ToolTipText = s.Name + "\n" + EpgService.Line(slot.Now, "Teraz: ") + "\n" + EpgService.Line(slot.Next, "Następnie: ") + (s.BrowserOnly ? "\n" + s.AccessNote : ""); }
+        { var slot = Slot(s); if (slot.Now != null) withNow++; item.ToolTipText = s.Name + "\n" + EpgService.Line(slot.Now, T("Teraz: ")) + "\n" + EpgService.Line(slot.Next, T("Następnie: ")) + (s.BrowserOnly ? "\n" + s.AccessNote : ""); }
         if (!epgBusy) epgStatus.Text = $"EPG teraz: {withNow}/{shown.Count}";
     }
     void DrawStation(object? sender, DrawListViewSubItemEventArgs e)
@@ -74,7 +75,7 @@ public sealed partial class MainForm
         using var bold = new Font(Font, FontStyle.Bold); using var small = new Font("Segoe UI", 8.5f);
         TextRenderer.DrawText(e.Graphics, station.Name, bold, bounds, selected ? Cyan : Color.White, TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         var slot = epg==null?null:Slot(station); bounds.Y += 24; bounds.Height = 18;
-        string currentLine = station.Kind == "Radio" ? "Radio • ramówka TV nie dotyczy" : slot?.Now == null && epgBusy ? "Pobieram EPG…" : EpgService.Line(slot?.Now, "Teraz: ");
+        string currentLine = station.Kind == "Radio" ? "Radio • ramówka TV nie dotyczy" : slot?.Now == null && epgBusy ? T("Pobieram EPG…") : EpgService.Line(slot?.Now, T("Teraz: "));
         TextRenderer.DrawText(e.Graphics, currentLine, small, bounds, Cyan, TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         bounds.Y += 18;
         TextRenderer.DrawText(e.Graphics, station.Kind == "Radio" ? "" : EpgService.Line(slot?.Next, "Potem: "), small, bounds, Muted, TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
@@ -100,7 +101,7 @@ public sealed partial class MainForm
                 (match == null ? "Nie znaleziono jednoznacznego EPG. Możesz dopasować kanał ręcznie u góry.\r\n" : $"Dopasowanie: {match.Method} • {match.Channel.Id}\r\nŹródło: {match.Feed.Source}\r\nPobrano: {match.Feed.Downloaded.ToLocalTime():dd.MM.yyyy HH:mm}\r\n\r\n" + string.Join("\r\n\r\n", match.Channel.Programmes.Where(p => p.Stop > DateTimeOffset.UtcNow).Take(50).Select(p => $"{p.Start.ToLocalTime():dd.MM HH:mm}–{p.Stop.ToLocalTime():HH:mm} • {p.Title}\r\n{p.Description}"))) + "\r\n\r\n" + epg.Notice.Replace("\n", "\r\n");
         }
         controls.Controls.Add(new Label { Text = "Ramówka kanału (ten sam kraj):", AutoSize = true, Width = 700 }); controls.SetFlowBreak(controls.Controls[0], true);
-        controls.Controls.Add(choices); controls.Controls.Add(Button("Zastosuj", () =>
+        controls.Controls.Add(choices); controls.Controls.Add(Button(T("Zastosuj"), () =>
         {
             string id = ((EpgChoice)choices.SelectedItem!).Id;
             if (id.Length == 0) epg.Settings.Matches.Remove(EpgService.MappingKey(station)); else epg.Settings.Matches[EpgService.MappingKey(station)] = id;

@@ -1,3 +1,4 @@
+using static SwirStreamAI.UiLanguage;
 namespace SwirStreamAI;
 
 public sealed partial class MainForm
@@ -22,19 +23,19 @@ public sealed partial class MainForm
         var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 7, BackColor = Card, Padding = new(35) };
         foreach (float h in new float[] { -1, 60, 65, 75, 20, 55, -1 }) layout.RowStyles.Add(new(h < 0 ? SizeType.Percent : SizeType.Absolute, h < 0 ? 50 : h));
         layout.Controls.Add(Label("SWIRSTREAM AI  •  by Swir", 24, Cyan, true), 0, 1);
-        scanTitle = Label("Proszę czekać — trwa pierwsze wyszukiwanie kanałów", 17, Color.White, true);
-        scanDetail = Label("Przygotowuję bazę kanałów…", 11, Muted);
+        scanTitle = Label(T("Proszę czekać — trwa pierwsze wyszukiwanie kanałów"), 17, Color.White, true);
+        scanDetail = Label(T("Przygotowuję bazę kanałów…"), 11, Muted);
         layout.Controls.Add(scanTitle, 0, 2); layout.Controls.Add(scanDetail, 0, 3);
         layout.Controls.Add(new ProgressBar { Dock = DockStyle.Fill, Style = ProgressBarStyle.Marquee, MarqueeAnimationSpeed = 35 }, 0, 4);
         var actions = new FlowLayoutPanel { Dock = DockStyle.Fill, Padding = new(0, 12, 0, 0) };
-        actions.Controls.Add(Button("Przerwij wyszukiwanie", () => { searchCancel?.Cancel(); scanDetail.Text = "Kończę wyszukiwanie. Dotychczasowa baza pozostanie dostępna."; return Task.CompletedTask; }, width: 220));
+        actions.Controls.Add(Button(T("Przerwij wyszukiwanie"), () => { searchCancel?.Cancel(); scanDetail.Text = "Kończę wyszukiwanie. Dotychczasowa baza pozostanie dostępna."; return Task.CompletedTask; }, width: 220));
         layout.Controls.Add(actions, 0, 5); scanOverlay.Controls.Add(layout); Controls.Add(scanOverlay);
     }
     void BeginScan(bool initial)
     {
         scanBusy = true; mainContent.Enabled = false;
-        scanTitle.Text = initial ? "Proszę czekać — trwa pierwsze wyszukiwanie kanałów" : "Proszę czekać — trwa wyszukiwanie kanałów";
-        scanDetail.Text = "1/3 • Pobieram katalogi • " + CountryCaption();
+        scanTitle.Text = initial ? T("Proszę czekać — trwa pierwsze wyszukiwanie kanałów") : T("Proszę czekać — trwa wyszukiwanie kanałów");
+        scanDetail.Text = T("1/3 • Pobieram katalogi • ") + CountryCaption();
         scanOverlay.Visible = true; scanOverlay.BringToFront();
         StartupProgress?.Invoke(scanDetail.Text);
     }
@@ -64,8 +65,8 @@ public sealed partial class MainForm
         resultPage = 0;
         if (listMode == "local") { localView="all"; ShowLibrary(); return Task.CompletedTask; }
         lastQuery = ChannelSearch.LocalQuery(search.Text, candidates); ShowRecommendations();
-        status.Text = candidates.Count == 0 ? "Baza jest pusta. Użyj Szukaj w sieci lub Odśwież bazę."
-            : $"Baza gotowa • {candidates.Select(SourceRanker.ChannelKey).Distinct().Count()} kanałów. Szukaj w sieci = dodatkowe źródła; Odśwież bazę = nowe pełne wyszukiwanie.";
+        status.Text = candidates.Count == 0 ? T("Baza jest pusta. Użyj Szukaj w sieci lub Odśwież bazę.")
+            : IsEnglish ? $"Library ready • {candidates.Select(SourceRanker.ChannelKey).Distinct().Count()} channels. Search the web for more sources." : $"Baza gotowa • {candidates.Select(SourceRanker.ChannelKey).Distinct().Count()} kanałów. Szukaj w sieci = dodatkowe źródła; Odśwież bazę = nowe pełne wyszukiwanie.";
         return Task.CompletedTask;
     }
     void ShowLibrary()
@@ -88,8 +89,8 @@ public sealed partial class MainForm
         pageCaption.Text = $"{resultPage + 1} / {pages}";
         previousPage.Enabled = resultPage > 0; nextPage.Enabled = resultPage + 1 < pages;
         if (stations.Count == 0) details.Text = listMode=="local"
-            ?localStations.Count==0&&localProviderMessage.Length>0?localProviderMessage:"Brak pasujących kanałów w tej liście. Sprawdź nazwę lub wyczyść wyszukiwanie."
-            :"Brak pasujących kanałów. Sprawdź nazwę, kraje, tematykę i ukryte kanały albo wybierz Szukaj w sieci.";
+            ?localStations.Count==0&&localProviderMessage.Length>0?localProviderMessage:T("Brak pasujących kanałów w tej liście. Sprawdź nazwę lub wyczyść wyszukiwanie.")
+            :T("Brak pasujących kanałów. Sprawdź nazwę, kraje, tematykę i ukryte kanały albo wybierz Szukaj w sieci.");
         if (epgEnabled && epg != null && store.Data.SelectedCountries.Length == 0 && shown.Any(s => s.Kind != "Radio" && s.Country.Length == 2 && !epg.Feeds.Any(f => f.Country == s.Country))) Run(() => RefreshEpg(false));
     }
     Task ChangePage(int delta) { resultPage += delta; RefreshDiscoveryList(); return Task.CompletedTask; }

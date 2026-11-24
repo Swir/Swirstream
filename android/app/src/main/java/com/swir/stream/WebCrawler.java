@@ -89,11 +89,8 @@ final class WebCrawler {
         return result;
     }
     static String resolve(String base,String relative){try{return new URI(base).resolve(relative).toString();}catch(Exception e){return "";}}
-    static List<String> links(PublicHttp.Document doc,boolean iframe){
-        List<String> result=new ArrayList<>();String regex=iframe?"<iframe\\b[^>]*?\\bsrc\\s*=\\s*[\"']([^\"']+)[\"']":"(?:href|src)\\s*=\\s*[\"']([^\"']+)[\"']";
-        Matcher m=Pattern.compile(regex,Pattern.CASE_INSENSITIVE).matcher(doc.text);while(m.find()){String address=resolve(doc.url,M3u.entities(m.group(1)));String lower=address.toLowerCase(Locale.ROOT);if(!PublicHttp.allowedDocument(address)||PublicHttp.browserOnly(address)||!lower.matches(".*(?:live|na-zywo|na_zywo|player|embed|stream).*"))continue;if(lower.matches(".*\\.(?:js|css|png|jpg|svg|mp4)(?:\\?.*)?"))continue;if(!iframe&&!host(address).equals(host(doc.url)))continue;if(iframe&&host(address).matches(".*(?:doubleclick|googleads|adservice|adsystem).*"))continue;if(!result.contains(address))result.add(address);}
-        Collections.sort(result,(a,b)->Boolean.compare(!a.matches(".*(?:live-tv|/live,|ogladaj-na-zywo|/livestream|/player).*"),!b.matches(".*(?:live-tv|/live,|ogladaj-na-zywo|/livestream|/player).*")));
-        return new ArrayList<>(result.subList(0,Math.min(result.size(),iframe?2:3)));
+    static List<String> links(PublicHttp.Document doc, boolean iframe) {
+        return BroadcasterLinks.find(doc, iframe);
     }
     boolean isLive(String url,AtomicBoolean cancelled,int depth)throws IOException{
         if(depth>2||url.toLowerCase(Locale.ROOT).matches(".*(?:hlsvod|/vod/|\\.mp4(?:[./?]|$)).*"))return false;PublicHttp.Document doc=fetch(url,cancelled);String body=doc.text.trim().replace("\uFEFF","");
@@ -104,6 +101,27 @@ final class WebCrawler {
         if(!PublicHttp.allowedDocument(address)||SourcePrivacy.publicCredentials(address))return null;try{URI uri=new URI(address);if(!uri.getPath().toLowerCase(Locale.ROOT).matches(".*\\.m3u8?$"))return null;String host=uri.getHost();if(host.equals("github.com")){String[] p=uri.getPath().split("/");if(p.length<6||!p[3].equals("blob"))return null;StringBuilder out=new StringBuilder("https://raw.githubusercontent.com/").append(p[1]).append('/').append(p[2]);for(int i=4;i<p.length;i++)out.append('/').append(p[i]);return out.toString();}String clean=uri.toASCIIString();int fragment=clean.indexOf('#');return fragment<0?clean:clean.substring(0,fragment);}catch(Exception e){return null;}
     }
     long last(Station s){Long value=visits.get(s.url);return value==null?0:value;}
+    List<Station> rotateMarkets(List<Station> ranked) {
+        Map<String,ArrayDeque<Station>> groups = new LinkedHashMap<>();
+        Map<String,Long> latest = new HashMap<>();
+        for (Station station : ranked) {
+            ArrayDeque<Station> group = groups.get(station.country);
+            if (group == null) { group = new ArrayDeque<>(); groups.put(station.country,group); }
+            group.add(station);
+            latest.put(station.country,Math.max(latest.getOrDefault(station.country,0L),last(station)));
+        }
+        List<String> markets = new ArrayList<>(groups.keySet());
+        markets.sort((a,b)->Long.compare(latest.get(a),latest.get(b)));
+        ArrayDeque<ArrayDeque<Station>> pending = new ArrayDeque<>();
+        for (String market : markets) pending.add(groups.get(market));
+        List<Station> result = new ArrayList<>(ranked.size());
+        while (!pending.isEmpty()) {
+            ArrayDeque<Station> group = pending.remove();
+            result.add(group.remove());
+            if (!group.isEmpty()) pending.add(group);
+        }
+        return result;
+    }
     List<Station> ordered(List<Station> seeds){
         List<Station> oldest=new ArrayList<>(seeds);Collections.sort(oldest,(a,b)->{int date=Long.compare(last(a),last(b));return date!=0?date:a.name.compareToIgnoreCase(b.name);});
         if(ranking==null)return oldest;List<Station> preferred=new ArrayList<>(seeds);try{ranking.reorder(preferred);}catch(RuntimeException e){log.write("Uczenie kolejności niedostępne; zachowano zwykłe źródła.");return oldest;}
@@ -116,8 +134,18 @@ final class WebCrawler {
         if(SourceLinkParser.importCandidate(query))throw new IOException("Dane źródła wymagają prywatnego importu. Nie uruchomiono wyszukiwania WWW.");
         query=query.trim();long deadline=System.currentTimeMillis()+DeepSearchPlan.CRAWL_MILLIS;deadlineMillis=deadline;BroadcasterIndex broadcasters=new BroadcasterIndex(directory);List<Station> seeds=new ArrayList<>(),exact=new ArrayList<>();String key=Station.normalizeName(query);
         for(Station s:directory)if((countries.isEmpty()||countries.contains(s.country))&&PublicHttp.allowedDocument(s.url)){boolean same=CatalogRepository.exactName(key,s);if(!key.isEmpty()&&same)exact.add(s);if(query.isEmpty()||M3u.matches(query,s)||Station.normalizeName(s.name).length()>=2&&key.startsWith(Station.normalizeName(s.name)))seeds.add(s);}
-        List<Station> ranked=ordered(seeds);ArrayDeque<Page> homepages=new ArrayDeque<>(),searchPages=new ArrayDeque<>();Set<String> rootUrls=new HashSet<>();for(Station s:exact)if(rootUrls.size()<2&&rootUrls.add(s.url))homepages.add(new Page(s.url,s,0));for(Station s:ranked)if(rootUrls.size()<12&&rootUrls.add(s.url))homepages.add(new Page(s.url,s,0));
-        List<Station> result=new ArrayList<>();List<String> queries=new ArrayList<>(DeepSearchPlan.build(query,countries,exact,ranked));String publicQuery=query.replace('\r',' ').replace('\n',' ');if(publicQuery.length()>160)publicQuery=publicQuery.substring(0,160);queries.add(1,"public TV playlist m3u "+publicQuery+" "+String.join(" ",countries));if(queries.size()>DeepSearchPlan.MAX_QUERIES)queries.remove(queries.size()-1);Set<String> playlistUrls=new LinkedHashSet<>();
+        List<Station> ranked = ordered(seeds);
+        if (countries.size()!=1) ranked = rotateMarkets(ranked);
+        if (exact.size()>1) exact = ordered(exact);
+        ArrayDeque<Page> homepages=new ArrayDeque<>(),searchPages=new ArrayDeque<>();Set<String> rootUrls=new HashSet<>();for(Station s:exact)if(rootUrls.size()<2&&rootUrls.add(s.url))homepages.add(new Page(s.url,s,0));for(Station s:ranked)if(rootUrls.size()<12&&rootUrls.add(s.url))homepages.add(new Page(s.url,s,0));
+        List<Station> result = new ArrayList<>();
+        List<String> queries = new ArrayList<>(DeepSearchPlan.build(query, countries, exact, ranked));
+        String publicQuery = query.replace('\r', ' ').replace('\n', ' ');
+        if (publicQuery.length() > 160) publicQuery = publicQuery.substring(0, 160);
+        String region = countries.size() == 1 ? " " + countries.iterator().next() : "";
+        queries.add(1, "public TV playlist m3u " + publicQuery + region);
+        if (queries.size() > DeepSearchPlan.MAX_QUERIES) queries.remove(queries.size() - 1);
+        Set<String> playlistUrls = new LinkedHashSet<>();
         long searchDeadline=Math.min(deadline-35000,System.currentTimeMillis()+DeepSearchPlan.SEARCH_MILLIS);boolean bingAvailable=true,duckAvailable=true;int queryIndex=0;
         for(String search:queries){PublicHttp.checkCancelled(cancelled);if(System.currentTimeMillis()>=searchDeadline)break;int useful=0;
             CatalogRepository.progress(progress,"Internet: szukam stron i playlist ("+(++queryIndex)+"/"+queries.size()+")…");
@@ -134,21 +162,28 @@ final class WebCrawler {
         // Specific live pages discovered by either engine precede generic roots.
         List<Page> prioritized=new ArrayList<>(searchPages);Collections.sort(prioritized,(a,b)->Boolean.compare(!DeepSearchPlan.livePage(a.url),!DeepSearchPlan.livePage(b.url)));ArrayDeque<Page> queue=new ArrayDeque<>(prioritized);queue.addAll(homepages);
         Set<String> visited=new HashSet<>();
-        while(!queue.isEmpty()&&visited.size()<DeepSearchPlan.MAX_PAGES&&System.currentTimeMillis()<deadline){PublicHttp.checkCancelled(cancelled);Page page=queue.remove();if(!visited.add(page.url))continue;if(page.depth==0)visits.put(page.station.url,System.currentTimeMillis());CatalogRepository.progress(progress,"Internet: analizuję "+host(page.url)+" ("+visited.size()+"/"+DeepSearchPlan.MAX_PAGES+")");
+        ArrayDeque<Page> livePages = new ArrayDeque<>();
+        while((!queue.isEmpty() || !livePages.isEmpty()) && visited.size()<DeepSearchPlan.MAX_PAGES && System.currentTimeMillis()<deadline){
+            PublicHttp.checkCancelled(cancelled);
+            Page page = !livePages.isEmpty() && (queue.isEmpty() || visited.size()%3!=0) ? livePages.remove() : queue.remove();
+            if(!visited.add(page.url))continue;if(page.depth==0)visits.put(page.station.url,System.currentTimeMillis());CatalogRepository.progress(progress,"Internet: analizuję "+host(page.url)+" ("+visited.size()+"/"+DeepSearchPlan.MAX_PAGES+")");
             try{PublicHttp.Document doc=fetch(page.url,cancelled);List<String> media=media(doc);Matcher titleMatch=Pattern.compile("<title[^>]*>(.*?)</title>",Pattern.CASE_INSENSITIVE|Pattern.DOTALL).matcher(doc.text);String title=titleMatch.find()?M3u.entities(titleMatch.group(1)):"";
                 Station channel=broadcasters.sharedHomepage(page.station.url)?identify(title,doc.url,broadcasters):page.station;
                 Matcher tvp=Pattern.compile("^https://vod\\.tvp\\.pl/live,\\d+/[^,]+,(\\d+)").matcher(doc.url);if(tvp.find())try{media.addAll(media(fetch("https://vod.tvp.pl/api/products/"+tvp.group(1)+"/videos/playlist?platform=BROWSER&videoType=LIVE",cancelled)));}catch(IOException e){log.write("Publiczne API nadawcy: "+e.getMessage());}
                 if(channel!=null&&(countries.isEmpty()||countries.contains(channel.country)))for(String address:media){if(System.currentTimeMillis()>deadline)break;try{if(!isLive(address,cancelled,0))continue;Station found=copy(channel);found.url=address;found.origin=found.homepage=doc.url;found.referrer=doc.url;found.fetchedAt=doc.fetchedAt;found.modifiedAt=0;found.liveManifest=true;found.manifestCheckedAt=System.currentTimeMillis();List<String> aliases=new ArrayList<>();Collections.addAll(aliases,found.aliases);aliases.add(title);found.aliases=aliases.toArray(new String[0]);result.add(found);log.write("Manifest live: "+host(address)+"; odtwarzanie jeszcze niepotwierdzone.");}catch(IOException e){PublicHttp.checkCancelled(cancelled);log.write("Manifest: "+e.getMessage());}}
-                if(page.depth<DeepSearchPlan.MAX_DEPTH){for(String link:links(doc,false))queue.add(new Page(link,page.station,page.depth+1));for(String link:links(doc,true))queue.add(new Page(link,page.station,page.depth+1));}log.write("Odczyt strony "+host(doc.url)+": "+media.size()+" adresów mediów.");
+                if(page.depth<DeepSearchPlan.MAX_DEPTH){for(String link:links(doc,false))livePages.add(new Page(link,page.station,page.depth+1));for(String link:links(doc,true))livePages.add(new Page(link,page.station,page.depth+1));}log.write("Odczyt strony "+host(doc.url)+": "+media.size()+" adresów mediów.");
             }catch(IOException e){PublicHttp.checkCancelled(cancelled);log.write("Strona "+host(page.url)+": "+e.getMessage());}}
         PublicHttp.checkCancelled(cancelled);if(visitsFile!=null)try{JSONObject saved=new JSONObject();List<Map.Entry<String,Long>> entries=new ArrayList<>(visits.entrySet());Collections.sort(entries,(a,b)->Long.compare(b.getValue(),a.getValue()));for(int i=0;i<Math.min(entries.size(),10000);i++)saved.put(entries.get(i).getKey(),entries.get(i).getValue());synchronized(historyLock){if(canSave.allowed())CatalogRepository.writeJson(visitsFile,saved);}}catch(Exception e){log.write("Nie zapisano historii stron tego profilu.");}
         log.write("WWW: odczytano "+visited.size()+" stron; do 60 stron, głębokość 3, orientacyjny budżet 90s. To nie jest przeszukanie całego internetu.");return CatalogRepository.deduplicate(CatalogRepository.select(result,countries,query));
     }
     private static int enqueueHits(List<Hit> hits,String query,Set<String> countries,BroadcasterIndex broadcasters,ArrayDeque<Page> pages,Set<String> rootUrls,Set<String> playlistUrls){
         int useful=0;String key=Station.normalizeName(query);
-        for(Hit hit:hits){if(SourcePrivacy.publicCredentials(hit.url))continue;String playlist=playlistUrl(hit.url);if(playlist!=null){playlistUrls.add(playlist);useful++;continue;}Station channel=identify(hit.title,hit.url,broadcasters);if(channel==null||!countries.isEmpty()&&!countries.contains(channel.country))continue;
+        for(Hit hit:hits){if(SourcePrivacy.publicCredentials(hit.url))continue;String playlist=playlistUrl(hit.url);if(playlist!=null){if (playlistUrls.add(playlist)) useful++;continue;}Station channel=identify(hit.title,hit.url,broadcasters);if(channel==null||!countries.isEmpty()&&!countries.contains(channel.country))continue;
             String canonical=Station.normalizeName(channel.name);if(!query.isEmpty()&&!M3u.matches(query,channel)&&!(canonical.length()>=2&&key.startsWith(canonical)))continue;
-            useful++;if(rootUrls.size()<30&&rootUrls.add(hit.url))pages.add(new Page(hit.url,channel,0));
+            if (rootUrls.size() < 30 && rootUrls.add(hit.url)) {
+                pages.add(new Page(hit.url, channel, 0));
+                useful++;
+            }
         }return useful;
     }
 }

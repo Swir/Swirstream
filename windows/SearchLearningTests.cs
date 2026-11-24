@@ -28,6 +28,14 @@ public static class SearchLearningTests
             var learnedA=a.Snapshot([good,bad]);var learnedB=b.Snapshot([good,bad]);
             Check("Actual successful sources gain priority over failed sources",learnedA.Score(good)>learnedA.Score(bad),new{good=learnedA.Score(good),bad=learnedA.Score(bad)});
             Check("Different profiles learn opposite results independently",learnedA.Score(good)>learnedB.Score(good)&&a.ExampleCount==16&&b.ExampleCount==8);
+            var directoryTargets = new[]{bad with {Url=bad.Homepage},good with {Url=good.Homepage}};
+            var requestedUrls = new List<string>();
+            Task<WebDocument> Capture(string url,CancellationToken token) {
+                requestedUrls.Add(Uri.UnescapeDataString(url));
+                return Task.FromResult(new WebDocument(url,SearchResponse(url)??"<title>News</title>","text/html"));
+            }
+            await new WebDiscovery(Capture).Search("News","TV",["PL"],directoryTargets,[],"https://search.example/{query}",null,CancellationToken.None,priority:learnedA);
+            Check("Learned host becomes a real outgoing search query",requestedUrls.Any(u=>u.Contains("site:good.example"))&&!requestedUrls.Any(u=>u.Contains("site:bad.example")));
             var persisted=new SearchLearning(root,dataA,model).Snapshot([good,bad]);
             Check("Source model survives restart in its own profile",Math.Abs(persisted.Score(good)-learnedA.Score(good))<.001&&new SearchLearning(profiles.Folder(second.Id),dataB,model).ExampleCount==8);
             var now=DateTimeOffset.UtcNow;var result=new Health(now,true,700);

@@ -24,7 +24,7 @@ public class DeepSearchCrawlerTest {
 
     @Test public void planUsesCanonicalAliasesCountryLanguageAndLegacyId(){
         Station ard=channel("Das Erste","https://daserste.example/","DE");ard.aliases=new String[]{"ARD","Erstes Deutsches Fernsehen"};List<String> plan=DeepSearchPlan.build("ARD",Collections.singleton("DE"),Arrays.asList(ard),Arrays.asList(ard));
-        assertTrue(plan.size()<=6);assertEquals(plan.size(),new HashSet<>(plan).size());assertTrue(plan.stream().anyMatch(q->q.contains("Das Erste")));assertTrue(plan.stream().anyMatch(q->q.contains("Fernsehen Livestream")));assertTrue(plan.stream().anyMatch(q->q.contains("Germany")));assertTrue(plan.get(1).contains("site:github.com"));assertTrue(plan.stream().anyMatch(q->q.contains("site:daserste.example")));
+        assertTrue(plan.size()<=6);assertEquals(plan.size(),new HashSet<>(plan).size());assertTrue(plan.stream().anyMatch(q->q.contains("Das Erste")));assertTrue(plan.stream().anyMatch(q->q.contains("Livestream Fernsehen")));assertTrue(plan.stream().anyMatch(q->q.contains("Germany")));assertTrue(plan.get(1).contains("site:github.com"));assertTrue(plan.stream().anyMatch(q->q.contains("site:daserste.example")));
         Station dw=channel("DW","https://dw.example/","DE");dw.id="DWEnglish.de";dw.feed="English";assertTrue(DeepSearchPlan.build("Deutsche Welle",Collections.singleton("DE"),Arrays.asList(dw),Arrays.asList(dw)).stream().anyMatch(q->q.contains("DW English")||q.contains("DWEnglish")));
     }
     @Test public void duckResultsDecodePublishedRedirectsAndRejectChallengeAndPrivateUrls()throws Exception{
@@ -36,6 +36,26 @@ public class DeepSearchCrawlerTest {
         Station news=channel("News","https://news.example/","PL");List<String> visited=new ArrayList<>(),notes=new ArrayList<>();
         PublicHttp.Fetcher fetch=(url,cancel)->{visited.add(url);if(url.contains("bing.com"))throw new IOException("HTTP 503");if(url.contains("duckduckgo.com"))return doc(url,"<a class='result__a' href='https://news.example/live'>News live</a><a class='result__a' href='https://unknown.example/live'>News live</a>");if(url.endsWith(".m3u8"))return doc(url,LIVE);return doc(url,url.endsWith("/live")?"<title>News live</title><source src='https://cdn.example/live.m3u8'>":"<title>News</title>");};
         List<Station> result=crawler(fetch,notes).search("News",Collections.singleton("PL"),Arrays.asList(news),null,new AtomicBoolean());assertEquals(1,result.size());assertTrue(result.get(0).liveManifest);assertTrue(result.get(0).manifestCheckedAt>0);assertEquals("https://news.example/live",result.get(0).origin);assertEquals("https://news.example/live",visited.stream().filter(url->!engine(url)).findFirst().get());assertFalse(visited.contains("https://unknown.example/live"));assertEquals(1,visited.stream().filter(url->url.contains("bing.com")).count());assertTrue(notes.stream().anyMatch(n->n.startsWith("DuckDuckGo:")));
+    }
+    @Test public void repeatedPrimaryResultStillFindsManifestThroughSecondEngine() throws Exception {
+        Station news = channel("News", "https://news.example/", "PL");
+        int[] backups = {0};
+        PublicHttp.Fetcher fetch = (url, cancel) -> {
+            if (url.contains("bing.com")) return doc(url, rss(item("News", news.url + "program")));
+            if (url.contains("duckduckgo.com")) {
+                if (++backups[0] == 1) return doc(url, "<div class='no-results'>No results</div>");
+                return doc(url, "<a class='result__a' href='https://news.example/telewizja'>News</a>");
+            }
+            if (url.endsWith("/telewizja")) return doc(url, "<a href='/antena'><span>Na żywo</span></a>");
+            if (url.endsWith("/antena")) return doc(url, "<source src='https://cdn.example/live.m3u8'>");
+            return doc(url, url.endsWith(".m3u8") ? LIVE : "<title>News</title>");
+        };
+        List<Station> found = crawler(fetch, new ArrayList<>()).search("News", Collections.singleton("PL"),
+                Collections.singletonList(news), null, new AtomicBoolean());
+        assertTrue(backups[0] >= 2);
+        assertEquals(1, found.size());
+        assertTrue(found.get(0).liveManifest);
+        assertEquals(news.url + "antena", found.get(0).origin);
     }
     @Test public void foundPlaylistIsReadBeforePagesAndCountryScopeIsPreserved()throws Exception{
         Station news=channel("News","https://news.example/","PL"),foreign=channel("News Foreign","https://foreign.example/","DE");String listUrl="https://raw.githubusercontent.com/public/channels/main/news.m3u";List<String> visited=new ArrayList<>();int[] counts={0,0};

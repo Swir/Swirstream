@@ -1,3 +1,4 @@
+using static SwirStreamAI.UiLanguage;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -8,15 +9,15 @@ public sealed partial class MainForm : Form
     static readonly Color Bg = Color.FromArgb(10, 13, 22), Card = Color.FromArgb(18, 23, 37), Edge = Color.FromArgb(38, 47, 67),
         Muted = Color.FromArgb(157, 170, 192), Cyan = Color.FromArgb(66, 230, 217), Purple = Color.FromArgb(151, 123, 255);
     LibraryStore store;
-    readonly TextBox search = Input("Szukaj w gotowej bazie: nazwa kanału lub fragment");
+    readonly TextBox search = Input(T("Szukaj w gotowej bazie: nazwa kanału lub fragment"));
     readonly ComboBox kind = new() { DropDownStyle = ComboBoxStyle.DropDownList, DrawMode = DrawMode.OwnerDrawFixed, Width = 102, FlatStyle = FlatStyle.Flat, BackColor = Edge, ForeColor = Color.White };
     readonly ListView results = new() { Dock = DockStyle.Fill, View = View.Details, FullRowSelect = true, MultiSelect = false, HideSelection = false,
         BackColor = Card, ForeColor = Color.White, BorderStyle = BorderStyle.None, HeaderStyle = ColumnHeaderStyle.None };
-    readonly Label resultTitle = Label("ODKRYWAJ TRANSMISJE", 11, Color.White, true);
-    readonly Label details = Label("Wybierz stację, aby zobaczyć jej źródło.", 9, Muted);
-    readonly Label status = Label("Gotowy • wybierz katalog lub otwórz M3U", 9, Muted);
-    readonly Label now = Label("Twoje miejsce na live.", 17, Color.White, true);
-    readonly Label playback = Label("TV, radio i transmisje w jednym oknie", 10, Muted);
+    readonly Label resultTitle = Label(T("ODKRYWAJ TRANSMISJE"), 11, Color.White, true);
+    readonly Label details = Label(T("Wybierz stację, aby zobaczyć jej źródło."), 9, Muted);
+    readonly Label status = Label(T("Gotowy • wybierz katalog lub otwórz M3U"), 9, Muted);
+    readonly Label now = Label(T("Twoje miejsce na live."), 17, Color.White, true);
+    readonly Label playback = Label(T("TV, radio i transmisje w jednym oknie"), 10, Muted);
     readonly Label volumeText = Label("65%", 9, Muted);
     readonly VideoSurface video = new() { Dock = DockStyle.Fill };
     readonly TrackBar volume = new() { Minimum = 0, Maximum = 100, Value = 65, TickStyle = TickStyle.None, Width = 120, Height = 30, BackColor = Card };
@@ -44,7 +45,7 @@ public sealed partial class MainForm : Form
     {
         SuspendLayout();
         this.categoryModel = categoryModel; profiles = new(dataPath); store = new(profiles.Folder(profiles.Index.ActiveId));InitPrivateStore();
-        Text = "SwirStream AI 0.9.8 — by Swir"; BackColor = Bg; ForeColor = Color.White;
+        Text = "SwirStream AI 0.11.0 — by Swir"; BackColor = Bg; ForeColor = Color.White;
         Icon = new Icon(Path.Combine(AppContext.BaseDirectory, "assets", "swirstream-v070.ico"));
         Font = new Font("Segoe UI", 10); Size = new(1440, 940); MinimumSize = new(1200, 780);
         StartPosition = FormStartPosition.CenterScreen; AutoScaleMode = AutoScaleMode.Dpi; KeyPreview = true;
@@ -59,26 +60,28 @@ public sealed partial class MainForm : Form
         using var brandIcon = new Icon(Path.Combine(AppContext.BaseDirectory,"assets","swirstream-v070.ico"),64,64);
         brand.Controls.Add(new PictureBox { Image = brandIcon.ToBitmap(), Size = new(54,54), SizeMode = PictureBoxSizeMode.Zoom, Margin = new(0,0,12,0) });
         brand.Controls.Add(Label("SWIRSTREAM  AI", 23, Color.White, true, width:340, height:54));
-        header.Controls.Add(brand, 0, 0); header.Controls.Add(Label("●  TASTENET / LOKALNIE", 9, Cyan, true), 1, 0); header.Controls.Add(Label("by Swir", 12, Purple, true), 2, 0);
+        header.Controls.Add(brand, 0, 0); header.Controls.Add(Label(T("●  TASTENET / LOKALNIE"), 9, Cyan, true), 1, 0); header.Controls.Add(Label("by Swir", 12, Purple, true), 2, 0);
         var modules=CreateProviderModuleBar();header.Controls.Add(modules,0,1);header.SetColumnSpan(modules,3);
         root.Controls.Add(header, 0, 0); root.SetColumnSpan(header, 2);
         root.Controls.Add(nav, 0, 1);
-        nav.Controls.Add(Label("TWOJE TRANSMISJE", 8, Muted, true, 164, 30));
+        AddNav("Language / Język", SelectLanguage, Cyan);
+        AddNav(UiLanguage.IsEnglish ? "App updates" : "Aktualizacje programu", () => CheckRelease(true));
+        nav.Controls.Add(Label(T("TWOJE TRANSMISJE"), 8, Muted, true, 164, 30));
         AddNav("◉   Radio", () => SearchKind("Radio"), Cyan);
-        AddNav("▣   Telewizja", () => SearchKind("TV"));
-        AddNav("↗   Wszystkie live", () => SearchKind("Live"));
-        nav.Controls.Add(Label("BIBLIOTEKA", 8, Muted, true, 164, 30));
-        AddNav("★   Ulubione", () => ShowLocal("ULUBIONE", store.Data.Favorites));
-        AddNav("◷   Historia", () => ShowLocal("HISTORIA", store.Data.History.Select(v => v.Station with { Group = v.PlayedAt == DateTimeOffset.MinValue ? "Ze starej wersji • brak daty" : v.PlayedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm") }).ToList()));
-        AddNav("≡   Moja playlista", () => ShowLocal("MOJA PLAYLISTA", store.Data.Playlist));
-        AddNav("↓   Znalezione playlisty", ShowFoundPlaylists, Cyan);
-        AddNav("＋   Import M3U", ImportPlaylist);
-        AddNav("Moje źródła", ShowPrivateSources, Cyan);
-        AddNav("↗   Otwórz adres", OpenUrl);
-        nav.Controls.Add(Label("SPRAWDŹ ODTWARZACZ", 8, Muted, true, 164, 30));
-        AddNav("▷   Test lokalny", () => { PlayDemo(); return Task.CompletedTask; });
-        AddNav("?   Jak to działa", () => { Help(); return Task.CompletedTask; });
-        AddNav("Przenieś bibliotekę", ImportLegacy);
+        AddNav(T("▣   Telewizja"), () => SearchKind("TV"));
+        AddNav(T("↗   Wszystkie live"), () => SearchKind("Live"));
+        nav.Controls.Add(Label(T("BIBLIOTEKA"), 8, Muted, true, 164, 30));
+        AddNav(T("★   Ulubione"), () => ShowLocal("ULUBIONE", store.Data.Favorites));
+        AddNav(T("◷   Historia"), () => ShowLocal("HISTORIA", store.Data.History.Select(v => v.Station with { Group = v.PlayedAt == DateTimeOffset.MinValue ? "Ze starej wersji • brak daty" : v.PlayedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm") }).ToList()));
+        AddNav(T("≡   Moja playlista"), () => ShowLocal("MOJA PLAYLISTA", store.Data.Playlist));
+        AddNav(T("↓   Znalezione playlisty"), ShowFoundPlaylists, Cyan);
+        AddNav("Import M3U / Dreambox", ImportPlaylist);
+        AddNav(T("Moje źródła"), ShowPrivateSources, Cyan);
+        AddNav(T("↗   Otwórz adres"), OpenUrl);
+        nav.Controls.Add(Label(T("SPRAWDŹ ODTWARZACZ"), 8, Muted, true, 164, 30));
+        AddNav(T("▷   Test lokalny"), () => { PlayDemo(); return Task.CompletedTask; });
+        AddNav(T("?   Jak to działa"), () => { Help(); return Task.CompletedTask; });
+        AddNav(T("Przenieś bibliotekę"), ImportLegacy);
         var body = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 3, Margin = new(8, 0, 0, 0) }; body.SuspendLayout();
         body.ColumnStyles.Add(new(SizeType.Percent, 56)); body.ColumnStyles.Add(new(SizeType.Percent, 44));
         body.RowStyles.Add(new(SizeType.Absolute, 56)); body.RowStyles.Add(new(SizeType.Absolute, 42)); body.RowStyles.Add(new(SizeType.Percent, 100)); root.Controls.Add(body, 1, 1);
@@ -87,9 +90,9 @@ public sealed partial class MainForm : Form
         search.Dock = DockStyle.Fill; kind.Items.AddRange(["Radio", "TV", "Live"]); kind.SelectedIndex = 1;
         kind.DrawItem += (_, e) => { using var fill = new SolidBrush(Edge); e.Graphics.FillRectangle(fill, e.Bounds); if (e.Index >= 0) TextRenderer.DrawText(e.Graphics, kind.Items[e.Index]!.ToString(), Font, e.Bounds, Color.White, TextFormatFlags.VerticalCenter | TextFormatFlags.Left); };
         searchBar.Controls.Add(search, 0, 0); searchBar.Controls.Add(kind, 1, 0);
-        searchBar.Controls.Add(Button("Szukaj", SearchSubmit, true, 76), 2, 0);
-        searchBar.Controls.Add(Button("Szukaj w sieci", () => SmartSearch(true, deep: true), false, 136), 3, 0);
-        searchBar.Controls.Add(Button("Odśwież bazę", () => SmartSearch(true, wholeCatalog: true), false, 136), 4, 0);
+        searchBar.Controls.Add(Button(T("Szukaj"), SearchSubmit, true, 76), 2, 0);
+        searchBar.Controls.Add(Button(T("Szukaj w sieci"), () => SmartSearch(true, deep: true), false, 136), 3, 0);
+        searchBar.Controls.Add(Button(T("Odśwież bazę"), () => SmartSearch(true, wholeCatalog: true), false, 136), 4, 0);
         body.Controls.Add(searchBar, 0, 0); body.SetColumnSpan(searchBar, 2);
         search.KeyDown += (_, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; Run(SearchSubmit); } };
         playerLayout = new TableLayoutPanel { Dock = DockStyle.Fill, BackColor = Card, ColumnCount = 1, RowCount = 6, Margin = new(0, 0, 12, 0), Padding = new(16) }; playerLayout.SuspendLayout();
@@ -100,10 +103,10 @@ public sealed partial class MainForm : Form
         buttons.Controls.Add(Button("|◀", () => Step(-1), width: 44)); buttons.Controls.Add(Button("▶", PlaySelected, true, 48));
         buttons.Controls.Add(Button("Ⅱ", () => { if (player?.State == 4) player.Resume(); else player?.Pause(); return Task.CompletedTask; }, width: 44));
         buttons.Controls.Add(Button("■", Stop, width: 44)); buttons.Controls.Add(Button("▶|", () => Step(1), width: 44));
-        buttons.Controls.Add(Button("★", () => Favorite(true), width: 44)); buttons.Controls.Add(Button("Pełny ekran", () => { ToggleFullScreen(); return Task.CompletedTask; }, width: 110));
+        buttons.Controls.Add(Button("★", () => Favorite(true), width: 44)); buttons.Controls.Add(Button(T("Pełny ekran"), () => { ToggleFullScreen(); return Task.CompletedTask; }, width: 110));
         playerLayout.Controls.Add(buttons, 0, 4);
         var audio = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false }; audio.SuspendLayout();
-        audio.Controls.Add(Button("Dźwięk", () => { if (player != null) player.Muted = !player.Muted; return Task.CompletedTask; }, width: 76));
+        audio.Controls.Add(Button(T("Dźwięk"), () => { if (player != null) player.Muted = !player.Muted; return Task.CompletedTask; }, width: 76));
         volume.Value = store.Data.Volume; volumeText.Text = volume.Value + "%"; volumeText.Size = new(44, 30); audio.Controls.Add(volume); audio.Controls.Add(volumeText);
         clock.Size = new(115, 30); audio.Controls.Add(clock); seek.Width = 105; seek.Dock = DockStyle.None; audio.Controls.Add(seek);
         volume.ValueChanged += (_, _) => { if (player != null) player.Volume = volume.Value; volumeText.Text = volume.Value + "%"; store.Data.Volume = volume.Value; };
@@ -116,11 +119,11 @@ public sealed partial class MainForm : Form
         results.DrawSubItem += DrawStation;
         results.Resize += (_, _) => { if (results.Columns.Count > 0) results.Columns[0].Width = Math.Max(100, results.ClientSize.Width - 162); };
         results.DoubleClick += (_, _) => Run(PlaySelected);
-        results.SelectedIndexChanged += (_, _) => { var s = Selected; details.Text = s == null ? "Wybierz stację z listy." : SourceDetail(s); };
+        results.SelectedIndexChanged += (_, _) => { var s = Selected; details.Text = s == null ? T("Wybierz stację z listy.") : SourceDetail(s); };
         var menu = new ContextMenuStrip();
-        menu.Items.Add("Odtwórz", null, (_, _) => Run(PlaySelected)); menu.Items.Add("Dodaj do ulubionych", null, (_, _) => Run(() => Favorite(true)));
-        menu.Items.Add("Nie dla mnie — ukryj kanał", null, (_, _) => Run(HideChannel));
-        menu.Items.Add("Usuń z ulubionych", null, (_, _) => Run(() => Favorite(false))); menu.Items.Add("Kopiuj adres transmisji", null, (_, _) => { if (Selected is { } s) Clipboard.SetText(s.Url); });
+        menu.Items.Add(T("Odtwórz"), null, (_, _) => Run(PlaySelected)); menu.Items.Add(T("Dodaj do ulubionych"), null, (_, _) => Run(() => Favorite(true)));
+        menu.Items.Add(T("Nie dla mnie — ukryj kanał"), null, (_, _) => Run(HideChannel));
+        menu.Items.Add(T("Usuń z ulubionych"), null, (_, _) => Run(() => Favorite(false))); menu.Items.Add(T("Kopiuj adres transmisji"), null, (_, _) => { if (Selected is { } s) Clipboard.SetText(s.Url); });
         results.ContextMenuStrip = menu;
         listPanel.Controls.Add(resultTitle, 0, 0); listPanel.Controls.Add(results, 0, 1);
         var pages = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
@@ -128,18 +131,18 @@ public sealed partial class MainForm : Form
         previousPage.Height = nextPage.Height = 28;
         pageCaption = Label("1 / 1", 9, Muted, width: 55, height: 30);
         previousPage.Enabled = nextPage.Enabled = false; pages.Controls.AddRange([previousPage, pageCaption, nextPage]);
-        var epgButton = Button("Program TV", ShowEpg, width: 100); epgButton.Height = 28; pages.Controls.Add(epgButton);
-        epgStatus = Label("EPG: w tle", 8, Muted, width: 190, height: 30); pages.Controls.Add(epgStatus);
+        var epgButton = Button(T("Program TV"), ShowEpg, width: 100); epgButton.Height = 28; pages.Controls.Add(epgButton);
+        epgStatus = Label(T("EPG: w tle"), 8, Muted, width: 190, height: 30); pages.Controls.Add(epgStatus);
         listPanel.Controls.Add(pages, 0, 2); listPanel.Controls.Add(details, 0, 3);
         var listActions = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = true }; listActions.SuspendLayout();
-        listActions.Controls.Add(Button("Kanały",ShowCurrentChannels,width:74)); listActions.Controls.Add(Button("Warianty", ShowAlternatives, width: 90)); listActions.Controls.Add(Button("Wszystkie", ShowAllCandidates, width: 90));
-        listActions.Controls.Add(Button("Działające", ShowWorking, width: 100)); listActions.Controls.Add(Button("Szukaj dalej", SearchMore, width: 110));
-        listActions.Controls.Add(Button("Nie dla mnie", HideChannel, width: 110));
-        listActions.Controls.Add(Button("Więcej źródeł", SearchChannelSources, width: 116));
-        listActions.Controls.Add(Button("Eksport M3U", ExportPlaylist, width: 110)); listActions.Controls.Add(Button("Usuń ★", () => Favorite(false), width: 90));
+        listActions.Controls.Add(Button(T("Kanały"),ShowCurrentChannels,width:74)); listActions.Controls.Add(Button(T("Warianty"), ShowAlternatives, width: 90)); listActions.Controls.Add(Button(T("Wszystkie"), ShowAllCandidates, width: 90));
+        listActions.Controls.Add(Button(T("Działające"), ShowWorking, width: 100)); listActions.Controls.Add(Button(T("Szukaj dalej"), SearchMore, width: 110));
+        listActions.Controls.Add(Button(T("Nie dla mnie"), HideChannel, width: 110));
+        listActions.Controls.Add(Button(T("Więcej źródeł"), SearchChannelSources, width: 116));
+        listActions.Controls.Add(Button(T("Eksport M3U"), ExportPlaylist, width: 110)); listActions.Controls.Add(Button(T("Usuń ★"), () => Favorite(false), width: 90));
         listPanel.Controls.Add(listActions, 0, 4); body.Controls.Add(listPanel, 1, 2); InitDiscovery(dataPath, body);
         InitProfilePanel(root); InitEpg(); InitFoundPlaylists();
-        root.Controls.Add(Label("0.9.8  /  WINDOWS x64", 8, Muted), 0, 2); root.Controls.Add(status, 0, 3); root.SetColumnSpan(status, 2);
+        root.Controls.Add(Label("0.11.0  /  WINDOWS x64", 8, Muted), 0, 2); root.Controls.Add(status, 0, 3); root.SetColumnSpan(status, 2);
         InitScanOverlay(root);
         search.TextChanged += (_, _) =>
         {
@@ -152,13 +155,14 @@ public sealed partial class MainForm : Form
         Shown += async (_, _) =>
         {
             StartupDiagnostics.Mark("shownMs");
-            status.Text = startupMessage.Length > 0 ? startupMessage : store.Warning ?? "Przygotowuję odtwarzacz w tle…";
-            if (candidates.Count > 0) ShowRecommendations(); else ShowStations("TWOJE KANAŁY", []);
+            status.Text = startupMessage.Length > 0 ? startupMessage : store.Warning ?? T("Przygotowuję odtwarzacz w tle…");
+            if (candidates.Count > 0) ShowRecommendations(); else ShowStations(T("TWOJE KANAŁY"), []);
             timer.Start();
             // Let Windows paint the entire window before native initialization and discovery.
             await Task.Delay(75);
             if (closing) { playerReady.TrySetResult(); return; }
             var initialization = InitializePlayer(startupDelayMs);
+            if (!Environment.GetCommandLineArgs().Skip(1).Any(a=>a.EndsWith("-test"))) _ = CheckRelease(false);
             if (autoDiscover && searchGeneration == 0) Run(() => SmartSearch(false, initial: true, wholeCatalog: true));
             await initialization;
             if (epgEnabled && candidates.Count > 0) Run(() => RefreshEpg(false));
@@ -179,14 +183,14 @@ public sealed partial class MainForm : Form
             var ready = await playerStartup.Ready;
             if (closing) return;
             player = ready; player.Volume = volume.Value; StartupDiagnostics.Mark("engineReadyMs");
-            if (searchGeneration == 0) status.Text = store.Warning ?? "Gotowy • " + player.Version;
+            if (searchGeneration == 0) status.Text = store.Warning ?? T("Gotowy • ") + player.Version;
             if (pendingStation is { } station) { pendingStation = null; Play(station); }
         }
         catch (OperationCanceledException) when (closing) { }
         catch (Exception ex)
         {
             StartupDiagnostics.Mark("engineFailedMs"); playerError = ex.Message;
-            if (!closing) { pendingStation = null; playback.Text = "Odtwarzacz niedostępny"; status.Text = "Swir Player: " + ex.Message; }
+            if (!closing) { pendingStation = null; playback.Text = T("Odtwarzacz niedostępny"); status.Text = "Swir Player: " + ex.Message; }
         }
         finally { playerReady.TrySetResult(); }
     }
@@ -213,7 +217,7 @@ public sealed partial class MainForm : Form
     string DemoPath => Path.Combine(AppContext.BaseDirectory, "assets", "local-test.mp4");
     void ShowStations(string title, List<Station> stations)
     {
-        if(listMode!="local")title="Katalog publiczny • "+title;
+        if(listMode!="local")title=T("Katalog publiczny • ")+title;
         var previous = Selected; var previousUrl = previous?.Url; int topIndex = results.TopItem?.Index ?? 0;
         stations = stations.Where(s => !s.BrowserOnly).ToList();
         shown = stations; results.BeginUpdate(); results.Items.Clear();
@@ -246,7 +250,7 @@ public sealed partial class MainForm : Form
         if (player == null)
         {
             if (playerError.Length > 0) throw new InvalidOperationException(playerError);
-            pendingStation = station; now.Text = station.Name; playback.Text = "Przygotowuję odtwarzacz — za chwilę uruchomię kanał…"; return;
+            pendingStation = station; now.Text = station.Name; playback.Text = T("Przygotowuję odtwarzacz — za chwilę uruchomię kanał…"); return;
         }
         if(PrivateStation.IsPrivate(station)&&resolved==null){Run(()=>PlayPrivate(station,isFallback));return;}
         if(resolved==null)privatePlayCancel?.Cancel();
@@ -256,10 +260,10 @@ public sealed partial class MainForm : Form
         var media=resolved?.Station??station;
         currentEncrypted=resolved?.ClearKeyHex.Length>0;
         player.Play(media.Url, media.UserAgent, media.Referrer,quality.Text,resolved?.ClearKeyHex??""); player.Volume = volume.Value; expectedPlayback = true; current = station; historySaved = false; playbackRequested = DateTime.UtcNow;
-        now.Text = station.Name; playback.Text = "Łączenie…"; video.Active = true; video.Invalidate();
+        now.Text = station.Name; playback.Text = T("Łączenie…"); video.Active = true; video.Invalidate();
     }
-    Task PlaySelected() { if (Selected != null) Play(Selected); else if (player?.State == 4) player.Resume(); else status.Text = "Najpierw wybierz stację."; return Task.CompletedTask; }
-    Task Stop() { privatePlayCancel?.Cancel();pendingStation = null; expectedPlayback = false; player?.Stop(); playbackProgress.Reset(); playbackFailure = ""; playback.Text = "Zatrzymano"; video.Active = false; video.Invalidate(); return Task.CompletedTask; }
+    Task PlaySelected() { if (Selected != null) Play(Selected); else if (player?.State == 4) player.Resume(); else status.Text = T("Najpierw wybierz stację."); return Task.CompletedTask; }
+    Task Stop() { privatePlayCancel?.Cancel();pendingStation = null; expectedPlayback = false; player?.Stop(); playbackProgress.Reset(); playbackFailure = ""; playback.Text = T("Zatrzymano"); video.Active = false; video.Invalidate(); return Task.CompletedTask; }
     Task Step(int delta)
     {
         if (shown.Count == 0) return Task.CompletedTask;
@@ -268,14 +272,14 @@ public sealed partial class MainForm : Form
     }
     Task Favorite(bool add)
     {
-        var s = Selected ?? current; if (s == null) { status.Text = "Wybierz stację."; return Task.CompletedTask; }
+        var s = Selected ?? current; if (s == null) { status.Text = T("Wybierz stację."); return Task.CompletedTask; }
         bool wasFavorite = store.Data.Favorites.Any(x => x.Url == s.Url);
-        store.Favorite(s, add); if (add && !wasFavorite && taste.Learn(s, true, "favorite")) { store.Save(); UpdateTasteStatus(); } status.Text = (add ? "Dodano do ulubionych: " : "Usunięto z ulubionych: ") + s.Name;
+        store.Favorite(s, add); if (add && !wasFavorite && taste.Learn(s, true, "favorite")) { store.Save(); UpdateTasteStatus(); } status.Text = (add ? T("Dodano do ulubionych: ") : T("Usunięto z ulubionych: ")) + s.Name;
         if (listMode == "local" && localTitle == "ULUBIONE") { localStations = store.Data.Favorites; ShowLibrary(); } return Task.CompletedTask;
     }
     async Task ImportPlaylist()
     {
-        using var dialog = new OpenFileDialog { Filter = "Playlisty M3U|*.m3u;*.m3u8|Wszystkie pliki|*.*" };
+        using var dialog = new OpenFileDialog { Filter = "M3U / Dreambox IPTV|*.m3u;*.m3u8;*.tv;*.radio|Wszystkie pliki|*.*" };
         if (dialog.ShowDialog(this) != DialogResult.OK) return;
         var source=new ProviderSource(Guid.NewGuid().ToString("N"),Path.GetFileNameWithoutExtension(dialog.FileName),PrivateSourceKind.M3uFile,dialog.FileName);
         var repository=privateSources;using var timeout=new CancellationTokenSource(TimeSpan.FromMinutes(3));
@@ -304,7 +308,7 @@ public sealed partial class MainForm : Form
     {
         using var f = new Form { Text = "Otwórz transmisję", Width = 630, Height = 185, BackColor = Card, ForeColor = Color.White, StartPosition = FormStartPosition.CenterParent, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false };
         var t = Input("https://…"); t.UseSystemPasswordChar=true; t.SetBounds(18, 48, 575, 30); var label = Label(caption, 10, Color.White, width: 580, height: 30); label.Location = new(18, 12);
-        var ok = new Button { Text = "Otwórz", DialogResult = DialogResult.OK, Bounds = new(480, 90, 110, 32) };
+        var ok = new Button { Text = T("Otwórz"), DialogResult = DialogResult.OK, Bounds = new(480, 90, 110, 32) };
         f.Controls.AddRange([label, t, ok]); f.AcceptButton = ok; return f.ShowDialog(this) == DialogResult.OK ? t.Text : null;
     }
     void TickPlayback()
@@ -334,11 +338,11 @@ public sealed partial class MainForm : Form
         if (state == 3)
         {
             bool decoded = observation.Confirmed;
-            playback.Text = decoded ? "● Odtwarzanie potwierdzone • " + current.Kind : "Odbieranie transmisji…";
+            playback.Text = decoded ? T("● Odtwarzanie potwierdzone • ") + current.Kind : T("Odbieranie transmisji…");
             playback.ForeColor = decoded ? Cyan : Muted;
             if (decoded && observation.Advancing && !historySaved) { historySaved = true; try { store.Played(current); RecordSuccess(); } catch (Exception ex) { status.Text = "Nie zapisano historii: " + ex.Message; } }
         }
-        else { playback.ForeColor = Muted; playback.Text = playbackFailure.Length > 0 && state is 5 or 6 or 7 ? playbackFailure : state switch { 1 => "Łączenie…", 2 => "Buforowanie…", 4 => "Pauza", 5 => "Zatrzymano", 6 => "Koniec transmisji", 7 => currentEncrypted ? SwirPlayer.EncryptedDecodeFailureMessage : "Nie można odtworzyć — źródło niedostępne lub nieobsługiwane", _ => "Gotowy" }; }
+        else { playback.ForeColor = Muted; playback.Text = playbackFailure.Length > 0 && state is 5 or 6 or 7 ? playbackFailure : state switch { 1 => T("Łączenie…"), 2 => T("Buforowanie…"), 4 => T("Pauza"), 5 => T("Zatrzymano"), 6 => T("Koniec transmisji"), 7 => currentEncrypted ? SwirPlayer.EncryptedDecodeFailureMessage : T("Nie można odtworzyć — źródło niedostępne lub nieobsługiwane"), _ => T("Gotowy") }; }
         TrackWatching(state, observation.Confirmed && observation.Advancing);
         return observation;
     }

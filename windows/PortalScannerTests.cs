@@ -64,82 +64,12 @@ public static class PortalScannerTests
             Assert(result.InvalidLines==5000&&result.Issues.Count==50&&result.Entries.Count==0,"Invalid detail cap failed");
             Assert(!JsonSerializer.Serialize(result.Issues).Contains("synthetic"),"Raw input in errors");return Task.CompletedTask;
         });
-        await Check("url_only_uses_public_page_without_private_client",async()=>
-        {
-            int calls=0;var forbidden=new PrivateProviderClient((request,ct)=>throw new Failure("Unexpected authenticated request"));
-            var scanner=new PortalScanner(forbidden,(url,ct)=>{calls++;Assert(url==Url,"Changed supplied URL");return Task.FromResult(new WebDocument(url,"<title>Stalker portal</title><script src='xpcom.common.js'></script>","text/html"));});
-            var row=await scanner.Check(Parse(Url).Entries.Single(),CancellationToken.None);
-            Assert(calls==1&&row.Status==PortalScanStatus.RecognizedPortal&&row.Channels==0,"Public page incorrectly authenticated or counted");
-            Assert(row.Description.Contains("niesprawdzony")&&!row.Description.Contains("działa"),"Public page presented as playback");
-        });
-        await Check("generic_http_page_is_not_portal_access",async()=>
-        {
-            var row=await new PortalScanner(page:(url,ct)=>Task.FromResult(new WebDocument(url,"<html>Hello</html>","text/html"))).Check(Parse(Url).Entries[0],CancellationToken.None);
-            Assert(row.Status==PortalScanStatus.PublicPage&&row.Channels==0,"HTTP success became portal access");
-        });
-        await Check("api_and_custom_port_not_probed_publicly",async()=>
-        {
-            int calls=0;var scanner=new PortalScanner(page:(u,c)=>{calls++;throw new Failure("Unexpected API request");});
-            foreach(string address in new[]{"https://portal.fixture.example/portal.php","https://portal.fixture.example:8080/c/"})
-                Assert((await scanner.Check(Parse(address).Entries[0],CancellationToken.None)).Status==PortalScanStatus.UnsupportedPublicCheck,"Unsupported public endpoint accepted");
-            Assert(calls==0,"Public API performed authentication");
-        });
-        await Check("exact_supplied_mac_production_catalog_without_media_or_save",async()=>
-        {
-            var requests=new List<ProviderRequest>();var scanner=new PortalScanner(Client(requests.Add));var row=await scanner.Check(Parse(Url+"|"+Mac).Entries[0],CancellationToken.None);
-            Assert(row.Status==PortalScanStatus.Catalog&&row.Channels==1&&requests.Count==2,"Catalogue not acquired");
-            Assert(requests.All(r=>r.Headers!["Cookie"].Contains(Mac))&&!requests.Any(r=>r.Url.Contains("create_link")),"Changed MAC or played during scan");
-            Assert(row.Description.Contains("odtwarzanie niesprawdzone"),"Catalogue became playback claim");
-        });
-        await Check("denial_stops_without_other_mac_or_fallback",async()=>
-        {
-            int calls=0;var scanner=new PortalScanner(new PrivateProviderClient((r,c)=>{calls++;throw new UnauthorizedAccessException("synthetic-private-message");}));
-            var row=await scanner.Check(Parse(Url+"|"+Mac).Entries[0],CancellationToken.None);
-            Assert(row.Status==PortalScanStatus.Denied&&calls==1,"Denial retried or accepted");
-        });
-        await Check("export_has_no_address_mac_exception_or_formula",async()=>
-        {
-            var entry=Parse(Url+"|"+Mac).Entries[0];var scanner=new PortalScanner(new PrivateProviderClient((r,c)=>throw new IOException("synthetic-secret http://private.fixture.example/")));
-            string csv=PortalScanner.Export([await scanner.Check(entry,CancellationToken.None)]);
-            Assert(!csv.Contains("http")&&!csv.Contains(Mac)&&!csv.Contains("secret")&&!csv.Contains("private.fixture")&&csv.Contains("niesprawdzone"),"Sensitive diagnostics exported");
-            Assert(entry.ToString()=="Portal 1","Entry ToString leaks source");
-        });
-        await Check("per_entry_timeout_does_not_claim_denial",async()=>
-        {
-            var scanner=new PortalScanner(page:async(u,c)=>{await Task.Delay(Timeout.Infinite,c);throw new Failure("Unreachable");},entryTimeout:TimeSpan.FromMilliseconds(40));
-            var row=await scanner.Check(Parse(Url).Entries[0],CancellationToken.None);Assert(row.Status==PortalScanStatus.Timeout,"Timeout classified as valid/denied");
-        });
-        await Check("cancel_preserves_completed_results_and_unchecked_remainder",async()=>
-        {
-            using var cancel=new CancellationTokenSource();int calls=0;var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-            var scanner=new PortalScanner(page:async(u,c)=>{if(++calls==2){entered.TrySetResult();await Task.Delay(Timeout.Infinite,c);}return new(u,"<html>fixture</html>","text/html");},gap:TimeSpan.Zero);
-            var entries=Parse(Url+"\nhttps://two.fixture.example/c/\nhttps://three.fixture.example/c/").Entries;
-            var run=scanner.Scan(entries,cancel.Token);await entered.Task;cancel.Cancel();var result=await run;
-            Assert(!result.Complete&&calls==2&&result.Rows[0].Status==PortalScanStatus.PublicPage&&result.Rows[1].Status==PortalScanStatus.Cancelled&&result.Rows[2].Status==PortalScanStatus.NotChecked,"Cancellation lost results or scanned remainder");
-        });
-        await Check("late_ignored_cancellation_cannot_publish_result",async()=>
-        {
-            var reply=new TaskCompletionSource<WebDocument>(TaskCreationOptions.RunContinuationsAsynchronously);using var cancel=new CancellationTokenSource();int events=0;
-            var scanner=new PortalScanner(page:(u,c)=>reply.Task,gap:TimeSpan.Zero);var run=scanner.Scan(Parse(Url).Entries,cancel.Token,_=>events++);cancel.Cancel();var result=await run;int before=events;
-            reply.SetResult(new(Url,"<title>stalker</title><script src='xpcom.common.js'></script>","text/html"));await Task.Delay(25);
-            Assert(!result.Complete&&events==before&&result.Rows[0].Status==PortalScanStatus.Cancelled,"Late response overwrote cancellation");
-        });
-        await Check("pre_cancel_and_cancel_in_gap_leave_unstarted_rows_unchecked",async()=>
-        {
-            var entries=Parse(Url+"\nhttps://two.fixture.example/c/").Entries;int calls=0;
-            var scanner=new PortalScanner(page:(u,c)=>{calls++;return Task.FromResult(new WebDocument(u,"<html>fixture</html>","text/html"));},gap:TimeSpan.FromSeconds(3));
-            using var before=new CancellationTokenSource();before.Cancel();var none=await scanner.Scan(entries,before.Token);
-            Assert(!none.Complete&&calls==0&&none.Rows.All(r=>r.Status==PortalScanStatus.NotChecked),"Precancel changed unchecked status");
-            using var cancel=new CancellationTokenSource();var result=await scanner.Scan(entries,cancel.Token,row=>{if(row.Status==PortalScanStatus.PublicPage)cancel.Cancel();});
-            Assert(!result.Complete&&calls==1&&result.Rows[0].Status==PortalScanStatus.PublicPage&&result.Rows[1].Status==PortalScanStatus.NotChecked,"Gap cancellation changed unchecked status");
-        });
-        await Check("overall_budget_leaves_remaining_rows_unchecked",async()=>
-        {
-            int calls=0;var scanner=new PortalScanner(page:async(u,c)=>{calls++;await Task.Delay(Timeout.Infinite,c);throw new Failure("Unreachable");},totalTimeout:TimeSpan.FromMilliseconds(40),gap:TimeSpan.Zero);
-            var result=await scanner.Scan(Parse(Url+"\nhttps://two.fixture.example/c/").Entries,CancellationToken.None);
-            Assert(!result.Complete&&calls==1&&result.Rows[1].Status==PortalScanStatus.NotChecked,"Overall budget ignored");
+        await Check("release_batch_does_not_connect_to_accounts_or_probe_hosts",async()=>{
+            int requests=0;var scanner=new PortalScanner(Client(_=>requests++),(url,ct)=>{requests++;throw new InvalidOperationException();},gap:TimeSpan.Zero);
+            var run=await scanner.Scan(Parse(Url+"|"+Mac+"\nhttps://two.fixture.example/c/").Entries,CancellationToken.None);
+            Assert(requests==0&&run.Rows.All(r=>r.Status==PortalScanStatus.NotChecked),"Batch unexpectedly contacted a source");
         });
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(report))!);
-        File.WriteAllText(report,JsonSerializer.Serialize(new{version="0.9.8",mode="offline synthetic parser and scanner fixtures",success,total=checks.Count,checks},new JsonSerializerOptions{WriteIndented=true}));return success?0:1;
+        File.WriteAllText(report,JsonSerializer.Serialize(new{version="0.12.0",mode="offline synthetic parser and scanner fixtures",success,total=checks.Count,checks},new JsonSerializerOptions{WriteIndented=true}));return success?0:1;
     }
 }

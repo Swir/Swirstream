@@ -12,6 +12,47 @@ public static class DeepWebTests
             bool rejected=false;try{SearchExpansion.ParseDuck("<form id='challenge-form'>captcha</form>");}catch(InvalidDataException){rejected=true;}Check("Challenge is reported without bypass",rejected);
             Station news=new("News","https://news.example/",Country:"PL",ChannelId:"News.pl",Homepage:"https://news.example/");
             var requests=new List<string>();const string live="#EXTM3U\n#EXT-X-MEDIA-SEQUENCE:42\n#EXTINF:4,\nsegment.ts";
+            string navigation = "<a href='/director'>Director</a><a href='/replay/direct'>Direct</a>"
+                + "<a href='https://other.example/live'>Live</a><a href='/live.png'>Live</a>"
+                + "<a href='/watch?password=test'>Live</a><a href='/notiziari/rai'><span>LIVE</span></a>"
+                + "<a href='/emision' aria-label='En directo'></a><a href='/fr/direct#player'>Direct TV</a><a href='/fr/direct'>Direct TV</a>";
+            var links = WebDiscovery.LiveLinks(new("https://tv.example/", navigation, "text/html"));
+            Check("Official local live links use labels, prioritize dedicated pages, exclude replay and duplicates",
+                links.SequenceEqual(new[]{"https://tv.example/fr/direct","https://tv.example/notiziari/rai","https://tv.example/emision"}), links);
+            var countriesPlan = SearchExpansion.Queries("News","TV",["FR","IT"],[],[],4);
+            Check("Country-specific query keeps both localized searches within budget", countriesPlan.Any(q => q.Contains("TV diretta")) && countriesPlan.Any(q => q.Contains("en direct")) && countriesPlan.Count <= 4, countriesPlan);
+            int backupQueries = 0;
+            Task<WebDocument> NavigationBeforeGenericPages(string url,CancellationToken ct)
+            {
+                string body = url.Contains("search.example") ? "<rss><channel><item><title>News</title><link>https://news.example/about</link></item><item><title>News</title><link>https://news.example/schedule</link></item></channel></rss>"
+                    : url.Contains("duckduckgo") ? "<div class='no-results'>No results</div>"
+                    : url.EndsWith("/about") ? "<a href='/antena'>Na żywo</a>"
+                    : url.EndsWith("/antena") ? "<source src='https://cdn.example/today.m3u8'>"
+                    : url.EndsWith(".m3u8") ? live : "<title>News</title>";
+                return Task.FromResult(new WebDocument(url,body,"text/html"));
+            }
+            var tight = new WebDiscovery(NavigationBeforeGenericPages).Search("News","TV",["PL"],[news],[],"https://search.example/{query}",null,CancellationToken.None,new WebSearchPlan(30,4,4,2,2,8)).GetAwaiter().GetResult();
+            Check("Discovered live navigation beats queued generic pages within two visits",tight.Stations.Any(s=>s.Url.EndsWith("today.m3u8")));
+            Check("Every country has a searchable market and UK provider aliases stay consistent",
+                Countries.Load().Count == 250 && Countries.Load().All(c=>WorldMarkets.Name(c.Code)!=c.Code && WorldMarkets.Terms(c.Code,false).Any())
+                && new Station("UK TV","",Country:"UK").Country=="GB" && WorldMarkets.TvCatalogCode("GB")=="uk");
+            Check("Japanese and Arabic navigation includes live but omits Chinese replay",
+                WebDiscovery.LiveLinks(new("https://tv.example/","<a href='/one'>番組の生放送</a><a href='/two'>البث مباشر</a><a href='/old'>直播回放</a>","text/html"))
+                .SequenceEqual(new[]{"https://tv.example/one","https://tv.example/two"}));
+            Check("Country-specific search uses native words for Japanese TV and Egyptian radio",
+                SearchExpansion.Queries("NHK","TV",["JP"],[],[],4).Any(q=>q.Contains("生放送"))
+                && SearchExpansion.Queries("Nile","Radio",["EG"],[],[],4).Any(q=>q.Contains("راديو")));
+            Task<WebDocument> RepeatedHit(string url, CancellationToken ct)
+            {
+                string body = "<title>News</title>";
+                if (url.Contains("search.example")) body = "<rss><channel><item><title>News</title><link>https://news.example/live</link></item></channel></rss>";
+                if (url.Contains("duckduckgo.com")) { backupQueries++; body = backupQueries == 1 ? "<div class='no-results'></div>" : "<a class='result__a' href='https://news.example/watch'>News</a>"; }
+                if (url.EndsWith("/watch")) body = "<source src='https://cdn.example/recovered.m3u8'>";
+                if (url.EndsWith(".m3u8")) body = live;
+                return Task.FromResult(new WebDocument(url, body, "text/html"));
+            }
+            var recovered = new WebDiscovery(RepeatedHit).Search("News","TV",["PL"],[news],[],"https://search.example/?q={query}",null,CancellationToken.None).GetAwaiter().GetResult();
+            Check("Repeated primary hits allow another engine to recover a distinct manifest", recovered.Stations.Any(s => s.Url.EndsWith("/recovered.m3u8")));
             Task<WebDocument> Fetch(string url,CancellationToken ct)
             {
                 ct.ThrowIfCancellationRequested();requests.Add(url);if(url.Contains("search.example"))throw new HttpRequestException("503");

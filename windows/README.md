@@ -1,6 +1,10 @@
-# SwirStream AI 0.9.8 — by Swir
+# SwirStream AI 0.11.0 — by Swir
 
-Nowy **MAC Player → Skaner portali TXT** pozwala wczytać własną listę, obejrzeć
+Aktualne wydanie 0.12.0 obsługuje pojedynczo skonfigurowane źródła. Opisy skanera TXT poniżej dotyczą archiwalnej wersji 0.9.8. Nowe funkcje i instalator opisuje [wydanie 0.12.0](../docs/releases/v0.12.0.md).
+
+Wybierz kraje w filtrze, a następnie **Głębokie szukanie**. Możesz wpisać nazwę kanału albo pozostawić pole puste. Przy szerokim wyborze krajów program pobiera globalną listę TV. Lokalny model profilu wpływa na kolejność nadawców i na wybór domeny do zapytania. W oknie znalezionych playlist przycisk **Odśwież playlistę** pokazuje, ile adresów przybyło i ile usunięto.
+
+**MAC Player → Skaner portali TXT** pozwala wczytać własną listę, obejrzeć
 podgląd i uruchomić sprawdzanie. Wybierz **Importuj TXT → Sprawdź listę**, a potem
 **Dodaj wybrany** lub **Odtwórz próbkę**. Podczas skanowania konta nie są zapisywane.
 Dodanie wybranej pozycji ponownie pobiera katalog i zapisuje ją w chronionym

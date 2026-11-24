@@ -1,3 +1,4 @@
+using static SwirStreamAI.UiLanguage;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -9,9 +10,9 @@ public sealed partial class MainForm
     SourceRanker ranker = null!;
     string dataFolder = "", feedDetails = "Jeszcze nie pobrano katalogów.";
     readonly ComboBox quality = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 158, FlatStyle = FlatStyle.Flat, BackColor = Edge, ForeColor = Color.White };
-    readonly CheckBox verify = new() { Text = "Sprawdzaj źródła", AutoSize = true, ForeColor = Cyan, Margin = new(8, 8, 4, 0) };
+    readonly CheckBox verify = new() { Text = T("Sprawdzaj źródła"), AutoSize = true, ForeColor = Cyan, Margin = new(8, 8, 4, 0) };
     readonly CheckBox webSearch = new() { Text = "Internet", AutoSize = true, ForeColor = Cyan, Margin = new(8, 8, 4, 0) };
-    readonly CheckBox fallback = new() { Text = "Zapasowe źródła", AutoSize = true, ForeColor = Color.White, Margin = new(8, 8, 4, 0) };
+    readonly CheckBox fallback = new() { Text = T("Zapasowe źródła"), AutoSize = true, ForeColor = Color.White, Margin = new(8, 8, 4, 0) };
     Button countriesButton = null!;
     List<Station> candidates = [];
     List<Station> knownChannels = [];
@@ -26,6 +27,12 @@ public sealed partial class MainForm
         store.Data.SelectedCountries ??= ["PL"];
         var filters = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false, Margin = Padding.Empty };
         countriesButton = Button(CountryCaption(), SelectCountries, width: 150); filters.Controls.Add(countriesButton);
+        quality.DrawMode = DrawMode.OwnerDrawFixed;
+        quality.DrawItem += (_,e) => {
+            e.DrawBackground();
+            if(e.Index>=0) TextRenderer.DrawText(e.Graphics,T((string)quality.Items[e.Index]!),quality.Font,e.Bounds,e.ForeColor,TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+            e.DrawFocusRectangle();
+        };
         quality.Items.AddRange(["Stabilność", "Najwyższa jakość", "Oszczędzaj transfer"]); quality.SelectedItem = store.Data.QualityMode;
         if (quality.SelectedIndex < 0) quality.SelectedIndex = 0;
         quality.SelectedIndexChanged += (_, _) => { store.Data.QualityMode = quality.Text; store.Save(); if (!applyingProfile && candidates.Count > 0) RefreshDiscoveryList(); };
@@ -35,26 +42,26 @@ public sealed partial class MainForm
         verify.CheckedChanged += (_, _) => { store.Data.AutoVerify = verify.Checked; store.Save(); };
         fallback.CheckedChanged += (_, _) => { store.Data.AutoFallback = fallback.Checked; store.Save(); };
         filters.Controls.Add(quality); filters.Controls.Add(webSearch); filters.Controls.Add(verify); filters.Controls.Add(fallback);
-        filters.Controls.Add(Button("Anuluj", () => { searchCancel?.Cancel(); status.Text = "Przerwano wyszukiwanie / analizę."; return Task.CompletedTask; }, width: 74));
+        filters.Controls.Add(Button(T("Anuluj"), () => { searchCancel?.Cancel(); status.Text = "Przerwano wyszukiwanie / analizę."; return Task.CompletedTask; }, width: 74));
         body.Controls.Add(filters, 0, 1); body.SetColumnSpan(filters, 2);
-        AddNav("Głębokie szukanie", () => SmartSearch(true, deep: true), Cyan);
-        AddNav("Kopia biblioteki", BackupLibrary);
-        AddNav("Źródła i diagnostyka", DiagnosticsDialog);
+        AddNav(T("Głębokie szukanie"), () => SmartSearch(true, deep: true), Cyan);
+        AddNav(T("Kopia biblioteki"), BackupLibrary);
+        AddNav(T("Źródła i diagnostyka"), DiagnosticsDialog);
     }
-    string CountryCaption() => store.Data.SelectedCountries.Length == 0 ? "Kraje: cały świat" : "Kraje: " + string.Join(", ", store.Data.SelectedCountries);
+    string CountryCaption() => store.Data.SelectedCountries.Length == 0 ? T("Kraje: cały świat") : store.Data.SelectedCountries.Length > 3 ? string.Format(T("Kraje: {0} wybranych"), store.Data.SelectedCountries.Length) : T("Kraje: ") + string.Join(", ", store.Data.SelectedCountries);
     Task SelectCountries()
     {
-        using var dialog = new Form { Text = "Gdzie szukać? Zaznacz kraje", Size = new(480, 600), BackColor = Card, ForeColor = Color.White, StartPosition = FormStartPosition.CenterParent, MinimizeBox = false, MaximizeBox = false };
+        using var dialog = new Form { Text = T("Gdzie szukać? Zaznacz kraje"), Size = new(480, 600), BackColor = Card, ForeColor = Color.White, StartPosition = FormStartPosition.CenterParent, MinimizeBox = false, MaximizeBox = false };
         var box = new CheckedListBox { Dock = DockStyle.Fill, CheckOnClick = true, BackColor = Card, ForeColor = Color.White, BorderStyle = BorderStyle.None, Font = Font };
-        var filter = Input("Filtruj kraje…"); filter.Dock = DockStyle.Top;
-        var info = new Label { Text = "Maks. 12 krajów. Pusta lista = cały świat.", Dock = DockStyle.Top, Height = 35 };
+        var filter = Input(T("Filtruj kraje…")); filter.Dock = DockStyle.Top;
+        var info = new Label { Text = T("Wybierz dowolne kraje. Pusta lista oznacza cały świat."), Dock = DockStyle.Top, Height = 35 };
         var actions = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 45 };
         var chosen = store.Data.SelectedCountries.ToHashSet(); var all = Countries.Load(); bool updating = false;
-        void Fill() { updating = true; box.Items.Clear(); foreach (var c in all.Where(c => TextTools.Normalize(c.ToString()).Contains(TextTools.Normalize(filter.Text)))) box.Items.Add(c, chosen.Contains(c.Code)); updating = false; }
-        box.ItemCheck += (_, e) => { if (updating) return; var code = ((Country)box.Items[e.Index]).Code; if (e.NewValue == CheckState.Checked) { if (chosen.Count >= 12) { e.NewValue = CheckState.Unchecked; return; } chosen.Add(code); } else chosen.Remove(code); info.Text = $"Wybrano {chosen.Count}/12 • pusta lista = cały świat"; };
+        void Fill() { updating = true; box.Items.Clear(); foreach (var c in all.Where(c => c.Matches(filter.Text)).OrderBy(c=>c.ToString())) box.Items.Add(c, chosen.Contains(c.Code)); updating = false; }
+        box.ItemCheck += (_, e) => { if (updating) return; var code = ((Country)box.Items[e.Index]).Code; if (e.NewValue == CheckState.Checked) { chosen.Add(code); } else chosen.Remove(code); info.Text = string.Format(T("Wybrano {0} • pusta lista = cały świat"), chosen.Count); };
         filter.TextChanged += (_, _) => Fill(); Fill();
-        var save = new Button { Text = "Zastosuj", DialogResult = DialogResult.OK, Width = 120, Height = 32 };
-        var clear = new Button { Text = "Cały świat", Width = 120, Height = 32 }; clear.Click += (_, _) => { chosen.Clear(); Fill(); info.Text = "Cały świat"; };
+        var save = new Button { Text = T("Zastosuj"), DialogResult = DialogResult.OK, Width = 120, Height = 32 };
+        var clear = new Button { Text = T("Cały świat"), Width = 120, Height = 32 }; clear.Click += (_, _) => { chosen.Clear(); Fill(); info.Text = T("Cały świat"); };
         actions.Controls.AddRange([save, clear]); dialog.Controls.Add(box); dialog.Controls.Add(filter); dialog.Controls.Add(info); dialog.Controls.Add(actions);
         if (dialog.ShowDialog(this) == DialogResult.OK)
         {
@@ -67,12 +74,12 @@ public sealed partial class MainForm
         listMode = "top";
         var visible = VisibleCandidates(); int channels = visible.Select(SourceRanker.ChannelKey).Distinct().Count();
         var top = channels == 1 ? ranker.Rank(visible, quality.Text) : ranker.Top(visible, quality.Text, int.MaxValue);
-        ShowPage($"{channels} kanałów • {visible.Count} źródeł • {WorkingCount(visible)} sprawdzonych", top.Select(r => r.Station).ToList());
+        ShowPage(string.Format(T("{0} kanałów • {1} źródeł • {2} sprawdzonych"), channels,visible.Count,WorkingCount(visible)), top.Select(r => r.Station).ToList());
     }
     int WorkingCount(IEnumerable<Station>? source = null) => taste.Filter(source ?? candidates).Where(s => !s.BrowserOnly && ranker.Results.TryGetValue(s.Url, out var h) && DiscoveryAnalyzer.FreshSuccess(h)).Select(SourceRanker.ChannelKey).Distinct().Count();
     async Task ShowCurrentChannels(){if(listMode=="local"){localView="all";resultPage=0;ShowLibrary();}else if(candidates.Count==0)await SmartSearch(false);else ShowRecommendations();}
-    Task ShowWorking() { if(listMode=="local"){localView="working";resultPage=0;ShowLibrary();return Task.CompletedTask;} listMode = "working"; ShowPage("POTWIERDZONE DEKODOWANIE • ostatnie 10 min", ranker.Top(VisibleCandidates().Where(s => ranker.Results.TryGetValue(s.Url, out var h) && DiscoveryAnalyzer.FreshSuccess(h)), quality.Text, int.MaxValue).Select(r => r.Station).ToList()); return Task.CompletedTask; }
-    Task ShowAllCandidates() { if(listMode=="local"){localView="all";resultPage=0;ShowLibrary();return Task.CompletedTask;} listMode = "all"; ShowPage("WSZYSTKIE ZNALEZIONE ŹRÓDŁA", ranker.Rank(VisibleCandidates(), quality.Text).Select(r => r.Station).ToList()); return Task.CompletedTask; }
+    Task ShowWorking() { if(listMode=="local"){localView="working";resultPage=0;ShowLibrary();return Task.CompletedTask;} listMode = "working"; ShowPage(T("POTWIERDZONE DEKODOWANIE • ostatnie 10 min"), ranker.Top(VisibleCandidates().Where(s => ranker.Results.TryGetValue(s.Url, out var h) && DiscoveryAnalyzer.FreshSuccess(h)), quality.Text, int.MaxValue).Select(r => r.Station).ToList()); return Task.CompletedTask; }
+    Task ShowAllCandidates() { if(listMode=="local"){localView="all";resultPage=0;ShowLibrary();return Task.CompletedTask;} listMode = "all"; ShowPage(T("WSZYSTKIE ZNALEZIONE ŹRÓDŁA"), ranker.Rank(VisibleCandidates(), quality.Text).Select(r => r.Station).ToList()); return Task.CompletedTask; }
     void RefreshDiscoveryList() { if (listMode == "local") ShowLibrary(); else if (listMode == "all") _ = ShowAllCandidates(); else if (listMode == "working") _ = ShowWorking(); else if (listMode == "alternatives") _ = ShowAlternatives(); else ShowRecommendations(); }
     Task ShowAlternatives()
     {
@@ -87,7 +94,7 @@ public sealed partial class MainForm
         if (station.BrowserOnly) return "WWW • " + station.Country;
         var ranked = ranker.Rank([station], quality.Text)[0]; var h = ranked.Health;
         bool fresh = h != null && DateTimeOffset.UtcNow - h.CheckedAt >= TimeSpan.Zero && DateTimeOffset.UtcNow - h.CheckedAt < TimeSpan.FromMinutes(10);
-        return (fresh ? (h!.Decoded ? "✓ " : "× ") : "? ") + station.Country + " • " + (fresh ? h!.Decoded ? "działa" : "nie działa" : "do testu");
+        return (fresh ? (h!.Decoded ? "✓ " : "× ") : "? ") + station.Country + " • " + (fresh ? h!.Decoded ? T("działa") : T("nie działa") : T("do testu"));
     }
     string SourceDetail(Station station)
     {
@@ -101,7 +108,7 @@ public sealed partial class MainForm
     {
         var batch = source ?? VisibleCandidates();
         var analyzer = new DiscoveryAnalyzer(ranker, async (station, token) => {
-            ScanProgress(generation, $"3/3 • Sprawdzam: {station.Name} • potwierdzono {WorkingCount(batch)} kanałów");
+            ScanProgress(generation, IsEnglish ? $"3/3 • Checking {station.Name} • verified channels: {WorkingCount(batch)}" : $"3/3 • Sprawdzam: {station.Name} • potwierdzono {WorkingCount(batch)} kanałów");
             if(PrivateStation.IsPrivate(station)){var media=await privateSources.Resolve(station,token);return await StreamProbe.Run(media.Station,Path.Combine(dataFolder,"probe-temp"),token,media.ClearKeyHex);}
             return await StreamProbe.Run(station, Path.Combine(dataFolder, "probe-temp"), token);
         });
@@ -121,7 +128,7 @@ public sealed partial class MainForm
     void SaveDiscoveryReport()
     {
         File.WriteAllText(Path.Combine(dataFolder, "last-discovery.json"), JsonSerializer.Serialize(new {
-            version = "0.9.8", query = XtreamLink.PrivateInput(lastQuery)?"":lastQuery, countries = store.Data.SelectedCountries, mode = kind.Text, profile = profiles.Index.ActiveId, topics = store.Data.PreferredTopics, completedAt = DateTimeOffset.UtcNow, catalogDataAt,
+            version = "0.11.0", query = XtreamLink.PrivateInput(lastQuery)?"":lastQuery, countries = store.Data.SelectedCountries, mode = kind.Text, profile = profiles.Index.ActiveId, topics = store.Data.PreferredTopics, completedAt = DateTimeOffset.UtcNow, catalogDataAt,
             details = feedDetails, sources = candidates.Where(s=>!PrivateStation.IsPrivate(s)&&!PublicPlaylistPrivacy.ContainsCredentials(s.Url)&&!PublicPlaylistPrivacy.ContainsCredentials(s.Referrer)&&!PublicPlaylistPrivacy.ContainsCredentials(s.Homepage)).Select(s => new { station = s, health = ranker.Results.GetValueOrDefault(s.Url) })
         }, new JsonSerializerOptions { WriteIndented = true }));
     }
@@ -140,7 +147,7 @@ public sealed partial class MainForm
         var ct = operation.Token; long generation = ++searchGeneration;
         string rawQuery = wholeCatalog ? "" : search.Text.Trim();
         var parsed = playlistSearch || ChannelSearch.Exact(rawQuery, knownChannels).Count > 0 || candidates.Any(s => ChannelSearch.Matches(rawQuery, s))
-            ? (Query: rawQuery, Codes: store.Data.SelectedCountries) : Countries.Extract(rawQuery, store.Data.SelectedCountries);
+            ? (Query: rawQuery, Codes: store.Data.SelectedCountries) : ChannelSearch.WebQuery(rawQuery, store.Data.SelectedCountries);
         string searchMode = kind.Text;
         if (!parsed.Codes.SequenceEqual(store.Data.SelectedCountries)) { store.Data.SelectedCountries = parsed.Codes; store.Save(); countriesButton.Text = CountryCaption(); }
         bool useWeb = playlistSearch || webSearch.Checked, useLists = playlistSearch || store.Data.SearchPlaylists && searchMode != "Radio", useIndex = store.Data.SearchIndex && searchMode != "Radio", testPlayback = verify.Checked;
@@ -172,7 +179,7 @@ public sealed partial class MainForm
             var exact = ChannelSearch.Exact(parsed.Query, directory);
             if (exact.Count > 0) notes += "\nRozpoznano nazwę/alias: " + string.Join(", ", exact.Take(10).Select(s => s.Name + " (" + s.Country + ")")) + ". Filtry krajów pozostają aktywne.";
             string webQuery = parsed.Query;
-            void Progress(string text) => ScanProgress(generation, "2/3 • " + text);
+            void Progress(string text) => ScanProgress(generation, IsEnglish ? $"2/3 • Searching public sources • {discovered.Count} addresses collected" : "2/3 • " + text);
             Progress($"Łączę źródła • zebrano {discovered.Count} adresów");
             static string Notes(WebResult r) => string.Join("\n", r.Evidence.Select(e => $"{e.CheckedAt.ToLocalTime():HH:mm:ss} [{e.Stage}] {e.Url} — {e.Detail}"));
             var jobs = new List<DiscoveryJob>();
@@ -192,7 +199,7 @@ public sealed partial class MainForm
             }));
             if (useLists) jobs.Add(new("Publiczne IPTV", async token =>
             {
-                var playlistSeeds = deep ? smartCatalog.SharedPlaylistUrls.Concat(["https://iptv-org.github.io/iptv/index.m3u"]).Distinct().ToArray() : smartCatalog.SharedPlaylistUrls;
+                var playlistSeeds = deep ? RegionalPlaylists.Seeds(parsed.Codes).Concat(smartCatalog.SharedPlaylistUrls).Append("https://iptv-org.github.io/iptv/index.m3u").Distinct().ToArray() : smartCatalog.SharedPlaylistUrls;
                 var more = await new SharedPlaylists().Search(parsed.Query, parsed.Codes, directory, smartCatalog.WebSearchTemplate, playlistSeeds, Progress, token, deep, foundPlaylists.Save);
                 return new("Publiczne IPTV", more.Stations, Notes(more));
             }));
@@ -226,10 +233,10 @@ public sealed partial class MainForm
             }
             lastQuery = XtreamLink.PrivateInput(search.Text)?"":ChannelSearch.LocalQuery(search.Text, candidates); resultPage = 0; ShowRecommendations(); SaveDiscoveryReport();
             if (epgEnabled) Run(() => RefreshEpg(false));
-            status.Text = discovered.Count == 0 ? "Nie znaleziono nowych źródeł. Poprzednia baza została zachowana. Sprawdź filtry lub Szukaj w sieci."
-                : $"Wyszukiwanie zakończone • {candidates.Select(SourceRanker.ChannelKey).Distinct().Count()} kanałów • {candidates.Count} źródeł • {WorkingCount()} potwierdzonych. Wpisz nazwę lub wyszukaj ponownie.";
+            status.Text = discovered.Count == 0 ? T("Nie znaleziono nowych źródeł. Poprzednia baza została zachowana. Sprawdź filtry lub Szukaj w sieci.")
+                : IsEnglish ? "Search complete • "+string.Format(T("{0} kanałów • {1} źródeł • {2} sprawdzonych"),candidates.Select(SourceRanker.ChannelKey).Distinct().Count(),candidates.Count,WorkingCount()) : $"Wyszukiwanie zakończone • {candidates.Select(SourceRanker.ChannelKey).Distinct().Count()} kanałów • {candidates.Count} źródeł • {WorkingCount()} potwierdzonych. Wpisz nazwę lub wyszukaj ponownie.";
         }
-        catch (OperationCanceledException) { if (generation == searchGeneration && !closing) status.Text = "Wyszukiwanie / analiza przerwane. Zachowano dotychczasowe wyniki."; }
+        catch (OperationCanceledException) { if (generation == searchGeneration && !closing) status.Text = T("Wyszukiwanie / analiza przerwane. Zachowano dotychczasowe wyniki."); }
         catch (Exception ex) when (generation != searchGeneration || closing) { _ = ex; }
         finally
         {
@@ -241,7 +248,7 @@ public sealed partial class MainForm
     async Task SearchChannelSources()
     {
         var selected = Selected ?? current;
-        if (selected == null) { status.Text = "Najpierw wybierz kanał z listy."; return; }
+        if (selected == null) { status.Text = T("Najpierw wybierz kanał z listy."); return; }
         var meta = knownChannels.FirstOrDefault(s => s.ChannelId.Length > 0 && s.ChannelId == selected.ChannelId);
         changingSearch = true;
         search.Text = ChannelSearch.ProgramVariant(selected.Feed).Length == 0 && meta != null ? meta.Name : Regex.Replace(selected.Name, @"\s*\([^)]*\)|\s*\[[^]]*\]", "").Trim();
@@ -276,7 +283,7 @@ public sealed partial class MainForm
         try
         {
             var next = fallback.Checked && attempted.Count < 3 ? ranker.Alternative(candidates, current, attempted, quality.Text) : null;
-            if (next != null) { Play(next, true); status.Text = "Automatycznie przełączono na inne źródło tego samego kanału."; }
+            if (next != null) { Play(next, true); status.Text = T("Automatycznie przełączono na inne źródło tego samego kanału."); }
         }
         catch (Exception ex) { status.Text = "Nie udało się przełączyć źródła: " + ex.Message; }
     }
@@ -298,7 +305,7 @@ public sealed partial class MainForm
     Task DiagnosticsDialog()
     {
         using var dialog = new Form { Text = "Źródła, daty i diagnostyka", Size = new(800, 580), BackColor = Card, ForeColor = Color.White, StartPosition = FormStartPosition.CenterParent };
-        var content = new TextBox { Multiline = true, ReadOnly = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Both, BackColor = Card, ForeColor = Color.White, Font = new Font("Consolas", 10), Text = "SwirStream AI 0.9.8\r\nEPG: " + epg.Notice.Replace("\n", "\r\n") + "\r\nSilnik " + player?.Version + "\r\n\r\n" + feedDetails.Replace("\n", "\r\n") + "\r\n\r\nKopia katalogu: maks. 6 h; awaryjna: maks. 7 dni.\r\nTest źródła: ważny w rankingu przez 6 h.\r\nOcena 0–100 jest heurystyką, nie gwarancją jakości ani praw nadawcy.\r\n\r\nTasteNet: lokalna sieć rozpoznająca 10 tematyk.\r\nDopasowanie uczy się z wyborów w bieżącym profilu. Brak panelu asystenta.\r\nPoszukiwacz wykonuje wyszukiwanie Bing RSS i DuckDuckGo, odczyt publicznych stron i próby Swir Player.\r\nWWW: zwykłe 60 s / 24 strony; głębokie 180 s / 120 stron / 3 poziomy. Kolejne skany wybierają najdawniej sprawdzane strony. Próby: do 32 adresów, cel 8 kanałów.\r\nStrony wymagające logowania, JavaScript lub DRM mogą nie udostępnić adresu.\r\nBing RSS i DuckDuckGo są publicznymi interfejsami bez gwarancji dostępności; awarie w raporcie.\r\nProgram nie ma serwera aktualizacji. Aktualizacje EXE i silnika wymagają nowego wydania.\r\nŹródła można zmienić bez kompilacji w data/sources.json.\r\nBiblioteka: " + dataFolder };
+        var content = new TextBox { Multiline = true, ReadOnly = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Both, BackColor = Card, ForeColor = Color.White, Font = new Font("Consolas", 10), Text = "SwirStream AI 0.11.0\r\nEPG: " + epg.Notice.Replace("\n", "\r\n") + "\r\nSilnik " + player?.Version + "\r\n\r\n" + feedDetails.Replace("\n", "\r\n") + "\r\n\r\nKopia katalogu: maks. 6 h; awaryjna: maks. 7 dni.\r\nTest źródła: ważny w rankingu przez 6 h.\r\nOcena 0–100 jest heurystyką, nie gwarancją jakości ani praw nadawcy.\r\n\r\nTasteNet: lokalna sieć rozpoznająca 10 tematyk.\r\nDopasowanie uczy się z wyborów w bieżącym profilu. Brak panelu asystenta.\r\nPoszukiwacz wykonuje wyszukiwanie Bing RSS i DuckDuckGo, odczyt publicznych stron i próby Swir Player.\r\nWWW: zwykłe 60 s / 24 strony; głębokie 180 s / 120 stron / 3 poziomy. Kolejne skany wybierają najdawniej sprawdzane strony. Próby: do 32 adresów, cel 8 kanałów.\r\nStrony wymagające logowania, JavaScript lub DRM mogą nie udostępnić adresu.\r\nBing RSS i DuckDuckGo są publicznymi interfejsami bez gwarancji dostępności; awarie w raporcie.\r\nProgram nie ma serwera aktualizacji. Aktualizacje EXE i silnika wymagają nowego wydania.\r\nŹródła można zmienić bez kompilacji w data/sources.json.\r\nBiblioteka: " + dataFolder };
         dialog.Controls.Add(content); dialog.ShowDialog(this); return Task.CompletedTask;
     }
     public async Task DiscoveryUiTest(string localFile)

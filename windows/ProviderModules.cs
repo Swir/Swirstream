@@ -107,7 +107,6 @@ public sealed partial class MainForm
         },width:135));
         if(module is ProviderModule.Playlists or ProviderModule.All)actions.Controls.Add(Button("AI: znajdź playlisty",()=>{findPlaylists=true;dialog.Close();return Task.CompletedTask;},width:190));
         if(module is ProviderModule.Playlists or ProviderModule.All)actions.Controls.Add(Button("Importuj plik M3U",()=>{dialog.Close();return ImportPlaylist();},width:180));
-        if(module is ProviderModule.Mac or ProviderModule.All){var scanner=Button("Skaner portali TXT",()=>{dialog.Close();return ShowPortalScanner();},width:205);scanner.Name="portal-scanner-open";actions.Controls.Add(scanner);}
         actions.Controls.Add(Button("Streamtest • strona",()=>{Process.Start(new ProcessStartInfo("https://streamtest.co/"){UseShellExecute=true});return Task.CompletedTask;},width:180));
         actions.Controls.Add(Button("Streamtest • logi",()=>{Process.Start(new ProcessStartInfo("https://streamtest.in/logs"){UseShellExecute=true});return Task.CompletedTask;},width:170));
         dialog.Controls.Add(layout);Fill();dialog.Shown+=(_,_)=>BeginInvoke(()=>privateDialogPreview?.Invoke(dialog));dialog.ShowDialog(this);

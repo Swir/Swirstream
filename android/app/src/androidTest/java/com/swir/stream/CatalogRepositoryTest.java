@@ -37,6 +37,48 @@ public class CatalogRepositoryTest {
             return new PublicHttp.Document(url,body,"text/plain",System.currentTimeMillis(),modified);
         }
     }
+    @Test public void certificateFailureIsReportedOnlyWhenMirrorsAndCacheCannotServeFeed() throws Exception {
+        java.security.cert.CertificateException cert=new java.security.cert.CertificateException("fixture");
+        CatalogRepository failing=new CatalogRepository(folder,(url,cancel)->{throw new IOException(cert);});
+        try{failing.feed("tv:JP",new String[]{"https://test.example/jp.m3u"},true,new AtomicBoolean());fail("feed must fail");}catch(IOException expected){}
+        assertTrue(failing.catalogueCertificateRejected());
+        assertFalse(CatalogRepository.certificateFailure(new IOException("404")));
+        CatalogRepository working=new CatalogRepository(folder,(url,cancel)->{
+            if(url.contains("first.example"))throw new IOException(cert);
+            return new PublicHttp.Document(url,"#EXTM3U\n#EXTINF:-1,NHK\nhttps://station.example/live.m3u8","text/plain",System.currentTimeMillis(),System.currentTimeMillis());
+        });
+        working.feed("tv:JP",new String[]{"https://first.example/jp.m3u","https://second.example/jp.m3u"},true,new AtomicBoolean());
+        assertFalse(working.catalogueCertificateRejected());
+    }
+    @Test public void wideSelectionUsesOneWorldPlaylistAndKeepsBritishFeedIdentity() {
+        Set<String> many = new LinkedHashSet<>(Arrays.asList("GB","FR","IT","PL","ES","JP","US","CA","MX","EG","IL","CH","BE"));
+        List<String> urls = new ArrayList<>();
+        CatalogRepository catalog = new CatalogRepository(folder,(url,cancel)->{
+            urls.add(url);
+            if (url.contains("channels.json")) return fetch.fetch(url,cancel);
+            return new PublicHttp.Document(url,"#EXTM3U\n#EXTINF:-1 tvg-id=\"Alpha.uk\",Alpha\nhttps://cdn.example/a.m3u8\n#EXTINF:-1 tvg-id=\"Other.cn\",Other\nhttps://cdn.example/b.m3u8","text/plain",System.currentTimeMillis(),0);
+        });
+        List<Station> rows = catalog.scan(many,false,null,new AtomicBoolean());
+        assertTrue(rows.stream().anyMatch(s->s.country.equals("GB") && s.id.equals("Alpha.uk")));
+        assertFalse(rows.stream().anyMatch(s->s.country.equals("CN")));
+        assertTrue(urls.stream().anyMatch(s->s.endsWith("/index.m3u")));
+        assertFalse(urls.stream().anyMatch(s->s.contains("/countries/")));
+    }
+    @Test public void refreshComparesAddressesAndPreservesLastGoodPlaylistOnError() throws Exception {
+        String source="https://public.example/tv.m3u";
+        String first="#EXTM3U\n#EXTINF:-1,One\nhttps://cdn.example/one.m3u8\n";
+        String second=first.replace("one.m3u8","two.m3u8");
+        String[] body={second};
+        CatalogRepository catalog=new CatalogRepository(folder,(url,cancel)->new PublicHttp.Document(url,body[0],"text/plain",System.currentTimeMillis(),0));
+        assertTrue(catalog.remember(new PublicHttp.Document(source,first,"text/plain",System.currentTimeMillis()-1000,0),1,1));
+        String result=catalog.refreshFoundPlaylist(catalog.playlists().get(0),countries,new AtomicBoolean());
+        assertTrue(result.contains("Dodane adresy: 1, usunięte: 1"));
+        CatalogRepository.FoundPlaylist saved=catalog.playlists().get(0);
+        assertTrue(saved.text.contains("two.m3u8"));
+        body[0]="<html>offline</html>";
+        try { catalog.refreshFoundPlaylist(saved,countries,new AtomicBoolean()); fail(); } catch(IOException expected) {}
+        assertEquals(saved.sha256,catalog.playlists().get(0).sha256);
+    }
     @Test public void mixedScanAndWarmCacheRetainBothKindsAndScope(){
         List<Station> all=repo.scanAll(countries,message->{},new AtomicBoolean());assertEquals(5,all.size());assertTrue(all.stream().anyMatch(s->s.kind.equals("tv")));assertTrue(all.stream().anyMatch(s->s.kind.equals("radio")));assertTrue(all.stream().allMatch(s->countries.contains(s.country)));
         CatalogRepository warm=new CatalogRepository(folder,fetch);assertEquals(5,warm.load().size());assertTrue(warm.matchesScope(countries));assertFalse(warm.matchesScope(Collections.singleton("PL")));assertEquals(fetch.modified,warm.dataAt());

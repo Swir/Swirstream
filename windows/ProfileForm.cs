@@ -1,3 +1,4 @@
+using static SwirStreamAI.UiLanguage;
 namespace SwirStreamAI;
 
 public sealed partial class MainForm
@@ -19,11 +20,11 @@ public sealed partial class MainForm
         var panel = new TableLayoutPanel { Dock = DockStyle.Fill, RowCount = 2, ColumnCount = 1, BackColor = Card, Padding = new(12, 8, 12, 8), Margin = new(8, 12, 0, 0) };
         panel.RowStyles.Add(new(SizeType.Absolute, 36)); panel.RowStyles.Add(new(SizeType.Percent, 100));
         var controls = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
-        controls.Controls.Add(Label("DLA CIEBIE", 9, Purple, true, 92, 30)); controls.Controls.Add(profilePicker);
-        controls.Controls.Add(Button("Nowy profil", CreateProfile, width: 105)); controls.Controls.Add(topicPicker);
-        controls.Controls.Add(Button("Preferencje", EditPreferences, width: 108)); controls.Controls.Add(Button("Ułóż playlistę", OrganizePlaylist, width: 120));
+        controls.Controls.Add(Label(T("DLA CIEBIE"), 9, Purple, true, 92, 30)); controls.Controls.Add(profilePicker);
+        controls.Controls.Add(Button(T("Nowy profil"), CreateProfile, width: 105)); controls.Controls.Add(topicPicker);
+        controls.Controls.Add(Button(T("Preferencje"), EditPreferences, width: 108)); controls.Controls.Add(Button(T("Ułóż playlistę"), OrganizePlaylist, width: 120));
         panel.Controls.Add(controls, 0, 0); panel.Controls.Add(tasteStatus, 0, 1); root.Controls.Add(panel, 1, 2);
-        topicPicker.Items.Add(new Topic("all", "Każda tematyka")); topicPicker.Items.AddRange(TasteEngine.Topics); topicPicker.Items.Add(new Topic("unknown", "Bez kategorii"));
+        topicPicker.Items.Add(new Topic("all", T("Każda tematyka"))); topicPicker.Items.AddRange(TasteEngine.Topics); topicPicker.Items.Add(new Topic("unknown", T("Bez kategorii")));
         FillProfiles(); ApplyProfileControls();
         profilePicker.SelectedIndexChanged += (_, _) => { if (!applyingProfile && profilePicker.SelectedItem is ViewingProfile p && p.Id != profiles.Index.ActiveId) Run(() => SwitchProfile(p.Id)); };
         topicPicker.SelectionChangeCommitted += (_, _) => { if (applyingProfile) return; store.Data.TopicFilter = (topicPicker.SelectedItem as Topic)?.Code ?? "all"; store.Save(); resultPage = 0; RefreshDiscoveryList(); };
@@ -48,7 +49,7 @@ public sealed partial class MainForm
     async Task SwitchProfile(string id, bool searchNow = true)
     {
         searchCancel?.Cancel(); EndScan(searchGeneration); searchGeneration++; await Stop(); current = null; store.Save(); profiles.Activate(id);
-        now.Text="Twoje miejsce na live.";playback.Text="Wybierz kanał w bieżącym profilu.";localProviderMessage="";
+        now.Text=T("Twoje miejsce na live.");playback.Text="Wybierz kanał w bieżącym profilu.";localProviderMessage="";
         store = new(profiles.Folder(id)); InitPrivateStore();taste = new(store.Data, categoryModel); searchLearning=new(profiles.Folder(id),store.Data,categoryModel); candidates.Clear(); knownChannels.Clear(); localStations = []; localTitle = ""; listMode = "top"; catalogScope = ""; ApplyProfileControls(); FillProfiles(); ShowStations("PROFIL: " + ((ViewingProfile)profilePicker.SelectedItem!).Name, []);
         if (searchNow) await SmartSearch(false, wholeCatalog: true);
     }
@@ -71,7 +72,7 @@ public sealed partial class MainForm
         var lists = new CheckBox { Text = "Szukaj publicznych list IPTV", AutoSize = true, Checked = store.Data.SearchPlaylists, ForeColor = Color.White };
         var index = new CheckBox { Text = "Szukaj także w indeksie adresów transmisji", AutoSize = true, Checked = store.Data.SearchIndex, ForeColor = Color.White };
         var reset = new CheckBox { Text = "Wyzeruj całe dopasowanie AI tego profilu", AutoSize = true, ForeColor = Muted };
-        var save = new Button { Text = "Zapisz", Width = 120, Height = 34, DialogResult = DialogResult.OK };
+        var save = new Button { Text = T("Zapisz"), Width = 120, Height = 34, DialogResult = DialogResult.OK };
         bottom.Controls.AddRange([learn, lists, index, reset, save]); dialog.Controls.Add(topics); dialog.Controls.Add(intro); dialog.Controls.Add(bottom);
         if (dialog.ShowDialog(this) == DialogResult.OK)
         {
@@ -106,7 +107,7 @@ public sealed partial class MainForm
     Task OrganizePlaylist()
     {
         using var options = new Form { Text = "Twoja uporządkowana playlista", Size = new(470, 220), BackColor = Card, ForeColor = Color.White, StartPosition = FormStartPosition.CenterParent, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false };
-        var sourcePicker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Bounds = new(18, 20, 410, 32) }; sourcePicker.Items.AddRange(["Bieżąca lista", "Wszystkie wyniki wyszukiwania", "Ulubione", "Moja playlista"]); sourcePicker.SelectedIndex = 0;
+        var sourcePicker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Bounds = new(18, 20, 410, 32) }; sourcePicker.Items.AddRange(["Bieżąca lista", "Wszystkie wyniki wyszukiwania", T("Ulubione"), "Moja playlista"]); sourcePicker.SelectedIndex = 0;
         var working = new CheckBox { Text = "Tylko odtwarzanie potwierdzone w ostatnich 10 min", AutoSize = true, Location = new(18, 62), Checked = true };
         var go = new Button { Text = "Ułóż i zapisz", DialogResult = DialogResult.OK, Bounds = new(280, 105, 145, 34) };
         options.Controls.AddRange([sourcePicker, working, go]);

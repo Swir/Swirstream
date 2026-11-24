@@ -1,3 +1,4 @@
+using static SwirStreamAI.UiLanguage;
 using System.Text.Json;
 
 namespace SwirStreamAI;
@@ -5,11 +6,11 @@ namespace SwirStreamAI;
 public sealed class StartupWindow : Form
 {
     readonly Label phase = new() { Dock = DockStyle.Fill, ForeColor = Color.FromArgb(165,178,200), Font = new("Segoe UI",11), TextAlign = ContentAlignment.MiddleLeft, AutoEllipsis = true };
-    readonly Button offline = new() { Text = "Użyj poprzedniej bazy", Width = 205, Height = 36, Enabled = false, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(38,47,67), ForeColor = Color.White };
+    readonly Button offline = new() { Text = T("Użyj poprzedniej bazy"), Width = 205, Height = 36, Enabled = false, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(38,47,67), ForeColor = Color.White };
     public event Action? UsePrevious;
     public StartupWindow()
     {
-        Text = "SwirStream AI — przygotowanie kanałów"; ClientSize = new(820,470); MinimumSize = new(720,430);
+        Text = T("SwirStream AI — przygotowanie kanałów"); ClientSize = new(820,470); MinimumSize = new(720,430);
         StartPosition = FormStartPosition.CenterScreen; BackColor = Color.FromArgb(10,13,22); ForeColor = Color.White;
         Icon = new(Path.Combine(AppContext.BaseDirectory,"assets","swirstream-v070.ico"));
         var layout = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new(40), RowCount = 6, ColumnCount = 1 };
@@ -19,14 +20,14 @@ public sealed class StartupWindow : Form
         header.Controls.Add(new PictureBox { Image = brandIcon.ToBitmap(), Size = new(72,72), SizeMode=PictureBoxSizeMode.Zoom, Margin = new(0,0,20,0) });
         header.Controls.Add(new Label { Text = "SWIRSTREAM AI\nby Swir", Width = 520, Height = 80, Font = new("Segoe UI",24,FontStyle.Bold), ForeColor = Color.FromArgb(66,230,217) });
         layout.Controls.Add(header,0,0);
-        layout.Controls.Add(new Label { Text = "Proszę czekać — trwa wyszukiwanie kanałów", Dock = DockStyle.Fill, Font = new("Segoe UI",17,FontStyle.Bold) },0,1);
-        phase.Text = "Przygotowuję wyszukiwanie…"; layout.Controls.Add(phase,0,2);
+        layout.Controls.Add(new Label { Text = T("Proszę czekać — trwa wyszukiwanie kanałów"), Dock = DockStyle.Fill, Font = new("Segoe UI",17,FontStyle.Bold) },0,1);
+        phase.Text = T("Przygotowuję wyszukiwanie…"); layout.Controls.Add(phase,0,2);
         layout.Controls.Add(new ProgressBar { Dock=DockStyle.Fill, Style=ProgressBarStyle.Marquee, MarqueeAnimationSpeed=35 },0,3);
         var actions = new FlowLayoutPanel { Dock=DockStyle.Fill, Padding=new(0,14,0,0) };
         offline.Click += (_,_)=>UsePrevious?.Invoke(); actions.Controls.Add(offline);
-        var cancel = new Button { Text="Anuluj i zamknij", Width=180, Height=36, FlatStyle=FlatStyle.Flat, BackColor=Color.FromArgb(38,47,67),ForeColor=Color.White };
+        var cancel = new Button { Text=T("Anuluj i zamknij"), Width=180, Height=36, FlatStyle=FlatStyle.Flat, BackColor=Color.FromArgb(38,47,67),ForeColor=Color.White };
         cancel.Click+=(_,_)=>Close(); actions.Controls.Add(cancel); layout.Controls.Add(actions,0,4);
-        layout.Controls.Add(new Label { Text="Odtwarzacz otworzy się po zakończeniu skanowania. EPG pobierze się w tle.",Dock=DockStyle.Fill,Font=new("Segoe UI",9),ForeColor=Color.FromArgb(165,178,200)},0,5);
+        layout.Controls.Add(new Label { Text=T("Odtwarzacz otworzy się po zakończeniu skanowania. EPG pobierze się w tle."),Dock=DockStyle.Fill,Font=new("Segoe UI",9),ForeColor=Color.FromArgb(165,178,200)},0,5);
         Controls.Add(layout);
     }
     public void Progress(string text) => phase.Text=text;
@@ -48,9 +49,9 @@ public sealed class StartupGate : ApplicationContext
         splash.FormClosing+=(_,e)=>
         {
             if(allowClose)return;
-            e.Cancel=true;cancelled=true;splash.Progress("Kończę wyszukiwanie…");player?.CancelStartupSearch();
+            e.Cancel=true;cancelled=true;splash.Progress(T("Kończę wyszukiwanie…"));player?.CancelStartupSearch();
         };
-        splash.UsePrevious+=()=>{usePrevious=true;splash.Progress("Kończę skanowanie i otwieram poprzednią bazę…");player?.CancelStartupSearch();};
+        splash.UsePrevious+=()=>{usePrevious=true;splash.Progress(T("Kończę skanowanie i otwieram poprzednią bazę…"));player?.CancelStartupSearch();};
         splash.Shown+=async(_,_)=>await Start();
         splash.Show();
     }
@@ -67,7 +68,7 @@ public sealed class StartupGate : ApplicationContext
             if(scan!=null)await scan(player);else await player.PrepareStartupCatalog();
             if(cancelled) { player.Close();player.Dispose();Finish();return; }
             player.StartupProgress-=splash.Progress;
-            if(usePrevious)player.StartupMessage("Otwarto poprzednią bazę. Nowe wyszukiwanie możesz uruchomić przyciskiem.");
+            if(usePrevious)player.StartupMessage(T("Otwarto poprzednią bazę. Nowe wyszukiwanie możesz uruchomić przyciskiem."));
             player.SetAutomaticEpg(scan==null); MainForm=player;
             allowClose=true;splash.Close();splash.Dispose();player.Show();PlayerShown?.Invoke(player);
         }

@@ -24,43 +24,15 @@ public record PortalScanResult(IReadOnlyList<PortalScanRow> Rows,bool Complete);
 
 public sealed class PortalScanner
 {
-    readonly PrivateProviderClient client;
-    readonly Func<string,CancellationToken,Task<WebDocument>> page;
-    readonly TimeSpan entryTimeout,gap,totalTimeout;
+    readonly TimeSpan gap,totalTimeout;
     public PortalScanner(PrivateProviderClient? client=null,Func<string,CancellationToken,Task<WebDocument>>? page=null,TimeSpan? entryTimeout=null,TimeSpan? gap=null,TimeSpan? totalTimeout=null)
     {
-        this.client=client??new();this.page=page??FetchPage;
-        this.entryTimeout=entryTimeout??TimeSpan.FromSeconds(30);this.gap=gap??TimeSpan.FromMilliseconds(800);this.totalTimeout=totalTimeout??TimeSpan.FromMinutes(10);
+        this.gap=gap??TimeSpan.FromMilliseconds(800);this.totalTimeout=totalTimeout??TimeSpan.FromMinutes(10);
     }
-    static bool PublicPageUrl(string url){try{PortalTxt.Url(url);return PublicWeb.Allowed(url);}catch{return false;}}
-    static Task<WebDocument> FetchPage(string url,CancellationToken ct)
-    {
-        var origin=new Uri(url);
-        return PublicWeb.FetchChecked(url,ct,value=>PublicPageUrl(value)&&SourceExplorerRules.SafeManualPage(value)&&new Uri(value) is var next&&next.Host==origin.Host&&((next.Port==origin.Port&&next.Scheme==origin.Scheme)||(origin.Scheme=="http"&&origin.Port==80&&next.Scheme=="https"&&next.Port==443)));
-    }
-    public async Task<PortalScanRow> Check(PortalTxtEntry entry,CancellationToken ct)
+    public Task<PortalScanRow> Check(PortalTxtEntry entry,CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
-        // Validate again even for callers other than the TXT UI. No request can
-        // acquire credentials from a page or infer another account identifier.
-        using var deadline=CancellationTokenSource.CreateLinkedTokenSource(ct);deadline.CancelAfter(entryTimeout);
-        try
-        {
-            string url=PortalTxt.Url(entry.Url);
-            if(!entry.HasMac)
-            {
-                if(!PublicWeb.Allowed(url)||!SourceExplorerRules.SafeManualPage(url))return new(entry,PortalScanStatus.UnsupportedPublicCheck,CheckedAt:DateTimeOffset.UtcNow);
-                var document=await page(url,deadline.Token).WaitAsync(deadline.Token);ct.ThrowIfCancellationRequested();
-                return new(entry,SourceExplorerRules.PortalClient(document)?PortalScanStatus.RecognizedPortal:PortalScanStatus.PublicPage,CheckedAt:DateTimeOffset.UtcNow);
-            }
-            var source=entry.Source();PrivateProviderClient.Validate(source);
-            var catalogue=await client.Refresh(source,deadline.Token).WaitAsync(deadline.Token);ct.ThrowIfCancellationRequested();
-            // Only counts survive. Never accumulate every account's channel list.
-            return new(entry,PortalScanStatus.Catalog,catalogue.Channels.Count,catalogue.Notice.Contains("Ograniczono",StringComparison.OrdinalIgnoreCase)||catalogue.Notice.Contains("limit",StringComparison.OrdinalIgnoreCase),DateTimeOffset.UtcNow);
-        }
-        catch(OperationCanceledException)when(!ct.IsCancellationRequested){return new(entry,PortalScanStatus.Timeout,CheckedAt:DateTimeOffset.UtcNow);}
-        catch(UnauthorizedAccessException){return new(entry,PortalScanStatus.Denied,CheckedAt:DateTimeOffset.UtcNow);}
-        catch(Exception error)when(error is not OperationCanceledException){return new(entry,PortalScanStatus.Failed,CheckedAt:DateTimeOffset.UtcNow);}
+        return Task.FromResult(new PortalScanRow(entry,PortalScanStatus.NotChecked));
     }
     public async Task<PortalScanResult> Scan(IReadOnlyList<PortalTxtEntry> entries,CancellationToken ct,Action<PortalScanRow>? progress=null)
     {

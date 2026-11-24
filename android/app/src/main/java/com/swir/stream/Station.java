@@ -46,7 +46,7 @@ public final class Station {
         }catch(JSONException e){throw new IllegalStateException(e);}
     }
     public static Station fromJson(JSONObject value){
-        Station s=new Station();s.id=string(value,"id");s.name=string(value,"name");s.url=string(value,"url");s.country=string(value,"country").toUpperCase(Locale.ROOT);s.kind="radio".equals(string(value,"kind"))?"radio":"tv";
+        Station s=new Station();s.id=string(value,"id");s.name=string(value,"name");s.url=string(value,"url");s.country=WorldMarkets.canonical(string(value,"country").toUpperCase(Locale.ROOT));s.kind="radio".equals(string(value,"kind"))?"radio":"tv";
         s.group=string(value,"group");s.logo=string(value,"logo");s.tvgId=string(value,"tvgId");s.userAgent=string(value,"userAgent");s.referrer=string(value,"referrer");s.origin=string(value,"origin");s.homepage=string(value,"homepage");s.feed=string(value,"feed");s.fetchedAt=Math.max(0,value.optLong("fetchedAt",0));s.modifiedAt=Math.max(0,value.optLong("modifiedAt",0));
         s.providerId=string(value,"providerId");s.providerChannelId=string(value,"providerChannelId");s.providerProfileId=string(value,"providerProfileId");
         if(s.isProvider()){

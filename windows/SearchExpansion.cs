@@ -30,14 +30,24 @@ public static class SearchExpansion
     public static bool LivePage(string url)=>new[]{"live","na-zywo","na_zywo","player","embed","stream","direct","diretta","ao-vivo"}.Any(s=>url.Contains(s,StringComparison.OrdinalIgnoreCase));
     public static List<string> Queries(string query,string mode,string[] countries,IReadOnlyList<Station> exact,IReadOnlyList<Station> seeds,int limit)
     {
-        var primary=exact.FirstOrDefault()??seeds.FirstOrDefault();string requested=query.Trim();if(requested.Length==0)requested=primary?.Name??"public TV";
-        string country=primary?.Country??countries.FirstOrDefault()??"";
-        string native=country switch{"PL"=>"na żywo","DE" or "AT" or "CH"=>"Livestream Fernsehen","FR"=>"télévision en direct","ES"=>"televisión en directo","IT"=>"TV diretta","PT" or "BR"=>"TV ao vivo",_=>"live TV"};
-        var countryNames=Countries.Load().ToDictionary(c=>c.Code,c=>c.Name);string region=string.Join(' ',countries.Take(3).Select(c=>countryNames.GetValueOrDefault(c,c)));
-        List<string> result=[requested+" "+(mode=="Radio"?"radio listen live official":"TV live official")+" "+region];
-        if(primary!=null&&PublicWeb.Allowed(primary.Url))result.Add("site:"+new Uri(primary.Url).Host+" "+requested+" "+native);
+        bool radio = mode == "Radio";
+        string requested = query.Trim();
+        var primary = exact.FirstOrDefault() ?? seeds.FirstOrDefault();
+        string country = primary?.Country ?? countries.FirstOrDefault() ?? "";
+        string region = WorldMarkets.Name(country), native = WorldMarkets.Terms(country, radio).First();
+        string generic = radio ? "radio listen live official" : "TV live official";
+        List<string> result = [requested+" "+generic+" "+(countries.Length == 1 ? region : "")];
+        if(primary!=null && PublicWeb.Allowed(primary.Url))
+            result.Add("site:"+new Uri(primary.Url).Host+" "+(requested.Length == 0 ? primary.Name : requested)+" "+native);
+        var selectedMarkets = countries.ToHashSet(StringComparer.Ordinal);
+        var markets = seeds.Select(s => s.Country).Where(c => selectedMarkets.Contains(c)).Concat(countries).Distinct();
+        if (countries.Length == 0) markets = seeds.Select(s => s.Country).Where(c => c.Length > 0).Distinct();
+        foreach (string selected in markets.Where(c => c != country).Take(Math.Max(0,limit-result.Count-1)))
+            result.Add(requested + " " + WorldMarkets.Terms(selected,radio).First() + " " + WorldMarkets.Name(selected));
         result.Add(requested+" "+native+" "+region);
         if(primary!=null)result.AddRange(ChannelSearch.Names(primary).Where(n=>ChannelSearch.Key(n)!=ChannelSearch.Key(requested)).Distinct().Take(3).Select(n=>n+" "+native+" "+region));
+        foreach(string alternative in WorldMarkets.Terms(country,radio).Skip(1))
+            result.Add(requested+" "+alternative+" "+region);
         result.Add(requested+" livestream watch online "+region);
         return result.Select(q=>q.Trim()).Distinct().Take(limit).ToList();
     }

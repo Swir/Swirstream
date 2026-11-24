@@ -29,7 +29,7 @@ public final class M3u {
                 if(!attr(a,"tvg-name").isEmpty())station.name=attr(a,"tvg-name");String[] identity=attr(a,"tvg-id").split("@",2);station.id=station.tvgId=identity[0];station.feed=identity.length>1?identity[1]:"";
                 station.group=attr(a,"group-title");if(station.group.isEmpty())station.group=inheritedGroup;station.logo=attr(a,"tvg-logo");station.country=attr(a,"tvg-country").toUpperCase(Locale.ROOT);
                 Matcher country=Pattern.compile("\\.([a-zA-Z]{2})$").matcher(station.id);if(station.country.isEmpty()&&country.find())station.country=country.group(1).toUpperCase(Locale.ROOT);
-                if(!station.country.matches("[A-Z]{2}"))station.country="";
+                if(!station.country.matches("[A-Z]{2}"))station.country=""; else station.country=WorldMarkets.canonical(station.country);
             }else if(line.regionMatches(true,0,"#EXTGRP:",0,8)){inheritedGroup=line.substring(8);station.group=inheritedGroup;}
             else if(line.regionMatches(true,0,"#EXTVLCOPT:http-user-agent=",0,"#EXTVLCOPT:http-user-agent=".length()))station.userAgent=line.substring(line.indexOf('=')+1);
             else if(line.regionMatches(true,0,"#EXTVLCOPT:http-referrer=",0,"#EXTVLCOPT:http-referrer=".length()))station.referrer=line.substring(line.indexOf('=')+1);

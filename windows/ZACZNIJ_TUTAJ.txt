@@ -1,13 +1,32 @@
-SWIRSTREAM AI 0.9.8 — by Swir
-Windows 11 x64 • wersja przenośna
+SWIRSTREAM AI 0.12.0 — by Swir
+Windows 11 x64
 
 URUCHOMIENIE
-1. Rozpakuj cały ZIP do nowego folderu. Zachowaj wszystkie podfoldery.
+1. Uruchom instalator Setup. Pierwsza instalacja pobiera silnik libmpv ze strony jego wydawcy.
 2. Uruchom SwirStreamAI.exe. VLC ani osobny .NET nie są wymagane.
 3. Wybierz kraje i wyszukaj publiczne kanały albo dodaj własne źródło.
 4. Kanał uruchamiaj w programie. Sama obecność na liście nie potwierdza obrazu.
 
-NOWE W 0.9.8 — SKANER PORTALI TXT
+WYDANIE 0.12.0
+Deep Search korzysta również z TDTChannels i Kodinerds. Import M3U / Dreambox odczytuje adresy IPTV z bukietów. Po otwarciu głównego okna program sprawdza wydania na GitHubie. Przycisk Aktualizacje programu pozwala powtórzyć sprawdzenie.
+
+JĘZYK I REGION W 0.11.0
+Przy pierwszym uruchomieniu program proponuje region urządzenia. Jeśli go
+nie rozpozna, ustawia „Cały świat”. Istniejąca biblioteka zachowuje wybór.
+W menu „Language / Język” wybierz polski lub angielski i otwórz program
+ponownie. W filtrze krajów możesz wpisać np. GB, UK albo Wielka Brytania.
+
+WYSZUKIWANIE MIĘDZYNARODOWE W 0.10.0
+Wybierz dowolny zestaw krajów lub „Cały świat”. Głębokie szukanie korzysta
+z profilu AI i lokalnych określeń transmisji. Przy odświeżeniu zapisanej
+playlisty zobaczysz liczbę dodanych i usuniętych adresów.
+
+WYSZUKIWANIE TRANSMISJI W 0.9.9
+Przy wyborze kilku krajów program układa osobne zapytania dla wybranych rynków.
+Na stronach nadawców czyta także podpisy linków, np. „Na żywo” i „En directo”.
+Gdy pierwsza wyszukiwarka powtarza znalezione adresy, sprawdza kolejną.
+
+SKANER PORTALI TXT WPROWADZONY W 0.9.8
 MAC Player → Skaner portali TXT → Importuj TXT → Sprawdź listę.
 Format: URL|MAC albo adres URL i własne MAC w kolejnych wierszach.
 Sam adres URL sprawdza publiczną stronę bez logowania. Nie potwierdza darmowego

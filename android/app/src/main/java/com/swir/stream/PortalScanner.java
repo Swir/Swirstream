@@ -42,21 +42,6 @@ final class PortalScanner {
     }
     static boolean denied(Exception error){if(error instanceof ProviderHttp.StatusException){int code=((ProviderHttp.StatusException)error).code;return code==401||code==403;}String msg=error.getMessage();return "Portal odmówił dostępu dla podanego MAC. Sprawdź uprawnienia u dostawcy.".equals(msg)||"Portal nie przyznał sesji dla podanego MAC.".equals(msg)||"Portal nie potwierdził aktywnego urządzenia. Może wymagać dodatkowej rejestracji u dostawcy.".equals(msg);}
     static Probe network(Context context){return network(ProviderHttp.client(context));}
-    static Probe network(okhttp3.OkHttpClient base){return (entry,cancel,deadline)->{
-        if(!entry.account()){
-            if(!SourceExplorerRules.allowedPage(entry.url))return Result.status(Status.PUBLIC_CHECK_UNSUPPORTED);
-            long left=Math.max(1,deadline-now());SourceExplorerHttp http=new SourceExplorerHttp(base,left,true);
-            PublicHttp.Document page=http.fetch(entry.url,cancel);PublicHttp.checkCancelled(cancel);
-            return Result.status(SourceExplorerRules.portalFingerprint(page.url,page.text)?Status.CLIENT_FOUND:Status.PAGE_AVAILABLE);
-        }
-        ProviderHttp.Fetcher fetcher=new ProviderHttp.Fetcher(){
-            private ProviderHttp.Fetcher bounded()throws IOException{PublicHttp.checkCancelled(cancel);long left=deadline-now();if(left<=0)throw new IOException("Limit czasu skanera.");return ProviderHttp.usingClient(base.newBuilder().callTimeout(left,TimeUnit.MILLISECONDS).build());}
-            public ProviderHttp.Document fetch(String url,Map<String,String> headers,AtomicBoolean stopped)throws IOException{return bounded().fetch(url,headers,stopped);}
-            public PortalChannelReader.Catalog fetchPortalChannels(String url,Map<String,String> headers,AtomicBoolean stopped)throws IOException{return bounded().fetchPortalChannels(url,headers,stopped);}
-        };
-        ProviderAdapters.Result catalogue=ProviderAdapters.portal(new JSONObject().put("url",entry.url).put("mac",entry.mac),fetcher,cancel);
-        PublicHttp.checkCancelled(cancel);if(catalogue.entries.length()==0)throw new IOException("Brak kanałów.");
-        return new Result(Status.CATALOG_AVAILABLE,catalogue.entries.length(),catalogue.portalTruncated);
-    };}
+    static Probe network(okhttp3.OkHttpClient base){return (entry,cancel,deadline)->Result.status(Status.NOT_CHECKED);}
     static String csv(List<PortalTxt.Entry> entries,List<Result> results){StringBuilder out=new StringBuilder("entry,line,type,status,channels,limited,playback\r\n");for(int i=0;i<entries.size();i++){Result row=i<results.size()?results.get(i):Result.status(Status.NOT_CHECKED);out.append(i+1).append(',').append(entries.get(i).line).append(',').append(entries.get(i).account()?"own_mac":"url_only").append(',').append(row.status.name()).append(',').append(row.channels).append(',').append(row.limited).append(",not_checked\r\n");}return out.toString();}
 }

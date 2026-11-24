@@ -48,7 +48,7 @@ public static class PublicWeb
         for (int redirects = 0; redirects < 5; redirects++)
         {
             if (!Allowed(url)) throw new IOException("Niepubliczny adres EPG.");
-            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8");
+            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.11.0");
             using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, deadline.Token);
             if ((int)response.StatusCode is >= 300 and < 400 && response.Headers.Location != null) { url = new Uri(new Uri(url), response.Headers.Location).AbsoluteUri; continue; }
             response.EnsureSuccessStatusCode();
@@ -79,7 +79,7 @@ public static class PublicWeb
     }
     static async Task<PublicWebResponse> FetchResponse(string url,CancellationToken ct)
     {
-            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8 (+public-stream-discovery)");
+            using var request = new HttpRequestMessage(HttpMethod.Get, url); request.Headers.UserAgent.ParseAdd("SwirStreamAI/0.11.0 (+public-stream-discovery)");
             using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
             if ((int)response.StatusCode is >= 300 and < 400 && response.Headers.Location != null)return new((int)response.StatusCode,response.Headers.Location.ToString(),null);
             response.EnsureSuccessStatusCode();
@@ -118,18 +118,12 @@ public sealed class WebDiscovery
         foreach (Match m in Regex.Matches(text, "(?:src|file|url)\\s*[=:]\\s*[\"']([^\"']+\\.(?:m3u8|mpd|mp3|aac)(?:\\?[^\"']*)?)[\"']", RegexOptions.IgnoreCase)) urls.Add(m.Groups[1].Value);
         return urls.Select(x => Uri.TryCreate(new Uri(doc.Url), x, out var u) ? u.AbsoluteUri : "").Where(PublicWeb.Allowed).Distinct().Take(12).ToList();
     }
-    public static List<string> LiveLinks(WebDocument doc)
-    {
-        return Regex.Matches(doc.Body, "(?:href|src)\\s*=\\s*[\"']([^\"']+)[\"']", RegexOptions.IgnoreCase)
-            .Select(m => WebUtility.HtmlDecode(m.Groups[1].Value)).Where(x => Regex.IsMatch(x, "live|na-zywo|na_zywo|player|embed|stream", RegexOptions.IgnoreCase))
-            .Select(x => Uri.TryCreate(new Uri(doc.Url), x, out var u) ? u.AbsoluteUri : "").Where(PublicWeb.Allowed)
-            .Where(x => !Regex.IsMatch(new Uri(x).AbsolutePath, @"\.(js|css|png|jpg|svg|mp4)$", RegexOptions.IgnoreCase)).Distinct()
-            .OrderByDescending(x => Regex.IsMatch(x, "live-tv|/live,|ogladaj-na-zywo|/livestream|/player", RegexOptions.IgnoreCase)).Take(5).ToList();
-    }
-    public static List<string> EmbeddedPlayers(WebDocument doc) => Regex.Matches(doc.Body, "<iframe\\b[^>]*?\\bsrc\\s*=\\s*[\"']([^\"']+)[\"']", RegexOptions.IgnoreCase)
-        .Select(m => WebUtility.HtmlDecode(m.Groups[1].Value)).Select(x => Uri.TryCreate(new Uri(doc.Url), x, out var u) ? u.AbsoluteUri : "")
-        .Where(PublicWeb.Allowed).Where(x => !SharedPlaylists.RequiresBrowser(x) && Regex.IsMatch(x, "live|player|embed|stream", RegexOptions.IgnoreCase)
-            && !Regex.IsMatch(new Uri(x).Host, "doubleclick|googleads|adservice|adsystem", RegexOptions.IgnoreCase)).Distinct().Take(2).ToList();
+    public static List<string> LiveLinks(WebDocument doc) =>
+        BroadcasterLinks.Find(doc, false, 3, url => OnDomain(url, doc.Url));
+
+    public static List<string> EmbeddedPlayers(WebDocument doc) =>
+        BroadcasterLinks.Find(doc, true, 2, url => !Regex.IsMatch(new Uri(url).Host, "doubleclick|googleads|adservice|adsystem", RegexOptions.IgnoreCase));
+
     public async Task<bool> IsLive(string url, CancellationToken ct, int depth = 0)
     {
         if (depth > 2 || Regex.IsMatch(url, "hlsvod|/vod/|\\.mp4(?:[./?]|$)", RegexOptions.IgnoreCase)) return false;
@@ -190,17 +184,20 @@ public sealed class WebDiscovery
             while(host.Length>0){if(byHost.TryGetValue(host,out var matches))candidates.AddRange(matches);int dot=host.IndexOf('.');if(dot<0)break;host=host[(dot+1)..];}
             return Identify(hit,candidates);
         }
-        var exact = ChannelSearch.Exact(query, directory).Where(s => (countries.Length == 0 || countries.Contains(s.Country)) && PublicWeb.Allowed(s.Url)).Take(2).ToList();
+        var exact = ChannelSearch.Exact(query, directory).Where(s => (countries.Length == 0 || countries.Contains(s.Country)) && PublicWeb.Allowed(s.Url)).OrderByDescending(s => priority?.Score(s) ?? 0).Take(2).ToList();
         var seedOptions = directory.Where(s=>PublicWeb.Allowed(s.Url)&&(countries.Length==0||countries.Contains(s.Country))&&(ChannelSearch.Matches(query,s)||s.Name.Length>=2&&ChannelSearch.Matches(s.Name,new Station(query,"")))).ToList();
-        var queries = SearchExpansion.Queries(query,mode,countries,exact,seedOptions,plan.Queries);
+        var seeds = mode == "Radio" ? catalog.Where(s => PublicWeb.Allowed(s.Homepage) && (countries.Length == 0 || countries.Contains(s.Country)) && ChannelSearch.Matches(query,s)).Select(s => s with { Url = s.Homepage }) : seedOptions.AsEnumerable();
+        var orderedSeeds = coverage?.Order(seeds,priority) ?? DiscoveryCoverage.Prioritize(seeds,priority);
+        var queries = SearchExpansion.Queries(query,mode,countries,mode=="Radio"?[]:exact,orderedSeeds,plan.Queries);
         using var searchDeadline = CancellationTokenSource.CreateLinkedTokenSource(webToken); searchDeadline.CancelAfter(TimeSpan.FromSeconds(plan.SearchSeconds));
         bool primaryAvailable=true,duckAvailable=true;int queryIndex=0;
+        var searchUrls = new HashSet<string>(StringComparer.Ordinal);
         void AddHits(IEnumerable<WebHit> hits)
         {
             foreach(var hit in hits)
             {
                 var station=IdentifyIndexed(hit);
-                if(station!=null&&(countries.Length==0||countries.Contains(station.Country))&&(query.Length==0||ChannelSearch.Matches(query,station)||station.Name.Length>=2&&ChannelSearch.Matches(station.Name,new Station(query,"")))){roots.Add((hit,station));Log("Wynik WWW",hit.Url,hit.Title+" • "+station.Country);}
+                if(station!=null&&(countries.Length==0||countries.Contains(station.Country))&&(query.Length==0||ChannelSearch.Matches(query,station)||station.Name.Length>=2&&ChannelSearch.Matches(station.Name,new Station(query,"")))){if (searchUrls.Add(hit.Url)) roots.Add((hit,station));Log("Wynik WWW",hit.Url,hit.Title+" • "+station.Country);}
                 else Log("Pominięto wynik",hit.Url,"Brak zgodnej tożsamości kraju/kanału: "+hit.Title);
             }
         }
@@ -209,13 +206,14 @@ public sealed class WebDiscovery
             ct.ThrowIfCancellationRequested();
             if (searchDeadline.IsCancellationRequested) break;
             string url = template.Replace("{query}", Uri.EscapeDataString(q)); progress?.Invoke("Internet: szukam stron • " + q);
+            int previousUrls = searchUrls.Count;
             queryIndex++;if(primaryAvailable)try
             {
                 var response = await fetch(url, searchDeadline.Token); var hits = ParseSearch(response.Body); Log("Wyszukiwarka", url, $"Zapytanie: {q}; {hits.Count} stron");
                 AddHits(hits);
             }
             catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested) { primaryAvailable=false;Log("BŁĄD wyszukiwarki", url, ex.Message); }
-            if(duckAvailable&&!searchDeadline.IsCancellationRequested&&(queryIndex==1||!primaryAvailable||roots.Count==0))
+            if(duckAvailable&&!searchDeadline.IsCancellationRequested&&(queryIndex==1||!primaryAvailable||searchUrls.Count==previousUrls))
             {
                 string fallback=SearchExpansion.DuckTemplate.Replace("{query}",Uri.EscapeDataString(q));
                 try{var response=await fetch(fallback,searchDeadline.Token);var hits=SearchExpansion.ParseDuck(response.Body);Log("Wyszukiwarka",fallback,$"DuckDuckGo: {q}; {hits.Count} stron");AddHits(hits);}
@@ -224,17 +222,19 @@ public sealed class WebDiscovery
             if(!primaryAvailable&&!duckAvailable)break;
         }
         // Homepages provide a second route if the search engine refuses a request.
-        var seeds = mode == "Radio" ? catalog.Where(s => TextTools.IsWeb(s.Homepage)).Select(s => s with { Url = s.Homepage }) : directory.Where(s => PublicWeb.Allowed(s.Url) && (countries.Length == 0 || countries.Contains(s.Country))).Where(s => ChannelSearch.Matches(query, s) || s.Name.Length >= 2 && ChannelSearch.Matches(s.Name, new Station(query, "")));
-        var orderedSeeds = coverage?.Order(seeds,priority) ?? DiscoveryCoverage.Prioritize(seeds,priority);
         if(priority?.Enabled==true)Log("Uczenie wyszukiwania","",$"Lokalna kolejność profilu; {priority.ExampleCount} wyników prób odtwarzania. Co czwarta strona daje pierwszeństwo najdawniej sprawdzanym źródłom. Nie usuwa to kanałów ani nie potwierdza ich działania.");
         roots=roots.OrderByDescending(r=>SearchExpansion.LivePage(r.Hit.Url)).ToList();
         roots.AddRange(exact.Concat(orderedSeeds).DistinctBy(s => s.Url).Take(plan.Seeds).Select(s => (new WebHit(s.Name, s.Url), s)));
         var visited = new HashSet<string>(); var queue = new Queue<(WebHit Hit, Station Station, int Depth)>();
+        var livePages = new Queue<(WebHit Hit, Station Station, int Depth)>();
         foreach (var r in roots.DistinctBy(r => r.Hit.Url).Take(plan.Roots)) queue.Enqueue((r.Hit, r.Station, 0));
-        while (queue.Count > 0 && visited.Count < plan.Pages)
+        while ((queue.Count > 0 || livePages.Count > 0) && visited.Count < plan.Pages)
         {
             if (webToken.IsCancellationRequested) { ct.ThrowIfCancellationRequested(); Log("Limit", "", $"Osiągnięto {plan.Seconds} s analizy WWW. Zachowano wyniki częściowe."); break; }
-            ct.ThrowIfCancellationRequested(); var (hit, station, depth) = queue.Dequeue(); if (!visited.Add(hit.Url)) continue;
+            ct.ThrowIfCancellationRequested();
+            var next = livePages.Count > 0 && (queue.Count == 0 || visited.Count % 3 != 0) ? livePages : queue;
+            var (hit, station, depth) = next.Dequeue();
+            if (!visited.Add(hit.Url)) continue;
             if (depth == 0) coverage?.Attempt(station.Url);
             progress?.Invoke($"Internet: analizuję stronę {visited.Count}/{plan.Pages} • {Host(hit.Url)}");
             try
@@ -267,11 +267,11 @@ public sealed class WebDiscovery
                 Log("Strona nadawcy", doc.Url, $"Znalezione adresy mediów: {urls.Count}; odczyt strony nie potwierdza odtwarzania" + (doc.Modified.HasValue ? "; Last-Modified: " + doc.Modified.Value.ToString("O") : "; brak daty aktualizacji"));
                 if (depth < plan.Depth)
                 {
-                    var sameSite = LiveLinks(doc).Where(x => OnDomain(x, station.Homepage.Length > 0 ? station.Homepage : hit.Url)).Take(3);
+                    var sameSite = LiveLinks(doc).Where(x => OnDomain(x, station.Homepage.Length > 0 ? station.Homepage : hit.Url));
                     foreach (var link in sameSite.Concat(EmbeddedPlayers(doc)).Distinct())
                     {
                         if (!OnDomain(link, doc.Url)) Log("Osadzony odtwarzacz", link, "Jawna ramka iframe na stronie: " + doc.Url + "; nie wykonano JavaScript.");
-                        queue.Enqueue((new(hit.Title, link), station, depth + 1));
+                        livePages.Enqueue((new(hit.Title, link), station, depth + 1));
                     }
                 }
             }

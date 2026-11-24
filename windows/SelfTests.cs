@@ -99,7 +99,7 @@ static class SelfTests
             }
         }
         catch (Exception ex) { Check("Unexpected failure", false, ex.ToString()); }
-        File.WriteAllText(output, JsonSerializer.Serialize(new { app = "SwirStream AI 0.9.8", date = DateTimeOffset.Now, os = Environment.OSVersion.ToString(), architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(), success, checks }, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(output, JsonSerializer.Serialize(new { app = "SwirStream AI 0.11.0", date = DateTimeOffset.Now, os = Environment.OSVersion.ToString(), architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(), success, checks }, new JsonSerializerOptions { WriteIndented = true }));
         return success ? 0 : 1;
     }
 }

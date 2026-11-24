@@ -1,5 +1,7 @@
 # Moje źródła — SwirStream AI Windows 0.9.8
 
+Aktualne wydanie 0.12.0 obsługuje pojedynczo skonfigurowane źródła. Opisy skanera TXT poniżej dotyczą archiwalnej wersji 0.9.8. Nowe funkcje i instalator opisuje [wydanie 0.12.0](../docs/releases/v0.12.0.md).
+
 ## Skaner portali TXT w 0.9.8
 
 Wejdź w **MAC Player → Skaner portali TXT**. Zaimportuj TXT, sprawdź podgląd,

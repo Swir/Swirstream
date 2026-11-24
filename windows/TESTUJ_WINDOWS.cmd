@@ -14,7 +14,7 @@ start "" /wait "%~dp0SwirStreamAI.exe" --public-provider-test --report "%REPORTS
 if not "%errorlevel%"=="0" goto failed
 start "" /wait "%~dp0SwirStreamAI.exe" --source-explorer-test --report "%REPORTS%\source-explorer.json"
 if not "%errorlevel%"=="0" goto failed
-echo Lokalne testy SwirStream AI 0.9.8. Okna testowe moga pojawic sie na chwile.
+echo Lokalne testy SwirStream AI 0.11.0. Okna testowe moga pojawic sie na chwile.
 start "" /wait "%~dp0SwirStreamAI.exe" --xtream-link-test --report "%REPORTS%\xtream-link.json"
 if not "%errorlevel%"=="0" goto failed
 start "" /wait "%~dp0SwirStreamAI.exe" --provider-failure-test --report "%REPORTS%\provider-failure.json"

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SwirStreamAI;
@@ -49,21 +50,23 @@ public static class ChannelSearch
     public static bool Matches(string query, Station station)
     {
         if (string.IsNullOrWhiteSpace(query)) return true;
+        query = query.Normalize(NormalizationForm.FormKC);
         string key = Key(query);
-        if (key.Length > 0 && Names(station).Any(n => Key(n) == key)) return true;
+        if (key.Length > 0 && Names(station).Any(n => LookupKey(n) == key)) return true;
         // Letter-only prefixes make live filtering useful while typing (TVP, Pols).
         // Numeric queries stay exact/token-based so TVP 1 never becomes TVP10.
-        if (key.Length >= 2 && key.All(char.IsLetter) && Names(station).Any(n => Key(n).StartsWith(key, StringComparison.Ordinal))) return true;
+        if (key.Length >= 2 && key.All(char.IsLetter) && Names(station).Any(n => LookupKey(n).StartsWith(key, StringComparison.Ordinal))) return true;
         if (GenreMatches(query,station.Group)) return true;
-        string haystack = TextTools.Normalize(string.Join(' ', Names(station)) + " " + station.Group);
+        string haystack = TextTools.Normalize((string.Join(' ', Names(station)) + " " + station.Group).Normalize(NormalizationForm.FormKC));
         var tokens = Regex.Matches(TextTools.Normalize(query), @"[\p{L}\p{Nd}+]+").Select(m => m.Value).ToArray();
         return tokens.Length > 0 && tokens.All(t => Regex.IsMatch(haystack, @"(?<![\p{L}\p{Nd}+])" + Regex.Escape(t) + @"(?![\p{L}\p{Nd}+])"));
     }
     public static List<Station> Exact(string query, IEnumerable<Station> directory)
     {
-        string key = Key(query);
-        return key.Length == 0 ? [] : directory.Where(s => Names(s).Any(n => Key(n) == key)).DistinctBy(s => (s.Kind, s.Country, s.ChannelId, ProgramVariant(s.Feed), Key(s.Name))).ToList();
+        string key = LookupKey(query);
+        return key.Length == 0 ? [] : directory.Where(s => Names(s).Any(n => LookupKey(n) == key)).DistinctBy(s => (s.Kind, s.Country, s.ChannelId, ProgramVariant(s.Feed), Key(s.Name))).ToList();
     }
+    static string LookupKey(string value) => Key(value.Normalize(NormalizationForm.FormKC));
     // A newer online directory must not hide a saved station with a legacy ID.
     public static List<Station> FilterLocal(string query, IEnumerable<Station> candidates) => candidates.Where(s => Matches(query, s)).ToList();
     public static string LocalQuery(string raw, IEnumerable<Station> candidates)
@@ -73,6 +76,16 @@ public static class ChannelSearch
         // into an empty query and show every station. Interpret explicit requests.
         if (!SearchRequest.IsMatch(TextTools.Normalize(raw)) || candidates.Any(s => Matches(raw, s))) return raw;
         return Countries.Extract(raw, []).Query;
+    }
+    public static (string Query, string[] Codes) WebQuery(string raw, string[] selected)
+    {
+        var parsed = Countries.Extract(raw, selected);
+        // The broadcaster's name may itself contain “TV” or “Rádio”.
+        string literal = Regex.Replace(TextTools.Normalize(raw), @"\s+", " ").Trim();
+        string withoutMedium = Regex.Replace(Regex.Replace(literal, @"\b(?:tv|radio)\b", " "), @"\s+", " ").Trim();
+        bool stationName = parsed.Query.Length > 0 && parsed.Query == withoutMedium && !Genres.ContainsKey(parsed.Query);
+        return parsed.Query == literal || stationName
+            ? (raw.Trim(), parsed.Codes) : parsed;
     }
     public static List<Station> Filter(string query, IEnumerable<Station> candidates, IReadOnlyList<Station> directory)
     {

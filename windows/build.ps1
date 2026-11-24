@@ -1,5 +1,5 @@
 param(
-    [string]$Destination = (Join-Path $PSScriptRoot 'dist\SwirStreamAI_0.9.8'),
+    [string]$Destination = (Join-Path $PSScriptRoot 'dist\SwirStreamAI_0.12.0'),
     [string]$DependencyCache = (Join-Path $PSScriptRoot 'dependency-cache-v070'),
     [string]$Packages = (Join-Path $PSScriptRoot '..\packages')
 )
@@ -30,7 +30,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Nie udało się odczytać wersji SDK .NET.' }
 & dotnet publish $project -c Release -r win-x64 --self-contained true --source https://api.nuget.org/v3/index.json "-p:RestorePackagesPath=$Packages" -o $Destination
 if ($LASTEXITCODE -ne 0) { throw 'Kompilacja aplikacji nie powiodła się. Kolejna próba wymaga nowego lub pustego folderu.' }
 if ((Test-Path -LiteralPath (Join-Path $Destination 'vlc')) -or (Test-Path -LiteralPath (Join-Path $Destination 'libvlc.dll'))) {
-    throw 'Publikacja zawiera stary silnik. Wydanie 0.9.8 wymaga nowego folderu player.'
+    throw 'Publikacja zawiera stary silnik. Wydanie 0.12.0 wymaga nowego folderu player.'
 }
 
 # Acquires and checks the pinned upstream binary; does not compile the native engine.
@@ -66,7 +66,7 @@ foreach ($frameworkName in $runtimePacks.Keys) {
 }
 
 [ordered]@{
-    application = 'SwirStream AI'; version = '0.9.8'; target = 'win-x64'; selfContained = $true
+    application = 'SwirStream AI'; version = '0.12.0'; target = 'win-x64'; selfContained = $true
     builtAtUtc = [DateTimeOffset]::UtcNow.ToString('O'); dotnetSdk = $sdkVersion
     runtimes = $runtime.runtimeOptions.includedFrameworks
     nativeRelease = $native.release; nativeDllSha256 = $native.dllSha256

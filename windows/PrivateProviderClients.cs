@@ -57,7 +57,7 @@ public sealed class PrivateProviderClient
         var message=new HttpRequestMessage(new HttpMethod(request.Method),request.Url);
         try
         {
-            message.Headers.UserAgent.ParseAdd("SwirStreamAI/0.9.8");
+            message.Headers.UserAgent.ParseAdd("SwirStreamAI/0.12.0");
             foreach(var pair in request.Headers??[])
             {
                 if(pair.Key.Any(c=>c<=32||c>=127)||pair.Value.Any(c=>c is '\r' or '\n' or '\0'))throw new InvalidDataException("Nieobsługiwane nagłówki źródła.");
@@ -180,6 +180,7 @@ public sealed class PrivateProviderClient
             if(M3u.IsHls(body))throw new InvalidDataException("Wynik AI jest manifestem jednej transmisji, nie listą kanałów.");
             publicNotice=cleaned.Sanitized?" • Oczyszczono publiczną kopię: pominięte wpisy "+cleaned.RemovedEntries+" • SHA256 odpowiedzi: "+cleaned.OriginalSha256:" • Publiczna subskrypcja: sprawdzono brak danych konta w każdym pobraniu.";
         }
+        if(source.Kind==PrivateSourceKind.M3uFile && Bouquet.IsBouquet(body)) body=Bouquet.ToM3u(body);
         if(!body.StartsWith("#EXTM3U",StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Adres nie zwrócił playlisty M3U. Sprawdź URL otrzymany od operatora.");
         if(Regex.IsMatch(body,@"(?im)^\s*#(?:EXTHTTP:|EXTVLCOPT:http-(?:cookie|header|authorization)|KODIPROP:.*(?:license|headers))")||Regex.IsMatch(body,@"(?im)^https?://[^\r\n]*\|[^\r\n]*(?:authorization|cookie)="))throw new InvalidDataException("Playlista wymaga dodatkowych nagłówków Cookie/Authorization lub konfiguracji DRM, której ten odtwarzacz nie obsługuje. Nie przekazano ich do odtwarzacza.");
         if(M3u.IsHls(body))return new([new("live",new(source.Name,doc.Url,"Live",Source:"Moje źródło"))],"",DateTimeOffset.UtcNow,doc.Modified,"Dodano pojedynczą transmisję HLS.");

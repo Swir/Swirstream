@@ -39,8 +39,9 @@ public sealed class SharedPlaylists
         var names = directory.SelectMany(s => ChannelSearch.Names(s).Select(n => (Key: CleanName(n), Station: s)))
             .Where(x => x.Key.Length > 0).GroupBy(x => x.Key).ToDictionary(g => g.Key, g => g.Select(x => x.Station).DistinctBy(SourceRanker.ChannelKey).ToList());
         var list = new List<Station>();
-        foreach (var s in M3u.Parse(body, url))
+        foreach (var row in M3u.Parse(body, url))
         {
+            var s = row with { Country=RegionalPlaylists.Country(url,row.Group,row.Country) };
             if (!AllowedStream(s.Url)) continue;
             Station? meta = ids.GetValueOrDefault(s.ChannelId);
             if (meta == null && names.TryGetValue(CleanName(s.Name), out var named))
@@ -81,8 +82,9 @@ public sealed class SharedPlaylists
         // Fetch the known published lists before spending any budget on a search engine.
         // Sorting URLs first was insufficient: a slow/blocked search could exhaust the deadline.
         foreach (string seed in seeds.Where(u => PublicWeb.Allowed(u) && !PublicPlaylistPrivacy.ContainsCredentials(u)).Distinct().Take(deep ? 8 : 5)) await ReadPlaylist(seed);
-        string q = "site:github.com public IPTV playlist.m3u " + query + " " + string.Join(' ', countries);
-        var queries = new List<string> { "public TV playlist m3u " + query + " " + string.Join(' ', countries), q };
+        string region = countries.Length == 1 ? WorldMarkets.Name(countries[0]) : "";
+        string q = "site:github.com public IPTV playlist.m3u " + query + " " + region;
+        var queries = new List<string> { "public TV playlist m3u " + query + " " + region, q };
         if (deep)
         {
             var names = Countries.Load().ToDictionary(c => c.Code, c => c.Name);

@@ -29,6 +29,9 @@ static class Program
             if (args.Contains("--local-search-test")) return LocalSearchTests.Run(report, args.Contains("--network"));
             if (args.Contains("--playlist-test")) return PlaylistTests.Run(report, args.Contains("--network"));
             if (args.Contains("--search-learning-test")) return SearchLearningTests.Run(report);
+            if (args.Contains("--release-test")) return ReleaseIntegrationTests.Run(report);
+            if (args.Contains("--regional-live-test")) return RegionalLiveTests.Run(Arg("--feeds","."),report);
+            if (args.Contains("--release-download-test")) return RegionalLiveTests.Update(report).GetAwaiter().GetResult();
             if (args.Contains("--player-test")) return PlayerEngineTests.Run(report);
             if (args.Contains("--playback-progress-test")) return PlaybackProgressTests.Run(report);
             if (args.Contains("--encrypted-guard-test")) return EncryptedPlaybackGuardTests.Run(report);
@@ -52,6 +55,8 @@ static class Program
             ApplicationConfiguration.Initialize();
             if (args.Contains("--gate-test")) return StartupGateTests.Run(report,model);
             string dataPath = Arg("--data-dir", Path.Combine(AppContext.BaseDirectory, "data"));
+            UiLanguage.Load(dataPath);
+            if (args.Contains("--international-ui-test")) return InternationalUiTests.Run(dataPath,model,report);
             if (!args.Contains("--gui-test") && !args.Contains("--no-auto-search") && !args.Contains("--startup-test"))
             {
                 using var gate = new StartupGate(() => new MainForm(dataPath, model, autoDiscover:false));

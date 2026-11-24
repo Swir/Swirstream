@@ -61,7 +61,6 @@ public final class ProviderManagerDialog {
         box.addView(action(section<0?"＋ Dodaj źródło":"＋ "+new String[]{"Dodaj playlistę URL","Dodaj konto Xtream","Dodaj portal MAC","Dodaj transmisję DRM"}[section],"provider_add",()->{closePage();if(section<0)choose();else form(section);}));
         if(section==0)box.addView(action("Dodaj bezpośredni HLS / DASH / MP4","provider_add_direct",()->{closePage();form(4);}));
         box.addView(action("Eksplorator źródeł WWW","provider_explorer",()->{closePage();listener.exploreSources();}));
-        if(section==2)box.addView(action("Skaner portali • import TXT","provider_scanner",()->{closePage();listener.scanPortals();}));
         if(section==0)box.addView(action("AI: znajdź playlisty","provider_discover",()->{closePage();listener.discoverPlaylists();}));
         if(sources.isEmpty())box.addView(label("Nie dodano jeszcze żadnego źródła w tej sekcji. Dane logowania i prywatne listy pozostają zaszyfrowane na tym urządzeniu, osobno dla każdego profilu.",14,0xffeef5ff));
         for(ProviderRepository.SourceInfo source:sources){

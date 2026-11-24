@@ -56,7 +56,7 @@ public sealed class SwirPlayer : IDisposable
                 ["idle"]="yes", ["keep-open"]="no", ["force-window"]="no", ["audio-display"]="no",
                 ["cache"]="yes", ["cache-secs"]="3", ["demuxer-max-bytes"]="33554432", ["demuxer-max-back-bytes"]="8388608",
                 ["network-timeout"]="8", ["volume-max"]="100", ["volume"]="65", ["osd-level"]="0",
-                ["user-agent"]="SwirStreamAI/0.9.8", ["hwdec"]=this.quiet?"no":"auto-safe"
+                ["user-agent"]="SwirStreamAI/0.11.0", ["hwdec"]=this.quiet?"no":"auto-safe"
             }) Check(option(handle, pair.Key, pair.Value), "Ustawienie odtwarzacza " + pair.Key);
             if (this.quiet)
             {
@@ -195,7 +195,7 @@ public sealed class SwirPlayer : IDisposable
             encryptedPlayback=clearKeyHex.Length>0;decodeFault=false;decodeGuard.Reset(Environment.TickCount64);
             Check(requestLogs(handle,encryptedPlayback?"error":"no"),"Kontrola dekodera");
             Set("options/demuxer-lavf-o",clearKeyHex.Length>0?"cenc_decryption_key="+clearKeyHex:"");
-            string ua=userAgent.Length is >0 and <1024 && !userAgent.Contains('\r') && !userAgent.Contains('\n')?userAgent:"SwirStreamAI/0.9.8";
+            string ua=userAgent.Length is >0 and <1024 && !userAgent.Contains('\r') && !userAgent.Contains('\n')?userAgent:"SwirStreamAI/0.11.0";
             string refer=TextTools.IsWeb(referrer)&&!referrer.Contains('\r')&&!referrer.Contains('\n')?referrer:"";
             Set("options/user-agent",ua);Set("options/referrer",refer);Set("pause","no");state=1;
             if(HlsPlaybackSource.Candidate(url))

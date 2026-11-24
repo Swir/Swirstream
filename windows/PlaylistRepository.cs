@@ -153,6 +153,16 @@ public sealed class PlaylistRepository
     public async Task<FoundPlaylist> Refresh(string id, IReadOnlyList<Station> directory, string[] countries, string query, CancellationToken ct)
     {
         var previous = Get(id); var doc = await PublicWeb.Fetch(previous.SourceUrl, ct);
-        var updated = Create(doc, directory, countries, query); ct.ThrowIfCancellationRequested(); Save(updated); return updated;
+        var updated = Create(doc, directory, countries, query);
+        if (updated.IsStale || updated.ModifiedAt < previous.ModifiedAt)
+            throw new InvalidDataException("Serwer zwrócił nieaktualną wersję playlisty.");
+        lock (gate)
+        {
+            ct.ThrowIfCancellationRequested();
+            if (Get(id).FetchedAt != previous.FetchedAt)
+                throw new IOException("Lista zmieniła się podczas pobierania. Otwórz najnowszą wersję.");
+            Save(updated);
+            return Get(updated.Id);
+        }
     }
 }

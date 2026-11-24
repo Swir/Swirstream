@@ -5,7 +5,10 @@ using System.Text.RegularExpressions;
 
 namespace SwirStreamAI;
 
-public record Station(string Name, string Url, string Kind = "Live", string Group = "", string Source = "M3U", string Homepage = "", string UserAgent = "", string Referrer = "", string Country = "", string ChannelId = "", string[]? Aliases = null, string Quality = "", string Feed = "", bool BrowserOnly = false, string AccessNote = "",string PrivateSourceId="",string PrivateStreamId="");
+public record Station(string Name, string Url, string Kind = "Live", string Group = "", string Source = "M3U", string Homepage = "", string UserAgent = "", string Referrer = "", string Country = "", string ChannelId = "", string[]? Aliases = null, string Quality = "", string Feed = "", bool BrowserOnly = false, string AccessNote = "",string PrivateSourceId="",string PrivateStreamId="")
+{
+    public string Country { get; init; } = WorldMarkets.Canonical(Country);
+}
 public record Visit(Station Station, DateTimeOffset PlayedAt);
 public sealed class LibraryData
 {
@@ -13,7 +16,12 @@ public sealed class LibraryData
     public List<Visit> History { get; set; } = [];
     public List<Station> Playlist { get; set; } = [];
     public int Volume { get; set; } = 65;
-    public string[] SelectedCountries { get; set; } = ["PL"];
+    string[] selectedCountries = ["PL"];
+    public string[] SelectedCountries
+    {
+        get => selectedCountries;
+        set => selectedCountries = (value ?? []).Select(WorldMarkets.Canonical).Distinct().ToArray();
+    }
     public string QualityMode { get; set; } = "Stabilność";
     public bool SearchWeb { get; set; } = true;
     public bool AutoVerify { get; set; } = true;
@@ -45,7 +53,7 @@ public sealed class LibraryStore
     public LibraryStore(string folder)
     {
         Directory.CreateDirectory(folder); path = Path.Combine(folder, "library.json");
-        if (!File.Exists(path)) return;
+        if (!File.Exists(path)) { Data.SelectedCountries=UiLanguage.InitialCountries(); return; }
         try
         {
             Data = JsonSerializer.Deserialize<LibraryData>(File.ReadAllText(path)) ?? throw new JsonException();

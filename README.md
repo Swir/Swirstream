@@ -2,49 +2,32 @@
 
 **TV, radio and live streams for Windows and Android — by Swir.**
 
-SwirStream AI combines an embedded player, public-source discovery, personal playlists and local preference learning. It has no chat assistant and does not require a cloud AI subscription. The current app interface is primarily Polish; the project overview, release notes and roadmap here are in English.
+SwirStream AI combines an embedded player, public-source discovery, personal playlists and local preference learning. Discovery and ranking run without a cloud AI subscription. In the working version the first scan, country picker, channel search and main player controls support English and Polish. Some advanced settings still use Polish.
 
 ## Download
 
-The portal scanner preview contains **Windows 0.9.8** and **Android 0.3.7**.
-
-| Platform | Download |
+| Platform | Current release |
 | --- | --- |
-| Windows 11, x64 | [Portable ZIP with EXE and dependencies](https://github.com/Swir/Swirstream/releases/download/v0.9.8/SwirStreamAI_0.9.8_Windows_x64.zip) |
-| Android 6 or later | [Signed APK](https://github.com/Swir/Swirstream/releases/download/v0.9.8/SwirStreamAI_Android_0.3.7.apk) |
+| Windows 11 x64 | [SwirStream AI 0.12.0 installer](https://github.com/Swir/Swirstream/releases/download/v0.12.0/SwirStreamAI_0.12.0_Setup_x64.exe) |
+| Android 6 or later | [SwirStream AI 0.6.0 APK](https://github.com/Swir/Swirstream/releases/download/v0.12.0/SwirStreamAI_Android_0.6.0.apk) |
 
-[Release notes and all assets](https://github.com/Swir/Swirstream/releases/tag/v0.9.8) · [Portal TXT scanner guide](docs/PORTAL_SCANNER.md) · [Development roadmap](ROADMAP.md)
+First-time Windows Setup downloads and verifies libmpv from its upstream publisher. Start both clients normally to check for future stable versions. You can also select **App updates / Aktualizacje programu**.
 
-On Windows, extract the **entire ZIP** into a new folder before running `SwirStreamAI.exe`. VLC is not required. To move your existing library, close both versions, back up the old `data` folder, and copy it beside the new EXE under the same Windows account.
+Deep Search includes worldwide IPTV-org and Free-TV catalogues, TDTChannels, Kodinerds and public broadcaster sites. Import IPTV bouquets exported by Dreambox or Enigma2 receivers under **Import M3U / Dreambox IPTV**. The public search respects the selected countries. Finding a stream and verifying playback are separate steps.
 
-To scan a TXT list, open **MAC Player → Skaner portali**, import the file and choose **Sprawdź listę**. A scan checks the entries without automatically adding accounts to your library; selected sources can then be saved or opened in the embedded player.
+The player also supports favourites, history, XMLTV guides, per-profile local ranking and individually configured provider accounts. Windows uses libmpv. Android uses Media3.
 
-## What the application does
-
-- Searches supported public catalogues and web sources, with country choices and multiple source candidates.
-- Imports M3U playlists and user-configured playlist URLs, Xtream accounts and supported MAC portals.
-- Imports TXT portal lists with preview, duplicate removal, bounded access checks and credential-free CSV reports.
-- Plays supported streams inside the application, with favourites, history, local search and XMLTV EPG.
-- Uses local TasteNet classification and per-profile preferences to rank content. The web explorer is a bounded discovery pipeline, not an AI model that searches the entire Internet.
-- Keeps configured private sources separate from public discovery. Test accounts and access credentials are not supplied with the project.
-
-Windows uses an embedded libmpv/FFmpeg player. Android uses Media3. DRM support depends on the platform, format, device and authorized licence configuration; it is not universal. See the platform documentation for the supported scope.
-
-## This preview
-
-The new scanner accepts portal URLs alone, `URL|MAC`, and URL blocks followed by assigned MAC entries. It supports files up to 1 MiB and 200 unique entries. Checks run sequentially with cancellation, 30 seconds per entry and 10 minutes per scan. Public-page availability, catalogue access and confirmed playback are separate states.
-
-The final Windows build passed **514 distinct targeted checks**, including 43 scanner checks and 16 dedicated scanner UI checks, plus tests after ZIP extraction. The [verification report](docs/VERIFICATION.json) records both platforms' exact test scope and artifact hashes.
-
-One authorized Windows account was checked through the new scanner: **27,165 channels** loaded, and a sample played in the normal embedded player window. The public-URL-only path was checked separately without account authentication. The previous 76-account comparison belongs to [release 0.9.7](docs/releases/v0.9.7.md); those accounts were not all retested for this update. Android operator-account playback and physical F150/HY300 devices remain unverified.
-
-Catalogue limits remain **64 MB per decoded response, 30,000 unique retained channels and 8 MB of retained fields**. Earlier intermittent GUI/native-player hangs remain unresolved. The complete application feature matrix was not rerun for this preview. See [detailed release notes](docs/RELEASE_NOTES.md).
+[Release notes](docs/releases/v0.12.0.md) · [All releases](https://github.com/Swir/Swirstream/releases) · [Development roadmap](ROADMAP.md)
 
 ## Source layout and builds
 
-- `windows/`: Windows application, models, assets and tests; version 0.9.8.
-- `android/`: Android application, models, assets and tests; version 0.3.7, version code 11.
-- `docs/SOURCE_SNAPSHOT.json`: checksums linking the current application-source files to the tested source archives.
+The working tree builds Windows 0.12.0 and Android 0.6.0. New installations start with the device region when recognized and use worldwide search otherwise. Existing installations keep their selected countries. Choose **Language / Język** to select English or Polish for the next launch. Both versions use the same country and language index for public TV searches. The saved profile helps choose the broadcaster domain for each search. Playback is verified separately from catalogue discovery.
+
+The shared vocabulary lives in `shared/discovery/world-search.tsv`. To refresh it, save the provider's country catalogue and run `python tools/update_search_markets.py countries.json` from the repository root. The tool validates country codes and writes the resource used by both builds. [Provider country catalogue](https://iptv-org.github.io/api/countries.json)
+
+- `windows/` contains the Windows application, models, assets and tests.
+- `android/` contains the Android application, assets and tests. The current version code is 13.
+- `docs/SOURCE_SNAPSHOT.json` records the application-source checksums for the published v0.9.8 release.
 
 Published binaries are built from frozen application-source inventories. The source archives are checked against those inventories and the corresponding repository files. Root documentation is separate from the application builds. No automatic publishing workflow is installed.
 
