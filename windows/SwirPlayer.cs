@@ -24,6 +24,7 @@ public sealed class SwirPlayer : IDisposable
     string lastError = "";
     int playbackGeneration;
     CancellationTokenSource? preparing;
+    Task preparation = Task.CompletedTask;
     static readonly object nativeGate = new();
     static IntPtr module, graphicsLifetime;
     static CreateFn create = null!;
@@ -201,7 +202,7 @@ public sealed class SwirPlayer : IDisposable
             if(HlsPlaybackSource.Candidate(url))
             {
                 preparing=new CancellationTokenSource();
-                _=PrepareAndPlay(url,ua,refer,qualityMode,playbackGeneration,preparing);
+                preparation=PrepareAndPlay(url,ua,refer,qualityMode,playbackGeneration,preparing);
             }
             else LoadSource(TextTools.IsWeb(url)?url:Path.GetFullPath(url));
         }
@@ -219,7 +220,11 @@ public sealed class SwirPlayer : IDisposable
         }
         catch(OperationCanceledException){}
         catch(Exception ex){lock(gate){if(handle!=IntPtr.Zero&&generation==playbackGeneration){lastError=ex.Message;state=7;}}}
-        finally{lock(gate){if(ReferenceEquals(preparing,cancellation))preparing=null;}cancellation.Dispose();}
+        finally{
+            lock(gate){
+                if(ReferenceEquals(preparing,cancellation)){preparing=null;cancellation.Dispose();}
+            }
+        }
     }
     void LoadSource(string source)
     {
@@ -230,7 +235,22 @@ public sealed class SwirPlayer : IDisposable
         Set("options/demuxer-lavf-probe-info",master?"nostreams":"auto");
         Command("loadfile",source,"replace");
     }
-    void CancelPreparation(){playbackGeneration++;var current=preparing;preparing=null;current?.Cancel();}
+    void CancelPreparation(){
+        playbackGeneration++;
+        var current=preparing;
+        if(current==null)return;
+        preparing=null;
+        // HTTP cancellation can complete a continuation which needs the player lock.
+        // CancelAsync signals immediately and runs those callbacks outside this lock.
+        _=FinishCancelledPreparation(current,preparation);
+    }
+    static async Task FinishCancelledPreparation(CancellationTokenSource source,Task work){
+        try{await source.CancelAsync().ConfigureAwait(false);}
+        finally{
+            try{await work.ConfigureAwait(false);}
+            finally{source.Dispose();}
+        }
+    }
     public string Version {get{lock(gate)return "Swir Player / " + String("mpv-version") + " / FFmpeg " + String("ffmpeg-version");}}
     public string LastError {get{lock(gate){Pump();return lastError;}}}
     public int State {get{lock(gate){if(handle==IntPtr.Zero)return 0;Pump();if(state is 1 or 2 or 3 or 4){if(Flag("pause"))return 4;if(Flag("paused-for-cache"))return 2;}return state;}}}
